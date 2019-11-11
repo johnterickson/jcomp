@@ -29,7 +29,11 @@ namespace jcomp
             A,
             B,
             C,
-            PC
+            PC,
+            JZ = 0,
+            JNZ = 1,
+            JG = 2,
+            JL = 3
         }
 
         static void Main(string[] args)
