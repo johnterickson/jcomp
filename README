@@ -1,0 +1,1 @@
+dotnet run < loop.asm | tee rom.img
