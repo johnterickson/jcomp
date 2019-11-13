@@ -1,24 +1,35 @@
 v2.0 raw
 # loadlo 3 a
+# LoadLo 3 A
 8c
 # loadhi 0 a
+# LoadHi 0 A
 c0
 # loadlo 6 c
+# LoadLo 6 C
 9a
 # loadhi 0 c
+# LoadHi 0 C
 c2
 # loadlo f b
+# LoadLo 15 B
 bd
 # loadhi f b
+# LoadHi 15 B
 fd
 # add b a
+# Add B A
 44
 # copy jnz pc
+# Copy Jnz PC
 67
 # loadlo f c
+# LoadLo 15 C
 be
 # loadhi f c
+# LoadHi 15 C
 fe
 # copy jnz pc
+# Copy Jnz PC
 67
 
