@@ -23,12 +23,11 @@ enum Jump {
     Jl,
 }
 
-// #[derive(Debug)]
-// enum Arg0 {
-//     Constant (u8),
-//     Jump (Jump),
-//     Reg (Reg),
-// }
+#[derive(Clone, Copy, Debug, EnumString, PartialEq, PartialOrd)]
+#[strum(serialize_all = "lowercase")]
+enum Macro {
+    LoadImm
+}
 
 #[derive(Clone, Copy, Debug, EnumString, PartialEq, PartialOrd)]
 #[strum(serialize_all = "lowercase")]
@@ -54,9 +53,31 @@ enum OpCode {
 fn main() -> Result<(), std::io::Error> {
     println!("v2.0 raw");
 
-    let lines : Vec<String> = {
+    let lines = {
+        let mut lines = Vec::new();
         let stdin = io::stdin();
-        stdin.lock().lines().map(|l| l.unwrap()).collect()
+        for line in stdin.lock().lines() {
+            let line = line?;
+            let mut tokens = line.split_whitespace();
+            let first_token = tokens.next();
+            match first_token {
+                Some("#") | None => { },
+                Some("jnz") => {
+                    lines.push(format!("copy jnz pc"));
+                }
+                Some("loadimm") => {
+                    let constant = tokens.next().expect("loadimm needs a constant.");
+                    let constant = u8::from_str_radix(constant, 16).expect("loadimm constant must be hex");
+                    let reg_str = tokens.next().expect("loadimm needs a register.");
+                    let reg = Reg::from_str(reg_str).expect("invalid register");
+                    assert_ne!(reg, Reg::PC);
+                    lines.push(format!("loadlo {:x} {}", constant & 0xF, reg_str));
+                    lines.push(format!("loadhi {:x} {}", constant >> 4, reg_str));
+                },
+                _ => { lines.push(line); }
+            }
+        }
+        lines
     };
 
     for line in lines {

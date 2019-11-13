@@ -1,11 +1,7 @@
-loadlo 3 a
-loadhi 0 a
-loadlo 6 c
-loadhi 0 c
-loadlo f b
-loadhi f b
+loadimm 03 a
+loadimm 06 c
+loadimm ff b
 add b a
-copy jnz pc
-loadlo f c
-loadhi f c
-copy jnz pc
+jnz
+loadimm ff c
+jnz
