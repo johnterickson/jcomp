@@ -1,2 +1,24 @@
 v2.0 raw
-8c c0 9a c2 bd fd 44 67 be fe 67 
+# loadlo 3 a
+8c
+# loadhi 0 a
+c0
+# loadlo 6 c
+9a
+# loadhi 0 c
+c2
+# loadlo f b
+bd
+# loadhi f b
+fd
+# add b a
+44
+# copy jnz pc
+67
+# loadlo f c
+be
+# loadhi f c
+fe
+# copy jnz pc
+67
+

@@ -92,7 +92,8 @@ namespace jcomp
                         throw new NotImplementedException(op.ToString());
                 }
 
-                Console.Write("{0:x02} ", (byte)instruction);
+                Console.WriteLine("# {0}", line);
+                Console.WriteLine("{0:x02}", (byte)instruction);
             }
             Console.WriteLine();
         }
