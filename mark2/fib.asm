@@ -1,5 +1,9 @@
-loadlo 2
+loadlo 7
+storereg b
 call :fib
+loadlo f
+loadhi f
+storereg pc
 
 # int fib(int n) {
 #     int sum;
@@ -21,11 +25,17 @@ loadreg b
 storereg c
 # if n == 0 -> return n
 loadreg c
-jz :fib_block1 
+jz :fib_block1_pad
 # if n + -1 == 0 -> return n
 loadlo f # -1 
 add c
-jz :fib_block1 
+jz :fib_block1_pad
+jmp :fib_block2
+:fib_block1_pad
+loadlo :fib_block1
+loadhi :fib_block1
+storereg pc
+:fib_block2
 loadlo f # -1
 add c
 storereg b
