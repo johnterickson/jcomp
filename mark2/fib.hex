@@ -1,0 +1,99 @@
+v2.0 raw
+# (":fib", 10)
+# (":fib_block1", 57)
+# (":fib_return", 59)
+82 # LoadLo(Constant(2))
+8f # LoadLo(Constant(15))
+5e # Add(SP)
+0e # StoreReg(SP)
+85 # LoadLo(Constant(5))
+5f # Add(PC)
+7e # StoreMem(SP)
+8a # LoadLo(Label(":fib"))
+90 # LoadHi(Label(":fib"))
+0f # StoreReg(PC)
+# 
+# # int fib(int n) {
+# #     int sum;
+# #     if (n == 0 || n == 1) {
+# #       sum = n; //fib_block1
+# #     } else {
+# #       sum = fib(n-1); //fib_block2
+# #       sum += fib(n-2);
+# #     }
+# #     return sum;
+# # }
+# 
+# # B is first input and output
+# ":fib"
+8f # LoadLo(Constant(15))
+5e # Add(SP)
+0e # StoreReg(SP)
+02 # LoadReg(C)
+7e # StoreMem(SP)
+8f # LoadLo(Constant(15))
+5e # Add(SP)
+0e # StoreReg(SP)
+03 # LoadReg(D)
+7e # StoreMem(SP)
+# # initialize n
+01 # LoadReg(B)
+0a # StoreReg(C)
+# # if n == 0 -> return n
+02 # LoadReg(C)
+a2 # Jz(Label(":fib_block1"))
+# # if n + -1 == 0 -> return n
+8f # LoadLo(Constant(15))
+5a # Add(C)
+bf # Jz(Label(":fib_block1"))
+8f # LoadLo(Constant(15))
+5a # Add(C)
+09 # StoreReg(B)
+8f # LoadLo(Constant(15))
+5e # Add(SP)
+0e # StoreReg(SP)
+85 # LoadLo(Constant(5))
+5f # Add(PC)
+7e # StoreMem(SP)
+8a # LoadLo(Label(":fib"))
+90 # LoadHi(Label(":fib"))
+0f # StoreReg(PC)
+01 # LoadReg(B)
+0b # StoreReg(D)
+8e # LoadLo(Constant(14))
+5a # Add(C)
+09 # StoreReg(B)
+8f # LoadLo(Constant(15))
+5e # Add(SP)
+0e # StoreReg(SP)
+85 # LoadLo(Constant(5))
+5f # Add(PC)
+7e # StoreMem(SP)
+8a # LoadLo(Label(":fib"))
+90 # LoadHi(Label(":fib"))
+0f # StoreReg(PC)
+01 # LoadReg(B)
+5b # Add(D)
+0b # StoreReg(D)
+a3 # Jmp(Label(":fib_return"))
+# ":fib_block1"
+02 # LoadReg(C)
+0b # StoreReg(D)
+# ":fib_return"
+# # return sum
+03 # LoadReg(D)
+09 # StoreReg(B)
+# # restore regs
+76 # LoadMem(SP)
+0b # StoreReg(D)
+81 # LoadLo(Constant(1))
+5e # Add(SP)
+0e # StoreReg(SP)
+76 # LoadMem(SP)
+0a # StoreReg(C)
+81 # LoadLo(Constant(1))
+5e # Add(SP)
+0e # StoreReg(SP)
+76 # LoadMem(SP)
+0f # StoreReg(PC)
+
