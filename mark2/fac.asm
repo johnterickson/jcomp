@@ -1,3 +1,5 @@
+loadlo f
+storereg sp
 loadlo 5
 storereg b
 call :fac

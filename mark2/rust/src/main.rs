@@ -73,7 +73,6 @@ impl Instruction {
                 Target::Label(l) => {
                     let mut offset : i16 = labels[l] as i16;
                     offset -= pc as i16;
-                    offset -= 1;
                     assert!(offset <= 15);
                     assert!(offset >= -16);
                     Instruction::Jmp(Target::Constant((offset & 0x1f) as u8))
@@ -84,7 +83,6 @@ impl Instruction {
                 Target::Label(l) => {
                     let mut offset : i16 = labels[l] as i16;
                     offset -= pc as i16;
-                    offset -= 1;
                     assert!(offset <= 15);
                     assert!(offset >= -16);
                     Instruction::Jz(Target::Constant((offset & 0x1f) as u8))
@@ -95,7 +93,6 @@ impl Instruction {
                 Target::Label(l) => {
                     let mut offset : i16 = labels[l] as i16;
                     offset -= pc as i16;
-                    offset -= 1;
                     assert!(offset <= 15);
                     assert!(offset >= -16);
                     Instruction::Jnz(Target::Constant((offset & 0x1f) as u8))
@@ -107,16 +104,16 @@ impl Instruction {
 
     fn encode(&self) -> u8 {
         match self {
-            Instruction::LoadReg(r) => 0x00 | *r as u8,
-            Instruction::StoreReg(r) => 0x08 | *r as u8,
+            Instruction::StoreReg(r) => 0x00 | *r as u8,
+            Instruction::StoreMem(r) => 0x08 | *r as u8,
             Instruction::Xor(r) => 0x40 | *r as u8,
             Instruction::And(r) => 0x48 | *r as u8,
             Instruction::Or(r) => 0x50 | *r as u8,
             Instruction::Add(r) => 0x58 | *r as u8,
             Instruction::Not(r) => 0x60 | *r as u8,
             Instruction::Mul(r) => 0x68 | *r as u8,
-            Instruction::LoadMem(r) => 0x70 | *r as u8,
-            Instruction::StoreMem(r) => 0x78 | *r as u8,
+            Instruction::LoadReg(r) => 0x70 | *r as u8,
+            Instruction::LoadMem(r) => 0x78 | *r as u8,
             Instruction::LoadLo(t) => 0x80 | match t {
                 Target::Constant(c) => *c,
                 _ => unreachable!(),
@@ -181,7 +178,7 @@ impl Instruction {
                 instructions.push(Instruction::LoadLo(Target::Constant(0xF)));
                 instructions.push(Instruction::Add(Reg::SP));
                 instructions.push(Instruction::StoreReg(Reg::SP));
-                instructions.push(Instruction::LoadLo(Target::Constant(0x4))); //TODO is this wrong?
+                instructions.push(Instruction::LoadLo(Target::Constant(0x5))); //TODO is this wrong?
                 instructions.push(Instruction::Add(Reg::PC));
                 instructions.push(Instruction::StoreMem(Reg::SP));
                 instructions.push(Instruction::LoadLo(Target::Label(tokens[1].to_owned())));
@@ -284,13 +281,23 @@ fn main() -> Result<(), std::io::Error> {
     
     // regs[Reg::PC as usize] = 0xFF;
 
+    let mut cycle_limit = 100000;
+
     while regs[Reg::PC as usize] != 0xFF {
+        assert_ne!(cycle_limit, 0);
+        cycle_limit -= 1;
+
         let instruction = &rom[regs[Reg::PC as usize] as usize];
         print!("# PC:{:02x} {:?} {:?}", regs[Reg::PC as usize], regs, instruction);
-        regs[Reg::PC as usize] += 1;
+        let mut bump_pc = true;
         match instruction {
             Instruction::LoadReg(r) => regs[Reg::ACC as usize] = regs[*r as usize],
-            Instruction::StoreReg(r) => regs[*r as usize] = regs[Reg::ACC as usize],
+            Instruction::StoreReg(r) => {
+                if r == &Reg::PC {
+                    bump_pc = false;
+                }
+                regs[*r as usize] = regs[Reg::ACC as usize];
+            }
             Instruction::Xor(r) => regs[Reg::ACC as usize] ^= regs[*r as usize],
             Instruction::And(r) => regs[Reg::ACC as usize] &= regs[*r as usize],
             Instruction::Or(r) => regs[Reg::ACC as usize] |= regs[*r as usize],
@@ -317,6 +324,7 @@ fn main() -> Result<(), std::io::Error> {
             },
             Instruction::Jmp(t) => match t {
                 Target::Constant(c) => {
+                    bump_pc = false;
                     let mut c = *c as i16;
                     c <<= 11;
                     c >>= 11;
@@ -328,6 +336,7 @@ fn main() -> Result<(), std::io::Error> {
             Instruction::Jz(t) => match t {
                 Target::Constant(c) => {
                     if regs[Reg::ACC as usize] == 0 {
+                        bump_pc = false;
                         let mut c = *c as i16;
                         c <<= 11;
                         c >>= 11;
@@ -340,6 +349,7 @@ fn main() -> Result<(), std::io::Error> {
             Instruction::Jnz(t) => match t {
                 Target::Constant(c) => {
                     if regs[Reg::ACC as usize] != 0 {
+                        bump_pc = false;
                         let mut c = *c as i16;
                         c <<= 11;
                         c >>= 11;
@@ -353,6 +363,9 @@ fn main() -> Result<(), std::io::Error> {
 
         println!(" {:?}", regs);
 
+        if bump_pc {
+            regs[Reg::PC as usize] += 1;
+        }
     }
 
     println!();

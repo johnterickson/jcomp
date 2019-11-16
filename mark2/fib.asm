@@ -1,3 +1,5 @@
+loadlo f
+storereg sp
 loadlo 7
 storereg b
 call :fib
