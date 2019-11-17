@@ -126,11 +126,11 @@ impl Instruction {
                 Target::Constant(c) => *c,
                 _ => unreachable!(),
             },
-            Instruction::Jz(t) => 0xa0 | match t {
+            Instruction::Jz(t) => 0xc0 | match t {
                 Target::Constant(c) => *c,
                 _ => unreachable!(),
             },
-            Instruction::Jnz(t) => 0xa0 | match t {
+            Instruction::Jnz(t) => 0xe0 | match t {
                 Target::Constant(c) => *c,
                 _ => unreachable!(),
             },
@@ -190,6 +190,10 @@ impl Instruction {
             },
             "ret" => {
                 instructions.push(Instruction::LoadMem(Reg::SP));
+                instructions.push(Instruction::StoreReg(Reg::PC));
+            },
+            "halt" => {
+                instructions.push(Instruction::LoadLo(Target::Constant(0xF)));
                 instructions.push(Instruction::StoreReg(Reg::PC));
             }
             _ => panic!("unknown opcode {}", tokens[0])
@@ -368,6 +372,5 @@ fn main() -> Result<(), std::io::Error> {
         }
     }
 
-    println!();
     Ok(())
 }

@@ -1,11 +1,10 @@
 loadlo f
+loadhi 0
 storereg sp
 loadlo 5
 storereg b
 call :fac
-loadlo f
-loadhi f
-storereg pc
+halt
 # int fac(int n #b# ) {
 #     int product; # c
 #     if (n == 0) {
