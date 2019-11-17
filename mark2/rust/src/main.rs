@@ -15,7 +15,7 @@ enum Reg {
     C,
     D,
     E,
-    F,
+    FLAGS,
     SP,
     PC,
     UNKNOWN
@@ -174,6 +174,18 @@ impl Instruction {
                 instructions.push(Instruction::Add(Reg::SP));
                 instructions.push(Instruction::StoreReg(Reg::SP));
             },
+            "inc" => {
+                let reg = Reg::from_str(tokens[1]).expect("invalid register");
+                instructions.push(Instruction::LoadLo(Target::Constant(0x1)));
+                instructions.push(Instruction::Add(reg));
+                instructions.push(Instruction::StoreReg(reg));
+            },
+            "dec" => {
+                let reg = Reg::from_str(tokens[1]).expect("invalid register");
+                instructions.push(Instruction::LoadLo(Target::Constant(0xf)));
+                instructions.push(Instruction::Add(reg));
+                instructions.push(Instruction::StoreReg(reg));
+            },
             "call" => {
                 instructions.push(Instruction::LoadLo(Target::Constant(0xF)));
                 instructions.push(Instruction::Add(Reg::SP));
@@ -305,7 +317,11 @@ fn main() -> Result<(), std::io::Error> {
             Instruction::Xor(r) => regs[Reg::ACC as usize] ^= regs[*r as usize],
             Instruction::And(r) => regs[Reg::ACC as usize] &= regs[*r as usize],
             Instruction::Or(r) => regs[Reg::ACC as usize] |= regs[*r as usize],
-            Instruction::Add(r) => regs[Reg::ACC as usize] = regs[Reg::ACC as usize].wrapping_add(regs[*r as usize]),
+            Instruction::Add(r) => {
+                let sum = (regs[Reg::ACC as usize] as u16) + (regs[*r as usize] as u16);
+                regs[Reg::ACC as usize] = (sum & 0xff) as u8;
+                regs[Reg::FLAGS as usize] = (sum >> 8) as u8;
+            },
             Instruction::Not(r) => regs[Reg::ACC as usize] = !regs[*r as usize],
             Instruction::Mul(r) => regs[Reg::ACC as usize] = regs[Reg::ACC as usize].wrapping_mul(regs[*r as usize]),
             Instruction::LoadMem(r) => regs[Reg::ACC as usize] = mem[regs[*r as usize] as usize],
