@@ -9,30 +9,39 @@ v2.0 raw
 # # prep args
 80 # @03 LoadLo(Constant(0))
 01 # @04 StoreReg(B)
+# begin resolving macro: 'push b #s1'
 8f # @05 LoadLo(Constant(15))
 5e # @06 Add(SP)
 06 # @07 StoreReg(SP)
 71 # @08 LoadReg(B)
 0e # @09 StoreMem(SP)
+# end resolving macro: 'push b #s1'
+# begin resolving macro: 'push b #s0'
 8f # @0a LoadLo(Constant(15))
 5e # @0b Add(SP)
 06 # @0c StoreReg(SP)
 71 # @0d LoadReg(B)
 0e # @0e StoreMem(SP)
+# end resolving macro: 'push b #s0'
 8f # @0f LoadLo(Constant(15))
 01 # @10 StoreReg(B)
+# begin resolving macro: 'push b #y0'
 8f # @11 LoadLo(Constant(15))
 5e # @12 Add(SP)
 06 # @13 StoreReg(SP)
 71 # @14 LoadReg(B)
 0e # @15 StoreMem(SP)
+# end resolving macro: 'push b #y0'
 82 # @16 LoadLo(Constant(2))
 01 # @17 StoreReg(B)
+# begin resolving macro: 'push b #x0'
 8f # @18 LoadLo(Constant(15))
 5e # @19 Add(SP)
 06 # @1a StoreReg(SP)
 71 # @1b LoadReg(B)
 0e # @1c StoreMem(SP)
+# end resolving macro: 'push b #x0'
+# begin resolving macro: 'call :u8_add_with_carry'
 8f # @1d LoadLo(Constant(15))
 5e # @1e Add(SP)
 06 # @1f StoreReg(SP)
@@ -45,6 +54,7 @@ v2.0 raw
 81 # @26 LoadLo(Constant(1))
 5e # @27 Add(SP)
 06 # @28 StoreReg(SP)
+# end resolving macro: 'call :u8_add_with_carry'
 # # skip two inputs
 82 # @29 LoadLo(Constant(2))
 5e # @2a Add(SP)
@@ -52,13 +62,17 @@ v2.0 raw
 # # pop off result
 7e # @2c LoadMem(SP)
 02 # @2d StoreReg(C)
+# begin resolving macro: 'inc sp'
 81 # @2e LoadLo(Constant(1))
 5e # @2f Add(SP)
 06 # @30 StoreReg(SP)
+# end resolving macro: 'inc sp'
 7e # @31 LoadMem(SP)
 01 # @32 StoreReg(B)
+# begin resolving macro: 'halt'
 8f # @33 LoadLo(Constant(15))
 07 # @34 StoreReg(PC)
+# end resolving macro: 'halt'
 # 
 # 
 # 
@@ -70,16 +84,20 @@ v2.0 raw
 # # sp+4 y0
 # # sp+5 s0
 # # sp+6 s1
+# begin resolving macro: 'push c'
 8f # @35 LoadLo(Constant(15))
 5e # @36 Add(SP)
 06 # @37 StoreReg(SP)
 72 # @38 LoadReg(C)
 0e # @39 StoreMem(SP)
+# end resolving macro: 'push c'
+# begin resolving macro: 'push b'
 8f # @3a LoadLo(Constant(15))
 5e # @3b Add(SP)
 06 # @3c StoreReg(SP)
 71 # @3d LoadReg(B)
 0e # @3e StoreMem(SP)
+# end resolving macro: 'push b'
 85 # @3f LoadLo(Constant(5))
 5e # @40 Add(SP)
 02 # @41 StoreReg(C)
@@ -106,21 +124,28 @@ a2 # @4f Jmp(Label(":save_carry")) Jmp(Constant(2))
 02 # @54 StoreReg(C)
 71 # @55 LoadReg(B)
 0a # @56 StoreMem(C)
+# begin resolving macro: 'pop b'
 7e # @57 LoadMem(SP)
 01 # @58 StoreReg(B)
 81 # @59 LoadLo(Constant(1))
 5e # @5a Add(SP)
 06 # @5b StoreReg(SP)
+# end resolving macro: 'pop b'
+# begin resolving macro: 'pop c'
 7e # @5c LoadMem(SP)
 02 # @5d StoreReg(C)
 81 # @5e LoadLo(Constant(1))
 5e # @5f Add(SP)
 06 # @60 StoreReg(SP)
+# end resolving macro: 'pop c'
+# begin resolving macro: 'ret'
 7e # @61 LoadMem(SP)
 07 # @62 StoreReg(PC)
-# PC:00 [0, 0, 0, 0, 0, 0, 255, 0] LoadLo(Constant(15)) [255, 0, 0, 0, 0, 0, 255, 0]
-# PC:01 [255, 0, 0, 0, 0, 0, 255, 1] LoadHi(Constant(0)) [15, 0, 0, 0, 0, 0, 255, 1]
-# PC:02 [15, 0, 0, 0, 0, 0, 255, 2] StoreReg(SP) [15, 0, 0, 0, 0, 0, 15, 2]
+# end resolving macro: 'ret'
+# begin simulation
+# PC:00 [0, 0, 0, 0, 0, 0, 0, 0] LoadLo(Constant(15)) [255, 0, 0, 0, 0, 0, 0, 0]
+# PC:01 [255, 0, 0, 0, 0, 0, 0, 1] LoadHi(Constant(0)) [15, 0, 0, 0, 0, 0, 0, 1]
+# PC:02 [15, 0, 0, 0, 0, 0, 0, 2] StoreReg(SP) [15, 0, 0, 0, 0, 0, 15, 2]
 # PC:03 [15, 0, 0, 0, 0, 0, 15, 3] LoadLo(Constant(0)) [0, 0, 0, 0, 0, 0, 15, 3]
 # PC:04 [0, 0, 0, 0, 0, 0, 15, 4] StoreReg(B) [0, 0, 0, 0, 0, 0, 15, 4]
 # PC:05 [0, 0, 0, 0, 0, 0, 15, 5] LoadLo(Constant(15)) [255, 0, 0, 0, 0, 0, 15, 5]
@@ -216,3 +241,4 @@ a2 # @4f Jmp(Label(":save_carry")) Jmp(Constant(2))
 # PC:32 [1, 2, 1, 0, 0, 0, 14, 50] StoreReg(B) [1, 1, 1, 0, 0, 0, 14, 50]
 # PC:33 [1, 1, 1, 0, 0, 0, 14, 51] LoadLo(Constant(15)) [255, 1, 1, 0, 0, 0, 14, 51]
 # PC:34 [255, 1, 1, 0, 0, 0, 14, 52] StoreReg(PC) [255, 1, 1, 0, 0, 0, 14, 255]
+# simulation completed
