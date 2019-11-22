@@ -1,0 +1,1 @@
+cargo run --bin assembler < $1.asm > $1.hex 

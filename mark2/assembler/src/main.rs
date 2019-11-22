@@ -126,7 +126,7 @@ fn main() -> Result<(), std::io::Error> {
         }
         instructions
     };
-
+    
     simulate(&rom, 10000);
 
     Ok(())
