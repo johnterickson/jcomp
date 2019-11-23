@@ -1,0 +1,35 @@
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+COMMENT = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }
+
+lower = { 'a'..'z' }
+alpha = { lower | 'A'..'Z' }
+digit = { '0'..'9' }
+number = { digit+ }
+ident = { lower ~ (alpha | digit)* }
+
+operation = _{ add | subtract | multiply | or | equals }
+add      = { "+" }
+subtract = { "-" }
+multiply = { "*" }
+or = { "||" }
+equals = { "==" }
+
+expression = { ident | number | "(" ~ expression ~ operation ~ expression ~ ")" }
+
+if_statement = { "IF" ~ expression ~ "{" ~ statement* ~ "}" }
+assign = { "ASSIGN" ~ ident ~ ":=" ~ expression ~ ";" }
+return_statement = { "RETURN" ~ ident ~ ";" }
+
+call_args = { (expression)? ~ ("," ~ expression)* }
+call = { "CALL" ~ ident ~ ":=" ~ ident ~ "(" ~  call_args ~ ")" ~ ";" }
+
+statement = { assign | if_statement | return_statement | call }
+body = { (statement)+ }
+paramters = { ident* }
+function = {"FUNCTION " ~ ident ~ "(" ~ paramters ~ ")" ~ "{" ~ body ~ "}"}
+
+program = {
+    SOI ~
+    function+ ~
+    EOI
+}

@@ -1,159 +1,144 @@
-extern crate pom;
+extern crate pest;
 #[macro_use]
-extern crate lazy_static;
+extern crate pest_derive;
 
-use std::io::{self, Read};
-use std::iter::FromIterator;
-use std::str::FromStr;
+use pest::Parser;
 
-use pom::parser::*;
+use std::io;
+use std::io::Read;
+use std::collections::BTreeSet;
 
-#[derive(Debug, PartialEq)]
-struct Function {
-    pub name: String,
-    pub parameter_names: Vec<String>,
-    pub body: Vec<Statement>,
-}
+#[derive(Parser)]
+#[grammar = "j.pest"]
+struct ProgramParser;
 
-#[derive(Debug, PartialEq)]
 enum Operator {
-    Or,
-    Equals,
     Add,
     Subtract,
+    Multiply,
+    Or,
+    Equals
 }
 
-#[derive(Debug, PartialEq)]
+impl Operator {
+    fn parse(pair: pest::iterators::Pair<Rule>) -> Operator {
+        match pair.as_str() {
+            "+" => Operator::Add,
+            "-" => Operator::Subtract,
+            "*" => Operator::Multiply,
+            "||" => Operator::Or,
+            "==" => Operator::Equals,
+            _ => panic!(),
+        }
+    }
+}
+
 enum Expression {
-    Local {name: String},
-    Number {value: u8 },
-    Pair {op: Operator, left: Box<Expression>, right: Box<Expression>},
+    Ident(String),
+    Number(usize),
+    Operation(Operator, Box<Expression>, Box<Expression>)
 }
 
-#[derive(Debug, PartialEq)]
 enum Statement {
-    LocalDeclaration { name: String },
-    Assignment { name: String, value: Expression },
-    If {condition: Expression, true_block: Vec<Statement>, false_block: Vec<Statement>},
-    Return { name: String }
+    Assign {local: String, value: Expression},
+    Call { local: String, function: String, parameters: Vec<Expression> },
+    If {predicate: Expression, when_true: Vec<Statement> },
+    Return { local: String},
 }
 
-fn as_chars(s: &str) -> Vec<char> {
-    let chars : Vec<char> = s.chars().collect();
-    chars
+impl Statement {
+    fn parse(pair: pest::iterators::Pair<Rule>) -> Statement {
+        match pair.as_rule() {
+            Rule::assign => {
+                let mut pairs = pair.into_inner();
+                let local = pairs.next().unwrap().as_str().to_owned();
+                let expression = Expression::parse(pairs.next().unwrap());
+            },
+            // Rule::call => {
+
+            // },
+            // Rule::if_statement => {
+
+            // },
+            Rule::return_statement => {
+                unimplemented!();
+            },
+            _ => panic!("Unexpected {:?}", pair)
+        }
+    }
 }
 
-fn spaces<'a>() -> Parser<'a, char, ()> {
-    one_of(" \t").repeat(1..).discard()
+struct Function {
+    name: String,
+    args: BTreeSet<String>,
+    locals: BTreeSet<String>,
+    body: Vec<Statement>,
 }
 
-fn new_line<'a>() -> Parser<'a, char, ()> {
-    one_of("\r\n").discard()
+impl Function {
+    fn parse(pair: pest::iterators::Pair<Rule>) -> Function {
+        assert_eq!(Rule::function, pair.as_rule());
+
+        let mut args = BTreeSet::new();
+        let mut locals = BTreeSet::new();
+
+        let mut pairs = pair.into_inner();
+        let name = pairs.next().unwrap().as_str().to_owned();
+        for arg in pairs.next().unwrap().into_inner() {
+            args.insert(arg.as_str().to_owned());
+        }
+
+        let body = pairs.next().unwrap().into_inner().map(|p| Statement::parse(p)).collect();
+
+        for s in &body {
+            match s {
+                //Statement::Assign{local, value} => { },//locals.insert(local); },
+                _ => unimplemented!(),
+            }
+        }
+
+        Function { name, args, locals, body }
+    }
 }
 
-fn name<'a>() -> Parser<'a, char, String> {
-    none_of(" \r\n\t").repeat(1..).map(String::from_iter)
-}
-
-fn operator<'a>() -> Parser<'a, char, Operator> {
-    one_of("|=+-").convert(|o| match o {
-        '|' => Ok(Operator::Or),
-        '=' => Ok(Operator::Equals),
-        '+' => Ok(Operator::Add),
-        '-' => Ok(Operator::Subtract),
-        _ => Err(())
-    })
-}
-
-fn expression_local<'a>() -> Parser<'a, char, Expression> {
-    none_of(" \r\n\t())").repeat(1..).map(String::from_iter)
-    .map(|name| Expression::Local { name })
-}
-
-fn expression_number<'a>() -> Parser<'a, char, Expression> {
-    one_of("0123456789").repeat(1..).collect()
-    .convert(|s| u8::from_str(&String::from_iter(s)))
-    .map(|value| Expression::Number { value })
-}
-
-fn expression_pair<'a>() -> Parser<'a, char, Expression> {
-    (
-      (sym('(') - sym(' ')) * operator()
-    + (sym(' ')) * expression()
-    + (sym(' ')) * expression() - sym(' ') - sym(')')
-    ).map(|((op, left), right)| Expression::Pair { op, left: Box::new(left), right: Box::new(right) })
-}
-
-fn expression<'a>() -> Parser<'a, char, Expression> {
-    //  expression_pair() 
-      expression_number()
-    | expression_local()
-    | expression_pair() 
-}
-
-lazy_static! {
-    static ref DECLARE : Vec<char> = as_chars("DECLARE");
-    static ref RETURN : Vec<char> = as_chars("RETURN");
-    static ref ASSIGN : Vec<char> = as_chars("ASSIGN");
-    static ref BEGIN : Vec<char> = as_chars("BEGIN");
-    static ref END : Vec<char> = as_chars("END");
-}
-
-fn declare_local<'a>() -> Parser<'a, char, Statement> {
-    let stmt = (seq(&DECLARE) - sym(' ')) * name();
-    stmt.map(|name| Statement::LocalDeclaration { name })
-}
-
-fn if_statement<'a>() -> Parser<'a, char, Statement> {
-    // let stmt = 
-    //     (seq(b"IF") - space_on_line()) * expression() 
-    //   - (space_on_line() * seq(b"THEN") * new_line())
-    //   + (space_on_line() * list(call(statement), new_line())
-    // stmt.map(|(condition, true_block, false_block)| Statement::If {condition, true_block, false_block})
-    unimplemented!();
-}
-
-fn return_statement<'a>() -> Parser<'a, char, Statement> {
-    let stmt = (seq(&RETURN) - sym(' ')) * name();
-    stmt.map(|name| Statement::Return {name})
-}
-
-fn assignment<'a>() -> Parser<'a, char, Statement> {
-    let stmt = (seq(&ASSIGN) - sym(' ')) * name() - sym(' ') + expression();
-    stmt.map(|(name, value)| Statement::Assignment {name, value})
-}
-
-fn statement<'a>() -> Parser<'a, char, Statement> {
-    // (declare_local() | assignment() | if_statement() | return_statement()) - new_line()
-    declare_local() | return_statement() | assignment()
-}
-
-fn function<'a>() -> Parser<'a, char, Function> {
-    let f = 
-          ((seq(&BEGIN) - sym(' ')) * name())
-        + ((spaces() * name()).repeat(0..) - new_line())
-        + ((sym(' ') * statement() - new_line()).repeat(1..))
-        - seq(&END) - new_line();
-    f.map(|((name,parameter_names), body)| Function {name, parameter_names, body})
-}
-
-fn program<'a>() -> Parser<'a, char, Vec<Function>> {
-    let funcs = function().repeat(1..);
-    funcs
-}
 
 fn main() -> Result<(), std::io::Error> {
-    let chars = {
+    let input = {
         let mut s = String::new();
         let stdin = io::stdin();
         stdin.lock().read_to_string(&mut s)?;
-        let chars : Vec<char> = s.chars().collect();
-        chars
+        s
     };
 
-    let parser = function();
+    let mut program = ProgramParser::parse(Rule::program, &input).unwrap();
+    let pairs = program.next().unwrap().into_inner();
+    for pair in pairs {
+        match pair.as_rule() {
+            Rule::function => {
+                //ast.push(Print(Box::new(build_ast_from_expr(pair))));
+                println!("Found function: {}\n", pair.as_str());
+                Function::parse(pair);
+            },
+            Rule::EOI => { },
+            _ => {
+                panic!("Unexpected rule: {:?}", pair);
+            }
+        }
+    }
 
-    println!("{:?}", parser.parse(&chars));
-
+    // let pairs = program.next().unwrap().into_inner();//map(|p| p.as_rule()).collect();
+    // for f in functions {
+    //     println!("BEGIN SLICE");
+    //     println!("{}", f.as_str());
+    //     println!("END SLICE");
+    //     match f.as_rule() {
+    //         Rule::function(f) => {
+    //             println!("Found function");
+    //         },
+    //     }
+    //     println!("BEGIN AST");
+    //     println!("{:?}", f.as_rule());
+    //     println!("END AST");
+    // }
     Ok(())
 }
