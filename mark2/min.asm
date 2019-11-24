@@ -8,10 +8,11 @@ storereg sp
 call :main
 pop b
 halt
-# Function: increment
-:increment
-# sp+4 -> RESULT
-# sp+3 -> n
+# Function: adder
+:adder
+# sp+5 -> RESULT
+# sp+4 -> x
+# sp+3 -> y
 # sp+2 -> RETURN_ADDRESS
 # sp+1 -> saved c
 # sp+0 -> result
@@ -21,18 +22,19 @@ push c
 loadlo  f
 add sp
 storereg sp
-# Assign { local: "result", value: Operation(Add, Ident("n"), Number(1)) }
+# Assign { local: "result", value: Operation(Add, Ident("x"), Ident("y")) }
 loadlo 00
 add sp
 storereg c
 push c
-loadlo 04
+loadlo 05
 add sp
 loadmem acc
 storereg b
 push b
-loadlo 01
-loadhi 00
+loadlo 05
+add sp
+loadmem acc
 storereg b
 pop c
 loadreg b
@@ -42,7 +44,7 @@ pop c
 loadreg b
 storemem c
 # Return { local: "result" }
-loadlo 04
+loadlo 05
 add sp
 storereg b
 loadlo 00
@@ -50,8 +52,8 @@ add sp
 storereg c
 loadmem c
 storemem b
-jmp :increment__EPILOGUE
-:increment__EPILOGUE
+jmp :adder__EPILOGUE
+:adder__EPILOGUE
 loadlo 1
 add sp
 storereg sp
@@ -69,14 +71,18 @@ push c
 loadlo  f
 add sp
 storereg sp
-# Call { local: "result", function: "increment", parameters: [Number(5)] }
+# Call { local: "result", function: "adder", parameters: [Number(4), Number(5)] }
 dec sp
+loadlo 04
+loadhi 00
+storereg b
+push b
 loadlo 05
 loadhi 00
 storereg b
 push b
-call :increment
-loadlo 01
+call :adder
+loadlo 02
 add sp
 storereg sp
 pop b

@@ -1,9 +1,9 @@
 FUNCTION main() {
-    CALL result := increment(5);
+    CALL result := adder(4,5);
     RETURN result;
 }
 
-FUNCTION increment(n) {
-    ASSIGN result := (n + 1);
+FUNCTION adder(x,y) {
+    ASSIGN result := (x + y);
     RETURN result;
 }

@@ -25,7 +25,7 @@ call = { "CALL" ~ ident ~ ":=" ~ ident ~ "(" ~  (expression)? ~ ("," ~ expressio
 
 statement = { assign | if_statement | return_statement | call }
 body = { (statement)+ }
-paramters = { ident* }
+paramters = { ident? ~ ("," ~ ident)* }
 function = {"FUNCTION " ~ ident ~ "(" ~ paramters ~ ")" ~ "{" ~ body ~ "}"}
 
 program = {
