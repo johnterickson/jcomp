@@ -5,10 +5,9 @@ FUNCTION main() {
 
 FUNCTION fac(n) {
     IF (n == 0) {
-        RETURN n;
+        RETURN 1;
     }
-    ASSIGN nMinus1 := (n - 1);
-    CALL product := fac(nMinus1);
+    CALL product := fac((n - 1));
     ASSIGN product := (n * product);
-    RETURN n;
+    RETURN product;
 }

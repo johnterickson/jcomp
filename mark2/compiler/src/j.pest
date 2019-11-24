@@ -7,19 +7,20 @@ digit = { '0'..'9' }
 number = { digit+ }
 ident = { lower ~ (alpha | digit)* }
 
-operation = _{ add | subtract | multiply | or | equals }
+operation = _{ add | subtract | multiply | or | equals | notequals}
 add      = { "+" }
 subtract = { "-" }
 multiply = { "*" }
 or = { "||" }
 equals = { "==" }
+notequals = { "!=" }
 
 operator_expression = { "(" ~ expression ~ operation ~ expression ~ ")" }
 expression = { ident | number |  operator_expression }
 
 if_statement = { "IF" ~ expression ~ "{" ~ statement* ~ "}" }
 assign = { "ASSIGN" ~ ident ~ ":=" ~ expression ~ ";" }
-return_statement = { "RETURN" ~ ident ~ ";" }
+return_statement = { "RETURN" ~ expression ~ ";" }
 
 call = { "CALL" ~ ident ~ ":=" ~ ident ~ "(" ~  (expression)? ~ ("," ~ expression)* ~ ")" ~ ";" }
 
