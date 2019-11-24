@@ -139,6 +139,7 @@ impl Line {
                 match tokens[0].to_lowercase().as_ref() {
                     "push" => {
                         let reg = Reg::from_str(tokens[1]).expect("invalid register");
+                        assert_ne!(reg, Reg::ACC);
                         instructions.push(Instruction::LoadLo(Target::Constant(0xF)));
                         instructions.push(Instruction::Add(Reg::SP));
                         instructions.push(Instruction::StoreReg(Reg::SP));
@@ -147,6 +148,7 @@ impl Line {
                     },
                     "pop" => {
                         let reg = Reg::from_str(tokens[1]).expect("invalid register");
+                        assert_ne!(reg, Reg::ACC);
                         instructions.push(Instruction::LoadMem(Reg::SP));
                         instructions.push(Instruction::StoreReg(reg));
                         instructions.push(Instruction::LoadLo(Target::Constant(0x1)));

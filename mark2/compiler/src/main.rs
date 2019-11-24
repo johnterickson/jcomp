@@ -49,9 +49,14 @@ impl Expression {
         let pair = pair.into_inner().next().unwrap();
         match pair.as_rule() {
             Rule::number => {
-                let number = pair.into_inner().next().unwrap();
-                let number = i32::from_str(number.as_str()).expect("Couldn't parse integer.");
-                Expression::Number(number)
+                let mut n = 0;
+                let mut digits = pair.into_inner();
+                while let Some(digit) = digits.next() {
+                    let digit = i32::from_str(digit.as_str()).expect("Couldn't parse integer.");
+                    n *= 10;
+                    n += digit;
+                }
+                Expression::Number(n)
             },
             Rule::ident => {
                 let label = pair.into_inner().next().unwrap();
@@ -67,7 +72,40 @@ impl Expression {
             },
             _ => unimplemented!()
         }
-        
+    }
+
+    // output is in b; must preserve other regs
+    fn emit(&self, stack: &BTreeMap<String,isize>, additional_offset: isize) -> () {
+        match self {
+            Expression::Number(n) => {
+                println!("loadlo {:02x}", n & 0xF);
+                println!("loadhi {:02x}", (n>>4) & 0xF);
+                println!("storereg b");
+            },
+            Expression::Ident(n) => {
+                println!("loadlo {:02x}", stack[n] + additional_offset);
+                println!("add sp");
+                println!("loadmem acc");
+                println!("storereg b");
+            },
+            Expression::Operation(op, left, right) => {
+                println!("push c");
+                left.emit(&stack, additional_offset+1);
+                println!("push b"); //store left on the stack
+                right.emit(&stack, additional_offset+2);
+                // left on top of stack; right in b
+                match op {
+                    Operator::Add => {
+                        println!("pop c"); //left in c; right in b
+                        println!("loadreg b"); // left in acc; right in b
+                        println!("add b"); // add right to left
+                        println!("storereg b");
+                    },
+                    _ => unimplemented!()
+                }
+                println!("pop c"); //restore
+            }
+        }
     }
 }
 
@@ -139,14 +177,11 @@ impl Function {
         let mut pairs = pair.into_inner();
 
         let name = pairs.next().unwrap().as_str().to_owned();
-        print!("Function: {}(", &name);
 
         for arg in pairs.next().unwrap().into_inner() {
             let arg = arg.as_str();
-            print!("{},", arg);
             args.push(arg.to_owned());
         }
-        println!(")");
 
         let body : Vec<Statement> = pairs.next().unwrap().into_inner().map(|p| Statement::parse(p)).collect();
 
@@ -160,12 +195,115 @@ impl Function {
             }
         }
 
-        println!("Locals:");
-        for l in &locals {
-            println!(" {}", l);
+        Function { name, args, locals, body }
+    }
+
+    /*
+
+    stack:
+
+    SP ->   local 3
+            local 2
+            local 1
+            saved c
+            saved b
+            return address
+            arg 2
+            arg 1
+    */
+
+    fn emit(&self) -> () {
+        println!("# Function: {}", &self.name);
+        println!(":{}", &self.name);
+
+        let mut stack = BTreeMap::new();
+        let stack_size = 0
+            + 1 // result
+            + self.args.len() 
+            + 1 // return address
+            + 2 // save b and c
+            + self.locals.len();
+        let mut offset = (stack_size - 1) as isize;
+
+        let RESULT = "RESULT";
+        let EPILOGUE = "EPILOGUE";
+
+        println!("# sp+{} -> {}", offset, RESULT);
+        stack.insert(RESULT.to_owned(), offset);
+        offset -= 1;
+
+        for arg in &self.args {
+            println!("# sp+{} -> {}", offset, arg);
+            stack.insert(arg.clone(), offset);
+            offset -= 1;
         }
 
-        Function { name, args, locals, body }
+        println!("# sp+{} -> {}", offset, "RETURN_ADDRESS");
+        stack.insert("RETURN_ADDRESS".to_owned(), offset);
+        offset -= 1;
+
+        println!("# sp+{} -> {}", offset, "saved b");
+        offset -= 1;
+        println!("# sp+{} -> {}", offset, "saved c");
+        offset -= 1;
+
+        for l in &self.locals {
+            println!("# sp+{} -> {}", offset, l);
+            stack.insert(l.clone(), offset);
+            offset -= 1;
+        }
+
+        assert_eq!(-1, offset);
+
+        println!("# save registers");
+        println!("push b");
+        println!("push c");
+
+        println!("# create stack space");
+        println!("loadlo {:2x}", ((self.locals.len() as i32) * -1) & 0xF );
+        println!("add sp");
+        println!("storereg sp");
+
+        for stmt in self.body.iter() {
+            println!("# {:?}", stmt);
+            match stmt {
+                Statement::Assign{local, value} => {
+
+                    println!("loadlo {:02x}", stack[local]);
+                    println!("add sp");
+                    println!("storereg c");
+
+                    value.emit(&stack, 0);
+                    println!("loadreg b");
+                    println!("storemem c");
+                    
+                },
+                Statement::Return{ local } => {
+                    println!("loadlo {:02x}", stack[RESULT]);
+                    println!("add sp");
+                    println!("storereg b");
+                    println!("loadlo {:02x}", stack[local]);
+                    println!("add sp");
+                    println!("storereg c");
+                    println!("loadmem c");
+                    println!("storemem b");
+                    println!("jmp :{}__{}", &self.name, EPILOGUE);
+                },
+                Statement::Call{ local, function:_, parameters:_ } => { 
+                },
+                Statement::If{ predicate:_, when_true:_ } => {
+                    unimplemented!();
+                },
+            }
+        }
+         
+        println!(":{}__{}", &self.name, EPILOGUE);
+        println!("loadlo {}", self.locals.len());
+        println!("add sp");
+        println!("storereg sp");
+        println!("pop c");
+        println!("pop b");
+        println!("ret");
     }
 }
 
@@ -185,8 +323,6 @@ fn main() -> Result<(), std::io::Error> {
     for pair in pairs {
         match pair.as_rule() {
             Rule::function => {
-                //ast.push(Print(Box::new(build_ast_from_expr(pair))));
-                //println!("Found function: {}\n", pair.as_str());
                 let f = Function::parse(pair);
                 functions.insert(f.name.clone(), f);
             },
@@ -203,8 +339,20 @@ fn main() -> Result<(), std::io::Error> {
         return Err(std::io::Error::from(ErrorKind::NotFound));
     }
 
+    println!("# set stack to 0xff");
+    println!("loadlo f");
+    println!("storereg sp");
+
+    println!("# call main");
+    println!("loadlo f");
+    println!("add sp");
+    println!("storereg sp");
+    println!("call :main");
+    println!("pop b");
+    println!("halt");
+    
     for f in &functions {
-        println!("{:?}", f);
+        f.1.emit();
     }
 
     Ok(())

@@ -1,4 +1,4 @@
 FUNCTION main() {
-    ASSIGN result := 0;
+    ASSIGN result := (1 + 1);
     RETURN result;
 }
