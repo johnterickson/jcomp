@@ -97,8 +97,8 @@ impl Expression {
                 match op {
                     Operator::Add => {
                         println!("pop c"); //left in c; right in b
-                        println!("loadreg b"); // left in acc; right in b
-                        println!("add b"); // add right to left
+                        println!("loadreg b"); // left in c; right in acc
+                        println!("add c"); // add right to left
                         println!("storereg b");
                     },
                     _ => unimplemented!()
@@ -206,10 +206,10 @@ impl Function {
             local 2
             local 1
             saved c
-            saved b
             return address
             arg 2
             arg 1
+            RESULT
     */
 
     fn emit(&self) -> () {
@@ -221,7 +221,7 @@ impl Function {
             + 1 // result
             + self.args.len() 
             + 1 // return address
-            + 2 // save b and c
+            + 1 // save c
             + self.locals.len();
         let mut offset = (stack_size - 1) as isize;
 
@@ -242,8 +242,6 @@ impl Function {
         stack.insert("RETURN_ADDRESS".to_owned(), offset);
         offset -= 1;
 
-        println!("# sp+{} -> {}", offset, "saved b");
-        offset -= 1;
         println!("# sp+{} -> {}", offset, "saved c");
         offset -= 1;
 
@@ -256,7 +254,6 @@ impl Function {
         assert_eq!(-1, offset);
 
         println!("# save registers");
-        println!("push b");
         println!("push c");
 
         println!("# create stack space");
@@ -268,11 +265,9 @@ impl Function {
             println!("# {:?}", stmt);
             match stmt {
                 Statement::Assign{local, value} => {
-
                     println!("loadlo {:02x}", stack[local]);
                     println!("add sp");
                     println!("storereg c");
-
                     value.emit(&stack, 0);
                     println!("loadreg b");
                     println!("storemem c");
@@ -289,7 +284,38 @@ impl Function {
                     println!("storemem b");
                     println!("jmp :{}__{}", &self.name, EPILOGUE);
                 },
-                Statement::Call{ local, function:_, parameters:_ } => { 
+                Statement::Call{ local, function, parameters} => { 
+
+                    let mut stack_offset = 0;
+                    println!("dec sp"); // save space for result
+                    stack_offset += 1;
+
+                    for p in parameters {
+                        p.emit(&stack, stack_offset);
+                        println!("push b");
+                        stack_offset += 1;
+                    }
+
+                    println!("call :{}", function);
+
+                    // discard paramters
+                    println!("loadlo {:02x}", parameters.len());
+                    println!("add sp");
+                    println!("storereg sp"); 
+
+                    // pop result into b
+                    println!("pop b");
+
+                    // stack is now back to normal
+
+                    // c = &local
+                    println!("loadlo {:02x}", stack[local]);
+                    println!("add sp");
+                    println!("storereg c"); 
+
+                    println!("loadreg b");
+                    println!("storemem c");
+
                 },
                 Statement::If{ predicate:_, when_true:_ } => {
                     unimplemented!();
@@ -302,7 +328,6 @@ impl Function {
         println!("add sp");
         println!("storereg sp");
         println!("pop c");
-        println!("pop b");
         println!("ret");
     }
 }
