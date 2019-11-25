@@ -184,7 +184,7 @@ impl Statement {
         }
     }
 
-    fn emit(&self, function_name: &str, stack: &BTreeMap<String,isize>, additional_offset: isize) -> () {
+    fn emit(&self, function_name: &str, scope: &str, stack: &BTreeMap<String,isize>, additional_offset: isize) -> () {
         println!("# {:?}", self);
         match self {
             Statement::Assign{local, value} => {
@@ -251,16 +251,20 @@ impl Statement {
                 predicate.emit(&stack, 0); // result in b
                 println!("loadreg b");
 
+                let jump_label = format!("{}_{}_{}", function_name, scope, IF_SKIP);
+
                 // WEIRD: interpret 0 as true
 
-                println!("jnz :{}_{}", function_name, IF_SKIP);
+                println!("jnz :{}", &jump_label);
 
+                let mut count = 0;
                 for s in when_true {
-                    // let name = format!("{}_")
-                    s.emit(function_name, &stack, 0);
+                    let scope = format!("{}_stmt{}", scope, count);
+                    s.emit(function_name, &scope, &stack, 0);
+                    count += 1;
                 }
                 
-                println!(":{}_{}", function_name, IF_SKIP);
+                println!(":{}", &jump_label);
             },
         }
     }
@@ -364,8 +368,11 @@ impl Function {
         println!("add sp");
         println!("storereg sp");
 
+        let mut count = 0;
         for stmt in self.body.iter() {
-            stmt.emit(&self.name, &stack, 0);
+            let scope = format!("_function{}_", count);
+            stmt.emit(&self.name, &scope, &stack, 0);
+            count += 1;
         }
          
         println!(":{}__{}", &self.name, EPILOGUE);

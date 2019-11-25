@@ -32,7 +32,7 @@ loadreg b
 xor c
 storereg b
 loadreg b
-jnz :fac_IF_SKIP
+jnz :fac__function0__IF_SKIP
 # Return { value: Number(1) }
 loadlo 01
 loadhi 00
@@ -45,7 +45,7 @@ storemem c
 loadlo :fac__EPILOGUE
 loadhi :fac__EPILOGUE
 storereg pc
-:fac_IF_SKIP
+:fac__function0__IF_SKIP
 # Call { local: "product", function: "fac", parameters: [Operation(Subtract, Ident("n"), Number(1))] }
 dec sp
 loadlo 03
