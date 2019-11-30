@@ -1,0 +1,126 @@
+Registers 
+ACC
+ADDR
+FLAGS
+SP
+PC
+
+
+
+      read inst
+         |
+ /-------+-------\
+ReadMem          Op
+ |               |
+ OP              WriteMem
+ \-------+------ /
+         |
+         Push?
+          
+IF HI bit is set, push ACC on stack after:
+* 0 0 0|I M M D  LOADLO x: ACC <- signext(x)
+* 0 0 1|I M M D  LOADHI x: ACC <- ACC | (x << 4)
+
+0 0 1 0 0 0 0 0  STOREADDR: ADDR <- ACC
+0 0 1 0 0 0 0 1  STOREMEM: MEM[ADDR] <- ACC
+0 0 1 0 0 0 1 0  JMP: PC <- ACC
+0 0 1 0 0 0 1 1  
+0 0 1 0 0 1 * *  ??
+0 0 1 0 1|I M D  JMP x:
+0 0 1 1 0|I M D  JNZ x:
+0 0 1 1 1|I M D  JZ x:
+
+1 0 1 0 0|I M D  STORETOSTACK x: MEM[SP+x] <- ACC
+1 0 1 0 1|I M D  DISCARD x: SP <- SP+x
+1 0 1 1 0|I M D  POP x: SP += x; ACC <- MEM[SP]; SP += 1;
+1 0 1 1 1|I M D  ??
+
+IF HI bit is set, push ACC on stack after:
+* 1 0 0 0|I M D  ADD x: ACC <- ACC + MEM[SP+x]
+* 1 0 0 1|I M D  XOR x: ACC <- ACC ^ MEM[SP+x]
+* 1 0 1 0|I M D  NOT x: ACC <- ~MEM[SP+x]
+* 1 0 1 1|I M D  OR x: ACC <- ACC | MEM[SP+x]
+* 1 1 0 0|I M D  AND x: ACC <- ACC & MEM[SP+x]
+* 1 1 0 1|I M D  MUL x: ACC <- ACC * MEM[SP+x]
+* 1 1 1 0|I M D  LOADFROMSTACK x: ACC <- MEM[SP+x]
+* 1 1 1 1 0 0 0  LOADMEM: ACC <- MEM[ADDR]
+* 1 1 1 1 0 0 1  LOADPC: ACC <- PC
+* 1 1 1 1 0 1 0  NOT: ACC <- ~ACC
+* 1 1 1 1 0 1 1  ??
+* 1 1 1 1 1 * *  ??
+
+
+
+"call :target":
+#LOADSTACK locals[arg1] PUSH
+#LOADSTACK locals[arg0] PUSH 
+LOADPC PUSH # will become return value
+LOADLO 5
+ADD 0 PUSH 
+LOADLO :target
+LOADHI :target
+JMP
+
+
+"ret locals":
+DISCARD locals
+POP JMP
+
+:fac(n)
+# return address
+# local: RESULT
+# local: n
+LOADSTACK stack[n]
+JZ :terminal
+LOADLO f
+ADD stack[n] PUSH 
+call :fac
+POP 0 # RESULT
+DISCARD 1 # parameter
+MUL stack[n]
+storestack stack[RESULT]
+POP 0
+JMP
+:terminal
+loadlo 0
+storestack stack[RESULT]
+POP 0
+JMP
+
+:fib(n)
+# local: sum2
+# return address
+# local: RESULT
+# local: n
+LOADSTACK stack[n]
+JNZ :one
+loadlo 1
+STORETOSTACK stack[RESULT]
+POP 1
+JMP
+:one
+LOADLO f
+ADD stack[n]
+JNZ :two
+loadlo 1
+STORETOSTACK stack[RESULT]
+POP 1
+JMP
+:two
+LOADLO f
+ADD stack[n]
+call :fib
+POP 0 # callee's RESULT
+DISCARD 1 # parameters
+STORETOSTACK stack[RESULT]
+loadlo e
+ADD stack[n]
+call :fib
+POP 0 # callee's RESULT
+DISCARD 1 # parameters
+STORETOSTACK stack[sum2]
+LOADFROMSTACK stack[RESULT]
+ADD stack[sum2]
+STORETOSTACK stack[RESULT]
+DISCARD 1
+POP JMP

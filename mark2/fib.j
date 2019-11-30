@@ -1,16 +1,19 @@
 FUNCTION main() {
-    CALL result := fib(5);
-    RETURN result;
+    CALL RESULT := fib(5);
+    RETURN;
 }
 
 FUNCTION fib(n) {
     IF (n == 0) {
-        RETURN 1;
+        RESULT := 1;
+        RETURN;
     }
     IF (n == 1) {
-        RETURN 1;
+        RESULT := 1;
+        RETURN;
     }
-    CALL sum1 := fib((n - 1));
+    CALL RESULT := fib((n - 1));
     CALL sum2 := fib((n - 2));
-    RETURN (sum1 + sum2);
+    RESULT := (RESULT + sum2);
+    RETURN;
 }
