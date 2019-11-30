@@ -10,6 +10,8 @@ use std::io::Read;
 use std::collections::{BTreeMap,BTreeSet};
 use std::str::FromStr;
 
+use common::*;
+
 #[derive(Parser)]
 #[grammar = "j.pest"]
 struct ProgramParser;
@@ -35,6 +37,31 @@ impl Operator {
             "!=" => Operator::NotEquals,
             _ => panic!(),
         }
+    }
+}
+
+struct FunctionContext {
+    pub stack: BTreeMap<String,isize>,
+    pub lines: Vec<Line>,
+    pub additional_offset: isize,
+}
+
+impl FunctionContext {
+    fn add_inst(&mut self, i: Instruction) {
+        //println!("{:?}",&i);
+        self.lines.push(Line::Instruction(i));
+    }
+
+    fn add_macro(&mut self, s: String) {
+        let line = Line::parse(s);
+        self.lines.push(line);
+    }
+
+    fn find_local(&self, local: &str) -> isize {
+        let offset = self.stack
+            .get(local)
+            .expect(&format!("could not find {}", local));
+        offset + self.additional_offset
     }
 }
 
@@ -80,50 +107,50 @@ impl Expression {
     }
 
     // output is in b; must preserve other regs
-    fn emit(&self, stack: &BTreeMap<String,isize>, additional_offset: isize) -> () {
+    fn emit(&self, ctxt: &mut FunctionContext) -> () {
         match self {
             Expression::Number(n) => {
-                println!("loadlo {:02x}", n & 0xF);
-                println!("loadhi {:02x}", (n>>4) & 0xF);
-                println!("storereg b");
+                ctxt.add_inst(Instruction::LoadLo(Target::Constant((n & 0xF) as u8)));
+                ctxt.add_inst(Instruction::LoadHi(Target::Constant(((n>>4) & 0xF) as u8)));
+                ctxt.add_inst(Instruction::StoreReg(Reg::B));
             },
             Expression::Ident(n) => {
-                let base_offset = stack.get(n).expect(&format!("could not find {}", n));
-                println!("loadlo {:02x}", base_offset + additional_offset);
-                println!("add sp");
-                println!("loadmem acc");
-                println!("storereg b");
+                ctxt.add_inst(Instruction::LoadLo(Target::Constant(ctxt.find_local(n) as u8)));
+                ctxt.add_inst(Instruction::Add(Reg::SP));
+                ctxt.add_inst(Instruction::LoadMem(Reg::ACC));
+                ctxt.add_inst(Instruction::StoreReg(Reg::B));
             },
             Expression::Operation(op, left, right) => {
-                left.emit(&stack, additional_offset);
-                println!("push b"); //store left on the stack
-                right.emit(&stack, additional_offset+1);
-                // left on top of stack; right in b
-                println!("pop c"); //left in c; right in b
+                left.emit(ctxt);
+                ctxt.add_macro(format!("push b")); //store left on the stack
+                ctxt.additional_offset += 1;
+                right.emit(ctxt); // left on top of stack; right in b
+                ctxt.add_macro(format!("pop c")); //left in c; right in b
+                ctxt.additional_offset -= 1;
 
                 match op {
                     Operator::Add => {
-                        println!("loadreg b"); // left in c; right in acc
-                        println!("add c"); // add left to right
-                        println!("storereg b");
+                        ctxt.add_inst(Instruction::LoadReg(Reg::B)); // left in c; right in acc
+                        ctxt.add_inst(Instruction::Add(Reg::C)); // add left to right
+                        ctxt.add_inst(Instruction::StoreReg(Reg::B));
                     },
                     Operator::Multiply => {
-                        println!("loadreg b"); // left in c; right in acc
-                        println!("mul c");
-                        println!("storereg b");
+                        ctxt.add_inst(Instruction::LoadReg(Reg::B)); // left in c; right in acc
+                        ctxt.add_inst(Instruction::Mul(Reg::C));
+                        ctxt.add_inst(Instruction::StoreReg(Reg::B));
                     },
                     Operator::Subtract => {
-                        println!("not b"); // b <- ~right
-                        println!("storereg b");
-                        println!("loadlo 1");
-                        println!("add b"); // acc <- (~right) + 1 aka -1*right
-                        println!("add c"); // add left to right
-                        println!("storereg b");
+                        ctxt.add_inst(Instruction::Not(Reg::B)); // b <- ~right
+                        ctxt.add_inst(Instruction::StoreReg(Reg::B));
+                        ctxt.add_inst(Instruction::LoadLo(Target::Constant(1)));
+                        ctxt.add_inst(Instruction::Add(Reg::B)); // acc <- (~right) + 1 aka -1*right
+                        ctxt.add_inst(Instruction::Add(Reg::C)); // add left to right
+                        ctxt.add_inst(Instruction::StoreReg(Reg::B));
                     },
                     Operator::Equals => {
-                        println!("loadreg b");
-                        println!("xor c"); //  left ^ right == 0 --> left == right
-                        println!("storereg b");
+                        ctxt.add_inst(Instruction::LoadReg(Reg::B));
+                        ctxt.add_inst(Instruction::Xor(Reg::C)); //  left ^ right == 0 --> left == right
+                        ctxt.add_inst(Instruction::StoreReg(Reg::B));
                     },
                     _ => unimplemented!()
                 }
@@ -184,87 +211,104 @@ impl Statement {
         }
     }
 
-    fn emit(&self, function_name: &str, scope: &str, stack: &BTreeMap<String,isize>, additional_offset: isize) -> () {
-        println!("# {:?}", self);
+    fn emit(&self, ctxt: &mut FunctionContext, function_name: &str) -> () {
+        ctxt.lines.push(Line::Comment(format!("# {:?}", self)));
         match self {
             Statement::Assign{local, value} => {
-                value.emit(&stack, 0);
-                println!("loadlo {:02x}", stack[local] + additional_offset);
-                println!("add sp");
-                println!("storereg c");
-                println!("loadreg b");
-                println!("storemem c");
-                
+                value.emit(ctxt);
+                ctxt.add_inst(Instruction::LoadLo(Target::Constant(
+                    (ctxt.find_local(local) & 0xf) as u8
+                )));
+                ctxt.add_inst(Instruction::Add(Reg::SP));
+                ctxt.add_inst(Instruction::StoreReg(Reg::C));
+                ctxt.add_inst(Instruction::LoadReg(Reg::B));
+                ctxt.add_inst(Instruction::StoreMem(Reg::C));
             },
             Statement::Return{ value } => {
-                value.emit(&stack, 0);
-                println!("loadlo {:02x}", stack[RESULT] + additional_offset);
-                println!("add sp");
-                println!("storereg c");
-                println!("loadreg b");
-                println!("storemem c");
-                if additional_offset != 0 {
-                    println!("loadlo {:02x}", additional_offset);
-                    println!("add sp");
-                    println!("storereg sp");
+                value.emit(ctxt);
+                ctxt.add_inst(Instruction::LoadLo(Target::Constant(
+                    (ctxt.find_local(RESULT) & 0xf) as u8
+                )));
+                ctxt.add_inst(Instruction::Add(Reg::SP));
+                ctxt.add_inst(Instruction::StoreReg(Reg::C));
+                ctxt.add_inst(Instruction::LoadReg(Reg::B));
+                ctxt.add_inst(Instruction::StoreMem(Reg::C));
+                if ctxt.additional_offset != 0 {
+                    ctxt.add_inst(Instruction::LoadLo(Target::Constant(
+                        (ctxt.additional_offset & 0xf) as u8
+                    )));
+                    ctxt.add_inst(Instruction::Add(Reg::SP));
+                    ctxt.add_inst(Instruction::StoreReg(Reg::SP));
                 }
-                println!("loadlo :{}__{}", function_name, EPILOGUE);
-                println!("loadhi :{}__{}", function_name, EPILOGUE);
-                println!("storereg pc");
+                ctxt.add_inst(Instruction::LoadLo(Target::Label(
+                    format!(":{}__{}", function_name, EPILOGUE)
+                )));
+                ctxt.add_inst(Instruction::LoadHi(Target::Label(
+                    format!(":{}__{}", function_name, EPILOGUE)
+                )));
+                ctxt.add_inst(Instruction::StoreReg(Reg::PC));
             },
             Statement::Call{ local, function, parameters} => { 
 
-                let mut stack_offset = 0;
-                println!("dec sp"); // save space for result
-                stack_offset += 1;
+                assert_eq!(ctxt.additional_offset, 0);
+                ctxt.add_macro(format!("dec sp")); // save space for result
+                ctxt.additional_offset += 1;
 
                 for p in parameters {
-                    p.emit(&stack, stack_offset);
-                    println!("push b");
-                    stack_offset += 1;
+                    p.emit(ctxt);
+                    ctxt.add_macro(format!("push b"));
+                    ctxt.additional_offset += 1;
                 }
 
-                println!("call :{}", function);
+                ctxt.add_macro(format!("call :{}", function));
 
                 // discard paramters
-                println!("loadlo {:02x}", parameters.len());
-                println!("add sp");
-                println!("storereg sp"); 
+                ctxt.add_inst(Instruction::LoadLo(Target::Constant(
+                    (parameters.len() & 0xf) as u8
+                )));
+                ctxt.add_inst(Instruction::Add(Reg::SP));
+                ctxt.add_inst(Instruction::StoreReg(Reg::SP)); 
+
+                ctxt.additional_offset -= parameters.len() as isize;
 
                 // pop result into b
-                println!("pop b");
+                ctxt.add_macro(format!("pop b"));
+                ctxt.additional_offset -= 1;
 
                 // stack is now back to normal
 
                 // c = &local
-                println!("loadlo {:02x}", stack[local] + additional_offset);
-                println!("add sp");
-                println!("storereg c"); 
+                
+                ctxt.add_inst(Instruction::LoadLo(Target::Constant(
+                    (ctxt.find_local(local) & 0xf) as u8
+                )));
+                ctxt.add_inst(Instruction::Add(Reg::SP));
+                ctxt.add_inst(Instruction::StoreReg(Reg::C));
 
-                println!("loadreg b");
-                println!("storemem c");
+                ctxt.add_inst(Instruction::LoadReg(Reg::B));
+                ctxt.add_inst(Instruction::StoreMem(Reg::C));
 
             },
             Statement::If{ predicate, when_true} => {
                 let IF_SKIP = "IF_SKIP";
                 
-                predicate.emit(&stack, 0); // result in b
-                println!("loadreg b");
+                predicate.emit(ctxt); // result in b
+                ctxt.add_inst(Instruction::LoadReg(Reg::B));
 
-                let jump_label = format!("{}_{}_{}", function_name, scope, IF_SKIP);
+                let jump_label = format!("{}_{}", function_name, IF_SKIP);
 
                 // WEIRD: interpret 0 as true
 
-                println!("jnz :{}", &jump_label);
+                ctxt.add_inst(Instruction::Jnz(Target::Label(format!(":{}", &jump_label))));
 
                 let mut count = 0;
                 for s in when_true {
-                    let scope = format!("{}_stmt{}", scope, count);
-                    s.emit(function_name, &scope, &stack, 0);
+                    // let scope = format!("{}_stmt{}", scope, count);
+                    s.emit(ctxt, function_name);
                     count += 1;
                 }
                 
-                println!(":{}", &jump_label);
+                ctxt.lines.push(Line::Label(format!(":{}", &jump_label)));
             },
         }
     }
@@ -323,11 +367,16 @@ impl Function {
             RESULT
     */
 
-    fn emit(&self) -> () {
-        println!("# Function: {}", &self.name);
-        println!(":{}", &self.name);
+    fn emit(&self) -> FunctionContext {
 
-        let mut stack = BTreeMap::new();
+        let mut ctxt = FunctionContext {
+            stack: BTreeMap::new(),
+            lines: Vec::new(),
+            additional_offset: 0,
+        };
+        ctxt.lines.push(Line::Comment(format!("# Function: {}", &self.name)));
+        ctxt.lines.push(Line::Label(format!(":{}", &self.name)));
+
         let stack_size = 0
             + 1 // result
             + self.args.len() 
@@ -335,26 +384,26 @@ impl Function {
             + self.locals.len();
         let mut offset = (stack_size - 1) as isize;
 
-        println!("# sp+{} -> {}", offset, RESULT);
-        stack.insert(RESULT.to_owned(), offset);
+        ctxt.lines.push(Line::Comment(format!("# sp+{} -> {}", offset, RESULT)));
+        ctxt.stack.insert(RESULT.to_owned(), offset);
         offset -= 1;
 
         for arg in &self.args {
-            println!("# sp+{} -> {}", offset, arg);
-            stack.insert(arg.clone(), offset);
+            ctxt.lines.push(Line::Comment(format!("# sp+{} -> {}", offset, arg)));
+            ctxt.stack.insert(arg.clone(), offset);
             offset -= 1;
         }
 
-        println!("# sp+{} -> {}", offset, "RETURN_ADDRESS");
-        stack.insert("RETURN_ADDRESS".to_owned(), offset);
+        ctxt.lines.push(Line::Comment(format!("# sp+{} -> {}", offset, "RETURN_ADDRESS")));
+        ctxt.stack.insert("RETURN_ADDRESS".to_owned(), offset);
         offset -= 1;
 
         // println!("# sp+{} -> {}", offset, "saved c");
         // offset -= 1;
 
         for l in &self.locals {
-            println!("# sp+{} -> {}", offset, l);
-            stack.insert(l.clone(), offset);
+            ctxt.lines.push(Line::Comment(format!("# sp+{} -> {}", offset, l)));
+            ctxt.stack.insert(l.clone(), offset);
             offset -= 1;
         }
 
@@ -363,23 +412,29 @@ impl Function {
         // println!("# save registers");
         // println!("push c");
 
-        println!("# create stack space");
-        println!("loadlo {:2x}", ((self.locals.len() as i32) * -1) & 0xF );
-        println!("add sp");
-        println!("storereg sp");
+        ctxt.lines.push(Line::Comment("# create stack space".to_owned()));
+        ctxt.add_inst(Instruction::LoadLo(
+            Target::Constant((((self.locals.len() as i32) * -1) & 0xF) as u8)
+        ));
+        ctxt.add_inst(Instruction::Add(Reg::SP));
+        ctxt.add_inst(Instruction::StoreReg(Reg::SP));
 
         let mut count = 0;
         for stmt in self.body.iter() {
-            let scope = format!("_function{}_", count);
-            stmt.emit(&self.name, &scope, &stack, 0);
+            // let scope = format!("_function{}_", count);
+            stmt.emit(&mut ctxt, &self.name);
             count += 1;
         }
          
-        println!(":{}__{}", &self.name, EPILOGUE);
-        println!("loadlo {}", self.locals.len());
-        println!("add sp");
-        println!("storereg sp");
-        println!("ret");
+        ctxt.lines.push(Line::Label(format!(":{}__{}", &self.name, EPILOGUE)));
+        ctxt.add_inst(Instruction::LoadLo(Target::Constant(
+            (self.locals.len() & 0xf) as u8
+        )));
+        ctxt.add_inst(Instruction::Add(Reg::SP));
+        ctxt.add_inst(Instruction::StoreReg(Reg::SP));
+        ctxt.add_macro(format!("ret"));
+
+        ctxt
     }
 }
 
@@ -415,21 +470,31 @@ fn main() -> Result<(), std::io::Error> {
         return Err(std::io::Error::from(ErrorKind::NotFound));
     }
 
-    println!("# set stack to 0xff");
-    println!("loadlo f");
-    println!("storereg sp");
+    let mut program = Vec::new();
 
-    println!("# call main");
-    println!("loadlo f");
-    println!("add sp");
-    println!("storereg sp");
-    println!("call :main");
-    println!("pop b");
-    println!("halt");
-    
+    program.push(Line::Comment(format!("set stack to 0xff")));
+    program.push(Line::Instruction(Instruction::LoadLo(Target::Constant(0xf))));
+    program.push(Line::Instruction(Instruction::StoreReg(Reg::SP)));
+
+    program.push(Line::Comment(format!("call main")));
+
+    program.push(Line::Instruction(Instruction::LoadLo(Target::Constant(0xf))));
+    program.push(Line::Instruction(Instruction::Add(Reg::SP)));
+    program.push(Line::Instruction(Instruction::StoreReg(Reg::SP)));
+    program.push(Line::parse(format!("call :main")));
+    program.push(Line::parse(format!("pop b")));
+    program.push(Line::parse(format!("halt")));
+
     for f in &functions {
-        f.1.emit();
+        let f = f.1.emit();
+        for l in f.lines {
+            program.push(l);
+        }
     }
+
+    let rom = assemble(program);
+
+    simulate(&rom, 10000);
 
     Ok(())
 }

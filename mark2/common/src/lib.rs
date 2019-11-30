@@ -4,6 +4,8 @@ extern crate strum_macros;
 
 use std::str::FromStr;
 
+use std::collections::BTreeMap;
+
 #[derive(Clone, Copy, Debug, EnumString, PartialEq)]
 #[strum(serialize_all = "lowercase")]
 pub enum Reg {
@@ -114,6 +116,18 @@ impl Instruction {
     }
 }
 
+#[derive(Clone, Copy, Debug, EnumString, PartialEq)]
+#[strum(serialize_all = "lowercase")]
+pub enum Macro {
+    Push,
+    Pop,
+    Inc,
+    Dec,
+    Call,
+    Ret,
+    Halt
+}
+
 #[derive(Debug)]
 pub enum Line {
     Label(String),
@@ -198,6 +212,119 @@ impl Line {
             },
         }
     }
+}
+
+
+trait Resolver {
+    fn resolve(&self, pc: u8, labels: &BTreeMap<&String,u8>) -> Instruction;
+}
+
+impl Resolver for Instruction {
+    fn resolve(&self, pc: u8, labels: &BTreeMap<&String,u8>) -> Instruction {
+        match self {
+            Instruction::LoadLo(t) => match t {
+                Target::Constant(_) => self.clone(),
+                Target::Label(l) => Instruction::LoadLo(Target::Constant(labels[l] & 0xf)),
+            },
+            Instruction::LoadHi(t) => match t {
+                Target::Constant(_) => self.clone(),
+                Target::Label(l) => Instruction::LoadHi(Target::Constant((labels[l] >> 4) & 0xf)),
+            },
+            Instruction::Jmp(t) => match t {
+                Target::Constant(_) => self.clone(),
+                Target::Label(l) => {
+                    let mut offset : i16 = labels[l] as i16;
+                    offset -= pc as i16;
+                    assert!(offset <= 15);
+                    assert!(offset >= -16);
+                    Instruction::Jmp(Target::Constant((offset & 0x1f) as u8))
+                }
+            },
+            Instruction::Jz(t) => match t {
+                Target::Constant(_) => self.clone(),
+                Target::Label(l) => {
+                    let mut offset : i16 = labels[l] as i16;
+                    offset -= pc as i16;
+                    assert!(offset <= 15);
+                    assert!(offset >= -16);
+                    Instruction::Jz(Target::Constant((offset & 0x1f) as u8))
+                }
+            },
+            Instruction::Jnz(t) => match t {
+                Target::Constant(_) => self.clone(),
+                Target::Label(l) => {
+                    let mut offset : i16 = labels[l] as i16;
+                    offset -= pc as i16;
+                    assert!(offset <= 15);
+                    assert!(offset >= -16);
+                    Instruction::Jnz(Target::Constant((offset & 0x1f) as u8))
+                }
+            },
+            _ => self.clone()
+        }
+    }
+}
+
+pub fn assemble(lines: Vec<Line>) -> Vec<Instruction> {
+    let labels = {
+        let mut labels = BTreeMap::new();
+        let mut address : u8 = 0;
+        for line in &lines {
+            match line {
+                Line::Instruction(_) => { address += 1; },
+                Line::Label(l) => { labels.insert(l, address); }
+                Line::Comment(_) => {},
+                Line::Macro(_, instructions) => { address += instructions.len() as u8; }
+            }
+        }
+        labels
+    };
+
+    println!("v2.0 raw");
+
+    for l in &labels {
+        println!("# {:?}", l);
+    }
+
+    let rom = {
+        let mut instructions = Vec::new();
+        let mut pc = 0;
+
+        let mut resolve_instruction = |i: &Instruction| {
+            let resolved = i.resolve(pc, &labels);
+            print!("{:02x} # @{:02x} {:?}", resolved.encode(), pc, i);
+            if *i != resolved {
+                print!(" {:?}", resolved);
+            }
+            println!();
+            instructions.push(resolved);
+            pc += 1;
+        };
+
+        for l in &lines {
+            match l {
+                Line::Instruction(i) => {
+                    resolve_instruction(i);
+                },
+                Line::Macro(line, instructions) => {
+                    println!("# begin resolving macro: '{}'", &line);
+                    for i in instructions {
+                        resolve_instruction(i);
+                    }
+                    println!("# end resolving macro: '{}'", &line);
+                },
+                Line::Label(l) => { 
+                    println!("# {:?}", l);
+                },
+                Line::Comment(c) => { 
+                    println!("# {}", c);
+                },
+            }
+        }
+        instructions
+    };
+
+    rom
 }
 
 pub fn simulate(rom: &[Instruction], mut cycle_limit: usize) {

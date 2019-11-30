@@ -4,10 +4,10 @@ v2.0 raw
 # (":fac__EPILOGUE", 154)
 # (":main", 159)
 # (":main__EPILOGUE", 210)
-# # set stack to 0xff
+# set stack to 0xff
 8f # @00 LoadLo(Constant(15))
 06 # @01 StoreReg(SP)
-# # call main
+# call main
 8f # @02 LoadLo(Constant(15))
 5e # @03 Add(SP)
 06 # @04 StoreReg(SP)
