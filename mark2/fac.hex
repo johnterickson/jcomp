@@ -41,16 +41,19 @@ v2.0 raw
 # # sp+3 -> RESULT
 # # sp+2 -> n
 # # sp+1 -> RETURN_ADDRESS
-# # sp+0 -> product
+# # Stack(0) -> product
 # # create stack space
 8f # @18 LoadLo(Constant(15))
 5e # @19 Add(SP)
 06 # @1a StoreReg(SP)
-# # If { predicate: Operation(Equals, Ident("n"), Number(0)), when_true: [Return { value: Number(1) }] }
+# Begin statement If { predicate: Operation(Equals, Ident("n"), Number(0)), when_true: [Return { value: Number(1) }] }
+# Evaluating expression: Operation(Equals, Ident("n"), Number(0))
+# Evaluating expression: Ident("n")
 82 # @1b LoadLo(Constant(2))
 5e # @1c Add(SP)
 78 # @1d LoadMem(ACC)
 01 # @1e StoreReg(B)
+# Evaluated expression: Ident("n")
 # begin resolving macro: 'push b'
 8f # @1f LoadLo(Constant(15))
 5e # @20 Add(SP)
@@ -58,9 +61,11 @@ v2.0 raw
 71 # @22 LoadReg(B)
 0e # @23 StoreMem(SP)
 # end resolving macro: 'push b'
+# Evaluating expression: Number(0)
 80 # @24 LoadLo(Constant(0))
 90 # @25 LoadHi(Constant(0))
 01 # @26 StoreReg(B)
+# Evaluated expression: Number(0)
 # begin resolving macro: 'pop c'
 7e # @27 LoadMem(SP)
 02 # @28 StoreReg(C)
@@ -71,12 +76,15 @@ v2.0 raw
 71 # @2c LoadReg(B)
 42 # @2d Xor(C)
 01 # @2e StoreReg(B)
+# Evaluated expression: Operation(Equals, Ident("n"), Number(0))
 71 # @2f LoadReg(B)
 ec # @30 Jnz(Label(":fac_IF_SKIP")) Jnz(Constant(12))
-# # Return { value: Number(1) }
+# Begin statement Return { value: Number(1) }
+# Evaluating expression: Number(1)
 81 # @31 LoadLo(Constant(1))
 90 # @32 LoadHi(Constant(0))
 01 # @33 StoreReg(B)
+# Evaluated expression: Number(1)
 83 # @34 LoadLo(Constant(3))
 5e # @35 Add(SP)
 02 # @36 StoreReg(C)
@@ -85,17 +93,22 @@ ec # @30 Jnz(Label(":fac_IF_SKIP")) Jnz(Constant(12))
 8a # @39 LoadLo(Label(":fac__EPILOGUE")) LoadLo(Constant(10))
 99 # @3a LoadHi(Label(":fac__EPILOGUE")) LoadHi(Constant(9))
 07 # @3b StoreReg(PC)
+# Done  statement Return { value: Number(1) }
 # ":fac_IF_SKIP"
-# # Call { local: "product", function: "fac", parameters: [Operation(Subtract, Ident("n"), Number(1))] }
+# Done  statement If { predicate: Operation(Equals, Ident("n"), Number(0)), when_true: [Return { value: Number(1) }] }
+# Begin statement Call { local: "product", function: "fac", parameters: [Operation(Subtract, Ident("n"), Number(1))] }
 # begin resolving macro: 'dec sp'
 8f # @3c LoadLo(Constant(15))
 5e # @3d Add(SP)
 06 # @3e StoreReg(SP)
 # end resolving macro: 'dec sp'
+# Evaluating expression: Operation(Subtract, Ident("n"), Number(1))
+# Evaluating expression: Ident("n")
 83 # @3f LoadLo(Constant(3))
 5e # @40 Add(SP)
 78 # @41 LoadMem(ACC)
 01 # @42 StoreReg(B)
+# Evaluated expression: Ident("n")
 # begin resolving macro: 'push b'
 8f # @43 LoadLo(Constant(15))
 5e # @44 Add(SP)
@@ -103,9 +116,11 @@ ec # @30 Jnz(Label(":fac_IF_SKIP")) Jnz(Constant(12))
 71 # @46 LoadReg(B)
 0e # @47 StoreMem(SP)
 # end resolving macro: 'push b'
+# Evaluating expression: Number(1)
 81 # @48 LoadLo(Constant(1))
 90 # @49 LoadHi(Constant(0))
 01 # @4a StoreReg(B)
+# Evaluated expression: Number(1)
 # begin resolving macro: 'pop c'
 7e # @4b LoadMem(SP)
 02 # @4c StoreReg(C)
@@ -119,6 +134,7 @@ ec # @30 Jnz(Label(":fac_IF_SKIP")) Jnz(Constant(12))
 59 # @53 Add(B)
 5a # @54 Add(C)
 01 # @55 StoreReg(B)
+# Evaluated expression: Operation(Subtract, Ident("n"), Number(1))
 # begin resolving macro: 'push b'
 8f # @56 LoadLo(Constant(15))
 5e # @57 Add(SP)
@@ -155,11 +171,15 @@ ec # @30 Jnz(Label(":fac_IF_SKIP")) Jnz(Constant(12))
 02 # @71 StoreReg(C)
 71 # @72 LoadReg(B)
 0a # @73 StoreMem(C)
-# # Assign { local: "product", value: Operation(Multiply, Ident("n"), Ident("product")) }
+# Done  statement Call { local: "product", function: "fac", parameters: [Operation(Subtract, Ident("n"), Number(1))] }
+# Begin statement Assign { local: "product", value: Operation(Multiply, Ident("n"), Ident("product")) }
+# Evaluating expression: Operation(Multiply, Ident("n"), Ident("product"))
+# Evaluating expression: Ident("n")
 82 # @74 LoadLo(Constant(2))
 5e # @75 Add(SP)
 78 # @76 LoadMem(ACC)
 01 # @77 StoreReg(B)
+# Evaluated expression: Ident("n")
 # begin resolving macro: 'push b'
 8f # @78 LoadLo(Constant(15))
 5e # @79 Add(SP)
@@ -167,10 +187,12 @@ ec # @30 Jnz(Label(":fac_IF_SKIP")) Jnz(Constant(12))
 71 # @7b LoadReg(B)
 0e # @7c StoreMem(SP)
 # end resolving macro: 'push b'
+# Evaluating expression: Ident("product")
 81 # @7d LoadLo(Constant(1))
 5e # @7e Add(SP)
 78 # @7f LoadMem(ACC)
 01 # @80 StoreReg(B)
+# Evaluated expression: Ident("product")
 # begin resolving macro: 'pop c'
 7e # @81 LoadMem(SP)
 02 # @82 StoreReg(C)
@@ -181,16 +203,20 @@ ec # @30 Jnz(Label(":fac_IF_SKIP")) Jnz(Constant(12))
 71 # @86 LoadReg(B)
 6a # @87 Mul(C)
 01 # @88 StoreReg(B)
+# Evaluated expression: Operation(Multiply, Ident("n"), Ident("product"))
 80 # @89 LoadLo(Constant(0))
 5e # @8a Add(SP)
 02 # @8b StoreReg(C)
 71 # @8c LoadReg(B)
 0a # @8d StoreMem(C)
-# # Return { value: Ident("product") }
+# Done  statement Assign { local: "product", value: Operation(Multiply, Ident("n"), Ident("product")) }
+# Begin statement Return { value: Ident("product") }
+# Evaluating expression: Ident("product")
 80 # @8e LoadLo(Constant(0))
 5e # @8f Add(SP)
 78 # @90 LoadMem(ACC)
 01 # @91 StoreReg(B)
+# Evaluated expression: Ident("product")
 83 # @92 LoadLo(Constant(3))
 5e # @93 Add(SP)
 02 # @94 StoreReg(C)
@@ -199,6 +225,7 @@ ec # @30 Jnz(Label(":fac_IF_SKIP")) Jnz(Constant(12))
 8a # @97 LoadLo(Label(":fac__EPILOGUE")) LoadLo(Constant(10))
 99 # @98 LoadHi(Label(":fac__EPILOGUE")) LoadHi(Constant(9))
 07 # @99 StoreReg(PC)
+# Done  statement Return { value: Ident("product") }
 # ":fac__EPILOGUE"
 81 # @9a LoadLo(Constant(1))
 5e # @9b Add(SP)
@@ -211,20 +238,22 @@ ec # @30 Jnz(Label(":fac_IF_SKIP")) Jnz(Constant(12))
 # ":main"
 # # sp+2 -> RESULT
 # # sp+1 -> RETURN_ADDRESS
-# # sp+0 -> result
+# # Stack(0) -> result
 # # create stack space
 8f # @9f LoadLo(Constant(15))
 5e # @a0 Add(SP)
 06 # @a1 StoreReg(SP)
-# # Call { local: "result", function: "fac", parameters: [Number(5)] }
+# Begin statement Call { local: "result", function: "fac", parameters: [Number(5)] }
 # begin resolving macro: 'dec sp'
 8f # @a2 LoadLo(Constant(15))
 5e # @a3 Add(SP)
 06 # @a4 StoreReg(SP)
 # end resolving macro: 'dec sp'
+# Evaluating expression: Number(5)
 85 # @a5 LoadLo(Constant(5))
 90 # @a6 LoadHi(Constant(0))
 01 # @a7 StoreReg(B)
+# Evaluated expression: Number(5)
 # begin resolving macro: 'push b'
 8f # @a8 LoadLo(Constant(15))
 5e # @a9 Add(SP)
@@ -261,11 +290,14 @@ ec # @30 Jnz(Label(":fac_IF_SKIP")) Jnz(Constant(12))
 02 # @c3 StoreReg(C)
 71 # @c4 LoadReg(B)
 0a # @c5 StoreMem(C)
-# # Return { value: Ident("result") }
+# Done  statement Call { local: "result", function: "fac", parameters: [Number(5)] }
+# Begin statement Return { value: Ident("result") }
+# Evaluating expression: Ident("result")
 80 # @c6 LoadLo(Constant(0))
 5e # @c7 Add(SP)
 78 # @c8 LoadMem(ACC)
 01 # @c9 StoreReg(B)
+# Evaluated expression: Ident("result")
 82 # @ca LoadLo(Constant(2))
 5e # @cb Add(SP)
 02 # @cc StoreReg(C)
@@ -274,6 +306,7 @@ ec # @30 Jnz(Label(":fac_IF_SKIP")) Jnz(Constant(12))
 82 # @cf LoadLo(Label(":main__EPILOGUE")) LoadLo(Constant(2))
 9d # @d0 LoadHi(Label(":main__EPILOGUE")) LoadHi(Constant(13))
 07 # @d1 StoreReg(PC)
+# Done  statement Return { value: Ident("result") }
 # ":main__EPILOGUE"
 81 # @d2 LoadLo(Constant(1))
 5e # @d3 Add(SP)

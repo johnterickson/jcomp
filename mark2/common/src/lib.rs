@@ -6,7 +6,7 @@ use std::str::FromStr;
 
 use std::collections::BTreeMap;
 
-#[derive(Clone, Copy, Debug, EnumString, PartialEq)]
+#[derive(Clone, Copy, Debug, EnumString, Eq, PartialEq, PartialOrd, Ord)]
 #[strum(serialize_all = "lowercase")]
 pub enum Reg {
     ACC,

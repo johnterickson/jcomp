@@ -1,0 +1,23 @@
+TARGET_MODE: 
+000 RegA
+001 RegB 
+010 RegC 
+011 RegD 
+100 IMMEDIATE
+101 Flat address
+110 SP
+111 PC
+
+00[3:reg][3:target mode] [8:target]  LOAD/JMP: reg <- target
+01[3:reg][3:target mode] [8:target]  STORE target <- reg
+1 0 0 0 0 0 0 0 JZ [8:target]
+
+1 1 0 0 0 0 0 0 PUSH
+
+"call :target"
+LOAD ACC, PC+5
+PUSH
+LOAD PC, :target
+
+"ret"
+LOAD PC, [SP+0]

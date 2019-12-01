@@ -5,6 +5,9 @@ FLAGS
 SP
 PC
 
+[JMP/JZ/JNZ] [8bit target]
+
+
 
 
       read inst
@@ -24,16 +27,19 @@ IF HI bit is set, push ACC on stack after:
 0 0 1 0 0 0 0 0  STOREADDR: ADDR <- ACC
 0 0 1 0 0 0 0 1  STOREMEM: MEM[ADDR] <- ACC
 0 0 1 0 0 0 1 0  JMP: PC <- ACC
-0 0 1 0 0 0 1 1  
+0 0 1 0 0 0 1 1  ??
 0 0 1 0 0 1 * *  ??
-0 0 1 0 1|I M D  JMP x:
-0 0 1 1 0|I M D  JNZ x:
-0 0 1 1 1|I M D  JZ x:
+0 0 1 0 1 * * *  ??
+0 0 1 1 0 * * *  ??
+0 0 1 1 1 1 0 0  [target:8] JMP x:
+0 0 1 1 1 1 0 1  [target:8] JNZ x:
+0 0 1 1 1 1 1 0  [target:8] JZ x:
+0 0 1 1 1 1 1 1  ??
 
 1 0 1 0 0|I M D  STORETOSTACK x: MEM[SP+x] <- ACC
 1 0 1 0 1|I M D  DISCARD x: SP <- SP+x
-1 0 1 1 0|I M D  POP x: SP += x; ACC <- MEM[SP]; SP += 1;
-1 0 1 1 1|I M D  ??
+1 0 1 1 0|I M D  DISCARDPOP x: SP += x; ACC <- MEM[SP]; SP += 1;
+1 0 1 1 1|I M D  POPDISCARD x: ACC <- MEM[SP]; SP += x + 1;
 
 IF HI bit is set, push ACC on stack after:
 * 1 0 0 0|I M D  ADD x: ACC <- ACC + MEM[SP+x]
@@ -55,16 +61,14 @@ IF HI bit is set, push ACC on stack after:
 #LOADSTACK locals[arg1] PUSH
 #LOADSTACK locals[arg0] PUSH 
 LOADPC PUSH # will become return value
-LOADLO 5
+LOADLO 4
 ADD 0 PUSH 
-LOADLO :target
-LOADHI :target
-JMP
+JMP :target
 
 
 "ret locals":
-DISCARD locals
-POP JMP
+POP locals
+JMP
 
 :fac(n)
 # return address

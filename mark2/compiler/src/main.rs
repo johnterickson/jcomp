@@ -41,7 +41,8 @@ impl Operator {
 }
 
 struct FunctionContext {
-    pub stack: BTreeMap<String,isize>,
+    pub regs_used: BTreeSet<Reg>,
+    pub stack: BTreeMap<String, LocalStorage>,
     pub lines: Vec<Line>,
     pub additional_offset: isize,
 }
@@ -57,11 +58,15 @@ impl FunctionContext {
         self.lines.push(line);
     }
 
-    fn find_local(&self, local: &str) -> isize {
-        let offset = self.stack
+    fn find_local(&self, local: &str) -> LocalStorage {
+        let local = self.stack
             .get(local)
             .expect(&format!("could not find {}", local));
-        offset + self.additional_offset
+        if let LocalStorage::Stack(offset) = local {
+            LocalStorage::Stack(offset + self.additional_offset)
+        } else {
+            *local
+        }
     }
 }
 
@@ -106,24 +111,32 @@ impl Expression {
         }
     }
 
-    // output is in b; must preserve other regs
+    // output is in B; must preserve other regs
     fn emit(&self, ctxt: &mut FunctionContext) -> () {
+        ctxt.lines.push(Line::Comment(format!("Evaluating expression: {:?}", &self)));
         match self {
             Expression::Number(n) => {
                 ctxt.add_inst(Instruction::LoadLo(Target::Constant((n & 0xF) as u8)));
                 ctxt.add_inst(Instruction::LoadHi(Target::Constant(((n>>4) & 0xF) as u8)));
-                ctxt.add_inst(Instruction::StoreReg(Reg::B));
             },
             Expression::Ident(n) => {
-                ctxt.add_inst(Instruction::LoadLo(Target::Constant(ctxt.find_local(n) as u8)));
-                ctxt.add_inst(Instruction::Add(Reg::SP));
-                ctxt.add_inst(Instruction::LoadMem(Reg::ACC));
-                ctxt.add_inst(Instruction::StoreReg(Reg::B));
+                let local = ctxt.find_local(n);
+                match local {
+                    LocalStorage::Register(r) => {
+                        ctxt.add_inst(Instruction::LoadReg(r));
+                    },
+                    LocalStorage::Stack(offset) => {
+                        ctxt.add_inst(Instruction::LoadLo(Target::Constant(offset as u8)));
+                        ctxt.add_inst(Instruction::Add(Reg::SP));
+                        ctxt.add_inst(Instruction::LoadMem(Reg::ACC));
+                    }
+                }
             },
             Expression::Operation(op, left, right) => {
-                left.emit(ctxt);
+                left.emit(ctxt); // left in B
                 ctxt.add_macro(format!("push b")); //store left on the stack
                 ctxt.additional_offset += 1;
+
                 right.emit(ctxt); // left on top of stack; right in b
                 ctxt.add_macro(format!("pop c")); //left in c; right in b
                 ctxt.additional_offset -= 1;
@@ -132,12 +145,10 @@ impl Expression {
                     Operator::Add => {
                         ctxt.add_inst(Instruction::LoadReg(Reg::B)); // left in c; right in acc
                         ctxt.add_inst(Instruction::Add(Reg::C)); // add left to right
-                        ctxt.add_inst(Instruction::StoreReg(Reg::B));
                     },
                     Operator::Multiply => {
                         ctxt.add_inst(Instruction::LoadReg(Reg::B)); // left in c; right in acc
                         ctxt.add_inst(Instruction::Mul(Reg::C));
-                        ctxt.add_inst(Instruction::StoreReg(Reg::B));
                     },
                     Operator::Subtract => {
                         ctxt.add_inst(Instruction::Not(Reg::B)); // b <- ~right
@@ -145,17 +156,17 @@ impl Expression {
                         ctxt.add_inst(Instruction::LoadLo(Target::Constant(1)));
                         ctxt.add_inst(Instruction::Add(Reg::B)); // acc <- (~right) + 1 aka -1*right
                         ctxt.add_inst(Instruction::Add(Reg::C)); // add left to right
-                        ctxt.add_inst(Instruction::StoreReg(Reg::B));
                     },
                     Operator::Equals => {
                         ctxt.add_inst(Instruction::LoadReg(Reg::B));
                         ctxt.add_inst(Instruction::Xor(Reg::C)); //  left ^ right == 0 --> left == right
-                        ctxt.add_inst(Instruction::StoreReg(Reg::B));
                     },
                     _ => unimplemented!()
                 }
             }
         }
+        ctxt.add_inst(Instruction::StoreReg(Reg::B));
+        ctxt.lines.push(Line::Comment(format!("Evaluated expression: {:?}", &self)));
     }
 }
 
@@ -212,22 +223,35 @@ impl Statement {
     }
 
     fn emit(&self, ctxt: &mut FunctionContext, function_name: &str) -> () {
-        ctxt.lines.push(Line::Comment(format!("# {:?}", self)));
+        ctxt.lines.push(Line::Comment(format!("Begin statement {:?}", self)));
         match self {
             Statement::Assign{local, value} => {
-                value.emit(ctxt);
-                ctxt.add_inst(Instruction::LoadLo(Target::Constant(
-                    (ctxt.find_local(local) & 0xf) as u8
-                )));
-                ctxt.add_inst(Instruction::Add(Reg::SP));
-                ctxt.add_inst(Instruction::StoreReg(Reg::C));
-                ctxt.add_inst(Instruction::LoadReg(Reg::B));
-                ctxt.add_inst(Instruction::StoreMem(Reg::C));
+                value.emit(ctxt); // in B
+                let local = ctxt.find_local(local);
+                match local {
+                    LocalStorage::Register(r) => {
+                        ctxt.add_inst(Instruction::LoadReg(Reg::B));
+                        ctxt.add_inst(Instruction::StoreReg(r));
+                    }
+                    LocalStorage::Stack(offset) => {
+                        ctxt.add_inst(Instruction::LoadLo(Target::Constant((offset & 0xf) as u8)));
+                        ctxt.add_inst(Instruction::Add(Reg::SP));
+                        ctxt.add_inst(Instruction::StoreReg(Reg::C));
+                        ctxt.add_inst(Instruction::LoadReg(Reg::B));
+                        ctxt.add_inst(Instruction::StoreMem(Reg::C));
+                    }
+                }
             },
             Statement::Return{ value } => {
                 value.emit(ctxt);
+
+                let result_offset = match ctxt.find_local(RESULT) {
+                    LocalStorage::Register(_) => unimplemented!(),
+                    LocalStorage::Stack(offset) => offset,
+                };
+
                 ctxt.add_inst(Instruction::LoadLo(Target::Constant(
-                    (ctxt.find_local(RESULT) & 0xf) as u8
+                    (result_offset & 0xf) as u8
                 )));
                 ctxt.add_inst(Instruction::Add(Reg::SP));
                 ctxt.add_inst(Instruction::StoreReg(Reg::C));
@@ -277,41 +301,54 @@ impl Statement {
 
                 // stack is now back to normal
 
-                // c = &local
-                
-                ctxt.add_inst(Instruction::LoadLo(Target::Constant(
-                    (ctxt.find_local(local) & 0xf) as u8
-                )));
-                ctxt.add_inst(Instruction::Add(Reg::SP));
-                ctxt.add_inst(Instruction::StoreReg(Reg::C));
+                let local = ctxt.find_local(local);
+                match local {
+                    LocalStorage::Register(r) => {
+                        ctxt.add_inst(Instruction::LoadReg(Reg::B));
+                        ctxt.add_inst(Instruction::StoreReg(r));
 
-                ctxt.add_inst(Instruction::LoadReg(Reg::B));
-                ctxt.add_inst(Instruction::StoreMem(Reg::C));
-
+                    },
+                    LocalStorage::Stack(offset) => {
+                        ctxt.add_inst(Instruction::LoadLo(Target::Constant(
+                            (offset & 0xf) as u8
+                        )));
+                        ctxt.add_inst(Instruction::Add(Reg::SP));
+                        ctxt.add_inst(Instruction::StoreReg(Reg::C));
+        
+                        ctxt.add_inst(Instruction::LoadReg(Reg::B));
+                        ctxt.add_inst(Instruction::StoreMem(Reg::C));
+                    }
+                }
             },
             Statement::If{ predicate, when_true} => {
-                let IF_SKIP = "IF_SKIP";
-                
+                let if_skip = "IF_SKIP";
                 predicate.emit(ctxt); // result in b
                 ctxt.add_inst(Instruction::LoadReg(Reg::B));
 
-                let jump_label = format!("{}_{}", function_name, IF_SKIP);
+                let jump_label = format!("{}_{}", function_name, if_skip);
 
                 // WEIRD: interpret 0 as true
 
                 ctxt.add_inst(Instruction::Jnz(Target::Label(format!(":{}", &jump_label))));
 
-                let mut count = 0;
+                // let mut count = 0;
                 for s in when_true {
                     // let scope = format!("{}_stmt{}", scope, count);
                     s.emit(ctxt, function_name);
-                    count += 1;
+                    // count += 1;
                 }
                 
                 ctxt.lines.push(Line::Label(format!(":{}", &jump_label)));
             },
         }
+        ctxt.lines.push(Line::Comment(format!("Done  statement {:?}", self)));
     }
+}
+
+#[derive(Clone, Copy, Debug)]
+enum LocalStorage {
+    Register(Reg),
+    Stack(isize),
 }
 
 #[derive(Debug)]
@@ -360,7 +397,6 @@ impl Function {
     SP ->   local 3
             local 2
             local 1
-            saved c
             return address
             arg 2
             arg 1
@@ -368,62 +404,71 @@ impl Function {
     */
 
     fn emit(&self) -> FunctionContext {
-
         let mut ctxt = FunctionContext {
             stack: BTreeMap::new(),
             lines: Vec::new(),
             additional_offset: 0,
+            regs_used: BTreeSet::new(),
         };
         ctxt.lines.push(Line::Comment(format!("# Function: {}", &self.name)));
         ctxt.lines.push(Line::Label(format!(":{}", &self.name)));
+
+        let register_locals = std::cmp::min(0, self.locals.len());
+        let stack_locals = self.locals.len() - register_locals;
 
         let stack_size = 0
             + 1 // result
             + self.args.len() 
             + 1 // return address
-            + self.locals.len();
+            + stack_locals;
         let mut offset = (stack_size - 1) as isize;
 
         ctxt.lines.push(Line::Comment(format!("# sp+{} -> {}", offset, RESULT)));
-        ctxt.stack.insert(RESULT.to_owned(), offset);
+        ctxt.stack.insert(RESULT.to_owned(), LocalStorage::Stack(offset));
         offset -= 1;
 
         for arg in &self.args {
             ctxt.lines.push(Line::Comment(format!("# sp+{} -> {}", offset, arg)));
-            ctxt.stack.insert(arg.clone(), offset);
+            ctxt.stack.insert(arg.clone(), LocalStorage::Stack(offset));
             offset -= 1;
         }
 
         ctxt.lines.push(Line::Comment(format!("# sp+{} -> {}", offset, "RETURN_ADDRESS")));
-        ctxt.stack.insert("RETURN_ADDRESS".to_owned(), offset);
+        ctxt.stack.insert("RETURN_ADDRESS".to_owned(), LocalStorage::Stack(offset));
         offset -= 1;
 
-        // println!("# sp+{} -> {}", offset, "saved c");
-        // offset -= 1;
+        for (count,l) in self.locals.iter().enumerate() {
+            let storage = match count {
+                count if count < register_locals => {
+                    let reg = if count == 0 { Reg::D } else { Reg::E };
+                    ctxt.regs_used.insert(reg);
+                    LocalStorage::Register(reg)
+                },
+                _ => {
+                    let s = LocalStorage::Stack(offset);
+                    offset -= 1;
+                    s
+                }
+            };
 
-        for l in &self.locals {
-            ctxt.lines.push(Line::Comment(format!("# sp+{} -> {}", offset, l)));
-            ctxt.stack.insert(l.clone(), offset);
-            offset -= 1;
+            ctxt.lines.push(Line::Comment(format!("# {:?} -> {}", storage, l)));
+            ctxt.stack.insert(l.clone(), storage);
         }
 
         assert_eq!(-1, offset);
 
-        // println!("# save registers");
-        // println!("push c");
-
         ctxt.lines.push(Line::Comment("# create stack space".to_owned()));
         ctxt.add_inst(Instruction::LoadLo(
-            Target::Constant((((self.locals.len() as i32) * -1) & 0xF) as u8)
+            Target::Constant((((stack_locals as i32) * -1) & 0xF) as u8)
         ));
         ctxt.add_inst(Instruction::Add(Reg::SP));
         ctxt.add_inst(Instruction::StoreReg(Reg::SP));
 
-        let mut count = 0;
+        // let mut count = 0;
         for stmt in self.body.iter() {
             // let scope = format!("_function{}_", count);
             stmt.emit(&mut ctxt, &self.name);
-            count += 1;
+            // count += 1;
         }
          
         ctxt.lines.push(Line::Label(format!(":{}__{}", &self.name, EPILOGUE)));
