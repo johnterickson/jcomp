@@ -279,7 +279,11 @@ pub fn assemble(lines: Vec<Line>) -> Vec<Instruction> {
         for line in &lines {
             match line {
                 Line::Instruction(_) => { address += 1; },
-                Line::Label(l) => { labels.insert(l, address); }
+                Line::Label(l) => { 
+                    if let Some(existing) = labels.insert(l, address) {
+                        panic!("label {:?} already exists at {}!", l, existing);
+                    }
+                }
                 Line::Comment(_) => {},
                 Line::Macro(_, instructions) => { address += instructions.len() as u8; }
             }

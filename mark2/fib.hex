@@ -9,246 +9,2098 @@ v2.0 raw
 # Line 7: Macro("call :main", [LoadLo(Constant(15)), Add(SP), StoreReg(SP), LoadLo(Constant(5)), Add(PC), StoreMem(SP), LoadLo(Label(":main")), LoadHi(Label(":main")), StoreReg(PC), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
 # Line 8: Macro("pop b", [LoadMem(SP), StoreReg(B), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
 # Line 9: Macro("halt", [LoadLo(Constant(15)), StoreReg(PC)])
-# Line 10: Comment("# Function: fib")
-# Line 11: Label(":fib")
-# Line 12: Comment("# sp+5 -> RESULT")
-# Line 13: Comment("# sp+4 -> n")
-# Line 14: Comment("# sp+3 -> RETURN_ADDRESS")
-# Line 15: Comment("# Register(D) -> n ")
-# Line 16: Comment("# Stack(1) -> sum1")
+# Line 10: Comment("Function { name: \"fib\", args: [\"n\"], locals: {\"sum1\", \"sum2\"}, body: [If { predicate: Operation(Equals, Ident(\"n\"), Number(0)), when_true: [Return { value: Number(1) }] }, Assign { local: \"n\", value: Operation(Subtract, Ident(\"n\"), Number(1)) }, If { predicate: Operation(Equals, Ident(\"n\"), Number(0)), when_true: [Return { value: Number(1) }] }, Call { local: \"sum1\", function: \"fib\", parameters: [Ident(\"n\")] }, Assign { local: \"n\", value: Operation(Subtract, Ident(\"n\"), Number(1)) }, Call { local: \"sum2\", function: \"fib\", parameters: [Ident(\"n\")] }, Return { value: Operation(Add, Ident(\"sum1\"), Ident(\"sum2\")) }] }")
+# Line 11: Comment("# Function: fib")
+# Line 12: Label(":fib")
+# Line 13: Comment("# sp+3 -> RESULT")
+# Line 14: Comment("# sp+2 -> n")
+# Line 15: Comment("# sp+1 -> RETURN_ADDRESS")
+# Line 16: Comment("# Register(D) -> sum1")
 # Line 17: Comment("# Stack(0) -> sum2")
-# Line 18: Comment("save regs: [D]")
-# Line 19: Macro("push d", [LoadLo(Constant(15)), Add(SP), StoreReg(SP), LoadReg(D), StoreMem(SP)])
-# Line 20: Comment("create stack space")
-# Line 21: Instruction(LoadLo(Constant(14)))
-# Line 22: Instruction(Add(SP))
-# Line 23: Instruction(StoreReg(SP))
-# Line 24: Comment("Begin statement If { predicate: Operation(Equals, Ident(\"n\"), Number(0)), when_true: [Return { value: Number(1) }] }")
-# Line 25: Comment("Evaluating expression: Operation(Equals, Ident(\"n\"), Number(0))")
-# Line 26: Comment("Evaluating expression: Ident(\"n\")")
-# Line 27: Instruction(LoadLo(Constant(4)))
-# Line 28: Instruction(Add(SP))
-# Line 29: Instruction(LoadMem(ACC))
-# Line 30: Instruction(StoreReg(C))
-# Line 31: Comment("Evaluated expression: Ident(\"n\")")
-# Line 32: Comment("Evaluating expression: Number(0)")
-# Line 33: Instruction(LoadLo(Constant(0)))
-# Line 34: Instruction(LoadHi(Constant(0)))
-# Line 35: Instruction(StoreReg(B))
-# Line 36: Comment("Evaluated expression: Number(0)")
-# Line 37: Instruction(LoadReg(B))
-# Line 38: Instruction(Xor(C))
-# Line 39: Instruction(StoreReg(B))
-# Line 40: Comment("Evaluated expression: Operation(Equals, Ident(\"n\"), Number(0))")
-# Line 41: Instruction(LoadReg(B))
-# Line 42: Instruction(Jnz(Label(":fib_IF_SKIP")))
-# Line 43: Comment("Begin statement Return { value: Number(1) }")
-# Line 44: Comment("Evaluating expression: Number(1)")
-# Line 45: Instruction(LoadLo(Constant(1)))
-# Line 46: Instruction(LoadHi(Constant(0)))
-# Line 47: Instruction(StoreReg(B))
-# Line 48: Comment("Evaluated expression: Number(1)")
-# Line 49: Instruction(LoadLo(Constant(5)))
-# Line 50: Instruction(Add(SP))
-# Line 51: Instruction(StoreReg(C))
-# Line 52: Instruction(LoadReg(B))
-# Line 53: Instruction(StoreMem(C))
-# Line 54: Instruction(LoadLo(Label(":fib__EPILOGUE")))
-# Line 55: Instruction(LoadHi(Label(":fib__EPILOGUE")))
-# Line 56: Instruction(StoreReg(PC))
-# Line 57: Comment("Done  statement Return { value: Number(1) }")
-# Line 58: Label(":fib_IF_SKIP")
-# Line 59: Comment("Done  statement If { predicate: Operation(Equals, Ident(\"n\"), Number(0)), when_true: [Return { value: Number(1) }] }")
-# Line 60: Comment("Begin statement Assign { local: \"n \", value: Operation(Subtract, Ident(\"n\"), Number(1)) }")
-# Line 61: Comment("Evaluating expression: Operation(Subtract, Ident(\"n\"), Number(1))")
-# Line 62: Comment("Evaluating expression: Ident(\"n\")")
-# Line 63: Instruction(LoadLo(Constant(4)))
-# Line 64: Instruction(Add(SP))
-# Line 65: Instruction(LoadMem(ACC))
-# Line 66: Instruction(StoreReg(C))
-# Line 67: Comment("Evaluated expression: Ident(\"n\")")
-# Line 68: Comment("Evaluating expression: Number(1)")
-# Line 69: Instruction(LoadLo(Constant(1)))
-# Line 70: Instruction(LoadHi(Constant(0)))
+# Line 18: Comment("create stack space")
+# Line 19: Instruction(LoadLo(Constant(15)))
+# Line 20: Instruction(Add(SP))
+# Line 21: Instruction(StoreReg(SP))
+# Line 22: Comment("Begin statement If { predicate: Operation(Equals, Ident(\"n\"), Number(0)), when_true: [Return { value: Number(1) }] }")
+# Line 23: Comment("Evaluating expression: Operation(Equals, Ident(\"n\"), Number(0))")
+# Line 24: Comment("Evaluating expression: Ident(\"n\")")
+# Line 25: Instruction(LoadLo(Constant(2)))
+# Line 26: Instruction(Add(SP))
+# Line 27: Instruction(LoadMem(ACC))
+# Line 28: Instruction(StoreReg(C))
+# Line 29: Comment("Evaluated expression: Ident(\"n\")")
+# Line 30: Comment("Evaluating expression: Number(0)")
+# Line 31: Instruction(LoadLo(Constant(0)))
+# Line 32: Instruction(LoadHi(Constant(0)))
+# Line 33: Comment("Evaluated expression: Number(0)")
+# Line 34: Instruction(Xor(C))
+# Line 35: Comment("Evaluated expression: Operation(Equals, Ident(\"n\"), Number(0))")
+# Line 36: Instruction(Jnz(Label(":fib_IF_SKIP_0")))
+# Line 37: Comment("Begin statement Return { value: Number(1) }")
+# Line 38: Comment("Evaluating expression: Number(1)")
+# Line 39: Instruction(LoadLo(Constant(1)))
+# Line 40: Instruction(LoadHi(Constant(0)))
+# Line 41: Instruction(StoreReg(B))
+# Line 42: Comment("Evaluated expression: Number(1)")
+# Line 43: Instruction(LoadLo(Constant(3)))
+# Line 44: Instruction(Add(SP))
+# Line 45: Instruction(StoreReg(C))
+# Line 46: Instruction(LoadReg(B))
+# Line 47: Instruction(StoreMem(C))
+# Line 48: Instruction(LoadLo(Label(":fib__EPILOGUE")))
+# Line 49: Instruction(LoadHi(Label(":fib__EPILOGUE")))
+# Line 50: Instruction(StoreReg(PC))
+# Line 51: Comment("Done  statement Return { value: Number(1) }")
+# Line 52: Label(":fib_IF_SKIP_0")
+# Line 53: Comment("Done  statement If { predicate: Operation(Equals, Ident(\"n\"), Number(0)), when_true: [Return { value: Number(1) }] }")
+# Line 54: Comment("Begin statement Assign { local: \"n\", value: Operation(Subtract, Ident(\"n\"), Number(1)) }")
+# Line 55: Comment("Evaluating expression: Operation(Subtract, Ident(\"n\"), Number(1))")
+# Line 56: Comment("Evaluating expression: Ident(\"n\")")
+# Line 57: Instruction(LoadLo(Constant(2)))
+# Line 58: Instruction(Add(SP))
+# Line 59: Instruction(LoadMem(ACC))
+# Line 60: Instruction(StoreReg(C))
+# Line 61: Comment("Evaluated expression: Ident(\"n\")")
+# Line 62: Comment("Evaluating expression: Number(1)")
+# Line 63: Instruction(LoadLo(Constant(1)))
+# Line 64: Instruction(LoadHi(Constant(0)))
+# Line 65: Comment("Evaluated expression: Number(1)")
+# Line 66: Instruction(Not(ACC))
+# Line 67: Instruction(StoreReg(B))
+# Line 68: Instruction(LoadLo(Constant(1)))
+# Line 69: Instruction(Add(B))
+# Line 70: Instruction(Add(C))
 # Line 71: Instruction(StoreReg(B))
-# Line 72: Comment("Evaluated expression: Number(1)")
-# Line 73: Instruction(Not(B))
-# Line 74: Instruction(StoreReg(B))
-# Line 75: Instruction(LoadLo(Constant(1)))
-# Line 76: Instruction(Add(B))
-# Line 77: Instruction(Add(C))
-# Line 78: Instruction(StoreReg(D))
-# Line 79: Comment("Evaluated expression: Operation(Subtract, Ident(\"n\"), Number(1))")
-# Line 80: Comment("Done  statement Assign { local: \"n \", value: Operation(Subtract, Ident(\"n\"), Number(1)) }")
-# Line 81: Comment("Begin statement If { predicate: Operation(Equals, Ident(\"n\"), Number(0)), when_true: [Return { value: Number(1) }] }")
-# Line 82: Comment("Evaluating expression: Operation(Equals, Ident(\"n\"), Number(0))")
-# Line 83: Comment("Evaluating expression: Ident(\"n\")")
-# Line 84: Instruction(LoadLo(Constant(4)))
-# Line 85: Instruction(Add(SP))
-# Line 86: Instruction(LoadMem(ACC))
-# Line 87: Instruction(StoreReg(C))
-# Line 88: Comment("Evaluated expression: Ident(\"n\")")
-# Line 89: Comment("Evaluating expression: Number(0)")
-# Line 90: Instruction(LoadLo(Constant(0)))
-# Line 91: Instruction(LoadHi(Constant(0)))
-# Line 92: Instruction(StoreReg(B))
-# Line 93: Comment("Evaluated expression: Number(0)")
-# Line 94: Instruction(LoadReg(B))
-# Line 95: Instruction(Xor(C))
-# Line 96: Instruction(StoreReg(B))
-# Line 97: Comment("Evaluated expression: Operation(Equals, Ident(\"n\"), Number(0))")
-# Line 98: Instruction(LoadReg(B))
-# Line 99: Instruction(Jnz(Label(":fib_IF_SKIP")))
-# Line 100: Comment("Begin statement Return { value: Number(1) }")
-# Line 101: Comment("Evaluating expression: Number(1)")
-# Line 102: Instruction(LoadLo(Constant(1)))
-# Line 103: Instruction(LoadHi(Constant(0)))
-# Line 104: Instruction(StoreReg(B))
-# Line 105: Comment("Evaluated expression: Number(1)")
-# Line 106: Instruction(LoadLo(Constant(5)))
-# Line 107: Instruction(Add(SP))
-# Line 108: Instruction(StoreReg(C))
-# Line 109: Instruction(LoadReg(B))
-# Line 110: Instruction(StoreMem(C))
-# Line 111: Instruction(LoadLo(Label(":fib__EPILOGUE")))
-# Line 112: Instruction(LoadHi(Label(":fib__EPILOGUE")))
-# Line 113: Instruction(StoreReg(PC))
-# Line 114: Comment("Done  statement Return { value: Number(1) }")
-# Line 115: Label(":fib_IF_SKIP")
-# Line 116: Comment("Done  statement If { predicate: Operation(Equals, Ident(\"n\"), Number(0)), when_true: [Return { value: Number(1) }] }")
-# Line 117: Comment("Begin statement Call { local: \"sum1\", function: \"fib\", parameters: [Ident(\"n\")] }")
-# Line 118: Macro("dec sp", [LoadLo(Constant(15)), Add(SP), StoreReg(SP)])
-# Line 119: Comment("Evaluating expression: Ident(\"n\")")
-# Line 120: Instruction(LoadLo(Constant(5)))
-# Line 121: Instruction(Add(SP))
-# Line 122: Instruction(LoadMem(ACC))
-# Line 123: Instruction(StoreReg(B))
-# Line 124: Comment("Evaluated expression: Ident(\"n\")")
-# Line 125: Macro("push b", [LoadLo(Constant(15)), Add(SP), StoreReg(SP), LoadReg(B), StoreMem(SP)])
-# Line 126: Macro("call :fib", [LoadLo(Constant(15)), Add(SP), StoreReg(SP), LoadLo(Constant(5)), Add(PC), StoreMem(SP), LoadLo(Label(":fib")), LoadHi(Label(":fib")), StoreReg(PC), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
-# Line 127: Instruction(LoadLo(Constant(1)))
-# Line 128: Instruction(Add(SP))
-# Line 129: Instruction(StoreReg(SP))
-# Line 130: Macro("pop b", [LoadMem(SP), StoreReg(B), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
-# Line 131: Instruction(LoadLo(Constant(1)))
+# Line 72: Comment("Evaluated expression: Operation(Subtract, Ident(\"n\"), Number(1))")
+# Line 73: Instruction(LoadLo(Constant(2)))
+# Line 74: Instruction(Add(SP))
+# Line 75: Instruction(StoreReg(C))
+# Line 76: Instruction(LoadReg(B))
+# Line 77: Instruction(StoreMem(C))
+# Line 78: Comment("Done  statement Assign { local: \"n\", value: Operation(Subtract, Ident(\"n\"), Number(1)) }")
+# Line 79: Comment("Begin statement If { predicate: Operation(Equals, Ident(\"n\"), Number(0)), when_true: [Return { value: Number(1) }] }")
+# Line 80: Comment("Evaluating expression: Operation(Equals, Ident(\"n\"), Number(0))")
+# Line 81: Comment("Evaluating expression: Ident(\"n\")")
+# Line 82: Instruction(LoadLo(Constant(2)))
+# Line 83: Instruction(Add(SP))
+# Line 84: Instruction(LoadMem(ACC))
+# Line 85: Instruction(StoreReg(C))
+# Line 86: Comment("Evaluated expression: Ident(\"n\")")
+# Line 87: Comment("Evaluating expression: Number(0)")
+# Line 88: Instruction(LoadLo(Constant(0)))
+# Line 89: Instruction(LoadHi(Constant(0)))
+# Line 90: Comment("Evaluated expression: Number(0)")
+# Line 91: Instruction(Xor(C))
+# Line 92: Comment("Evaluated expression: Operation(Equals, Ident(\"n\"), Number(0))")
+# Line 93: Instruction(Jnz(Label(":fib_IF_SKIP_1")))
+# Line 94: Comment("Begin statement Return { value: Number(1) }")
+# Line 95: Comment("Evaluating expression: Number(1)")
+# Line 96: Instruction(LoadLo(Constant(1)))
+# Line 97: Instruction(LoadHi(Constant(0)))
+# Line 98: Instruction(StoreReg(B))
+# Line 99: Comment("Evaluated expression: Number(1)")
+# Line 100: Instruction(LoadLo(Constant(3)))
+# Line 101: Instruction(Add(SP))
+# Line 102: Instruction(StoreReg(C))
+# Line 103: Instruction(LoadReg(B))
+# Line 104: Instruction(StoreMem(C))
+# Line 105: Instruction(LoadLo(Label(":fib__EPILOGUE")))
+# Line 106: Instruction(LoadHi(Label(":fib__EPILOGUE")))
+# Line 107: Instruction(StoreReg(PC))
+# Line 108: Comment("Done  statement Return { value: Number(1) }")
+# Line 109: Label(":fib_IF_SKIP_1")
+# Line 110: Comment("Done  statement If { predicate: Operation(Equals, Ident(\"n\"), Number(0)), when_true: [Return { value: Number(1) }] }")
+# Line 111: Comment("Begin statement Call { local: \"sum1\", function: \"fib\", parameters: [Ident(\"n\")] }")
+# Line 112: Macro("dec sp", [LoadLo(Constant(15)), Add(SP), StoreReg(SP)])
+# Line 113: Comment("Evaluating expression: Ident(\"n\")")
+# Line 114: Instruction(LoadLo(Constant(3)))
+# Line 115: Instruction(Add(SP))
+# Line 116: Instruction(LoadMem(ACC))
+# Line 117: Instruction(StoreReg(B))
+# Line 118: Comment("Evaluated expression: Ident(\"n\")")
+# Line 119: Macro("push b", [LoadLo(Constant(15)), Add(SP), StoreReg(SP), LoadReg(B), StoreMem(SP)])
+# Line 120: Macro("call :fib", [LoadLo(Constant(15)), Add(SP), StoreReg(SP), LoadLo(Constant(5)), Add(PC), StoreMem(SP), LoadLo(Label(":fib")), LoadHi(Label(":fib")), StoreReg(PC), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
+# Line 121: Instruction(LoadLo(Constant(1)))
+# Line 122: Instruction(Add(SP))
+# Line 123: Instruction(StoreReg(SP))
+# Line 124: Macro("pop b", [LoadMem(SP), StoreReg(B), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
+# Line 125: Instruction(LoadReg(B))
+# Line 126: Instruction(StoreReg(D))
+# Line 127: Comment("Done  statement Call { local: \"sum1\", function: \"fib\", parameters: [Ident(\"n\")] }")
+# Line 128: Comment("Begin statement Assign { local: \"n\", value: Operation(Subtract, Ident(\"n\"), Number(1)) }")
+# Line 129: Comment("Evaluating expression: Operation(Subtract, Ident(\"n\"), Number(1))")
+# Line 130: Comment("Evaluating expression: Ident(\"n\")")
+# Line 131: Instruction(LoadLo(Constant(2)))
 # Line 132: Instruction(Add(SP))
-# Line 133: Instruction(StoreReg(C))
-# Line 134: Instruction(LoadReg(B))
-# Line 135: Instruction(StoreMem(C))
-# Line 136: Comment("Done  statement Call { local: \"sum1\", function: \"fib\", parameters: [Ident(\"n\")] }")
-# Line 137: Comment("Begin statement Assign { local: \"n \", value: Operation(Subtract, Ident(\"n\"), Number(1)) }")
-# Line 138: Comment("Evaluating expression: Operation(Subtract, Ident(\"n\"), Number(1))")
-# Line 139: Comment("Evaluating expression: Ident(\"n\")")
-# Line 140: Instruction(LoadLo(Constant(4)))
-# Line 141: Instruction(Add(SP))
-# Line 142: Instruction(LoadMem(ACC))
-# Line 143: Instruction(StoreReg(C))
-# Line 144: Comment("Evaluated expression: Ident(\"n\")")
-# Line 145: Comment("Evaluating expression: Number(1)")
-# Line 146: Instruction(LoadLo(Constant(1)))
-# Line 147: Instruction(LoadHi(Constant(0)))
-# Line 148: Instruction(StoreReg(B))
-# Line 149: Comment("Evaluated expression: Number(1)")
-# Line 150: Instruction(Not(B))
-# Line 151: Instruction(StoreReg(B))
-# Line 152: Instruction(LoadLo(Constant(1)))
-# Line 153: Instruction(Add(B))
-# Line 154: Instruction(Add(C))
-# Line 155: Instruction(StoreReg(D))
-# Line 156: Comment("Evaluated expression: Operation(Subtract, Ident(\"n\"), Number(1))")
-# Line 157: Comment("Done  statement Assign { local: \"n \", value: Operation(Subtract, Ident(\"n\"), Number(1)) }")
-# Line 158: Comment("Begin statement Call { local: \"sum2\", function: \"fib\", parameters: [Ident(\"n\")] }")
-# Line 159: Macro("dec sp", [LoadLo(Constant(15)), Add(SP), StoreReg(SP)])
-# Line 160: Comment("Evaluating expression: Ident(\"n\")")
-# Line 161: Instruction(LoadLo(Constant(5)))
-# Line 162: Instruction(Add(SP))
-# Line 163: Instruction(LoadMem(ACC))
-# Line 164: Instruction(StoreReg(B))
-# Line 165: Comment("Evaluated expression: Ident(\"n\")")
-# Line 166: Macro("push b", [LoadLo(Constant(15)), Add(SP), StoreReg(SP), LoadReg(B), StoreMem(SP)])
-# Line 167: Macro("call :fib", [LoadLo(Constant(15)), Add(SP), StoreReg(SP), LoadLo(Constant(5)), Add(PC), StoreMem(SP), LoadLo(Label(":fib")), LoadHi(Label(":fib")), StoreReg(PC), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
-# Line 168: Instruction(LoadLo(Constant(1)))
-# Line 169: Instruction(Add(SP))
-# Line 170: Instruction(StoreReg(SP))
-# Line 171: Macro("pop b", [LoadMem(SP), StoreReg(B), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
-# Line 172: Instruction(LoadLo(Constant(0)))
-# Line 173: Instruction(Add(SP))
-# Line 174: Instruction(StoreReg(C))
-# Line 175: Instruction(LoadReg(B))
-# Line 176: Instruction(StoreMem(C))
-# Line 177: Comment("Done  statement Call { local: \"sum2\", function: \"fib\", parameters: [Ident(\"n\")] }")
-# Line 178: Comment("Begin statement Return { value: Operation(Add, Ident(\"sum1\"), Ident(\"sum2\")) }")
-# Line 179: Comment("Evaluating expression: Operation(Add, Ident(\"sum1\"), Ident(\"sum2\"))")
-# Line 180: Comment("Evaluating expression: Ident(\"sum1\")")
-# Line 181: Instruction(LoadLo(Constant(1)))
-# Line 182: Instruction(Add(SP))
-# Line 183: Instruction(LoadMem(ACC))
-# Line 184: Instruction(StoreReg(C))
-# Line 185: Comment("Evaluated expression: Ident(\"sum1\")")
-# Line 186: Comment("Evaluating expression: Ident(\"sum2\")")
-# Line 187: Instruction(LoadLo(Constant(0)))
-# Line 188: Instruction(Add(SP))
-# Line 189: Instruction(LoadMem(ACC))
-# Line 190: Instruction(StoreReg(B))
-# Line 191: Comment("Evaluated expression: Ident(\"sum2\")")
+# Line 133: Instruction(LoadMem(ACC))
+# Line 134: Instruction(StoreReg(C))
+# Line 135: Comment("Evaluated expression: Ident(\"n\")")
+# Line 136: Comment("Evaluating expression: Number(1)")
+# Line 137: Instruction(LoadLo(Constant(1)))
+# Line 138: Instruction(LoadHi(Constant(0)))
+# Line 139: Comment("Evaluated expression: Number(1)")
+# Line 140: Instruction(Not(ACC))
+# Line 141: Instruction(StoreReg(B))
+# Line 142: Instruction(LoadLo(Constant(1)))
+# Line 143: Instruction(Add(B))
+# Line 144: Instruction(Add(C))
+# Line 145: Instruction(StoreReg(B))
+# Line 146: Comment("Evaluated expression: Operation(Subtract, Ident(\"n\"), Number(1))")
+# Line 147: Instruction(LoadLo(Constant(2)))
+# Line 148: Instruction(Add(SP))
+# Line 149: Instruction(StoreReg(C))
+# Line 150: Instruction(LoadReg(B))
+# Line 151: Instruction(StoreMem(C))
+# Line 152: Comment("Done  statement Assign { local: \"n\", value: Operation(Subtract, Ident(\"n\"), Number(1)) }")
+# Line 153: Comment("Begin statement Call { local: \"sum2\", function: \"fib\", parameters: [Ident(\"n\")] }")
+# Line 154: Macro("dec sp", [LoadLo(Constant(15)), Add(SP), StoreReg(SP)])
+# Line 155: Macro("push d", [LoadLo(Constant(15)), Add(SP), StoreReg(SP), LoadReg(D), StoreMem(SP)])
+# Line 156: Comment("Evaluating expression: Ident(\"n\")")
+# Line 157: Instruction(LoadLo(Constant(4)))
+# Line 158: Instruction(Add(SP))
+# Line 159: Instruction(LoadMem(ACC))
+# Line 160: Instruction(StoreReg(B))
+# Line 161: Comment("Evaluated expression: Ident(\"n\")")
+# Line 162: Macro("push b", [LoadLo(Constant(15)), Add(SP), StoreReg(SP), LoadReg(B), StoreMem(SP)])
+# Line 163: Macro("call :fib", [LoadLo(Constant(15)), Add(SP), StoreReg(SP), LoadLo(Constant(5)), Add(PC), StoreMem(SP), LoadLo(Label(":fib")), LoadHi(Label(":fib")), StoreReg(PC), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
+# Line 164: Instruction(LoadLo(Constant(1)))
+# Line 165: Instruction(Add(SP))
+# Line 166: Instruction(StoreReg(SP))
+# Line 167: Macro("pop d", [LoadMem(SP), StoreReg(D), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
+# Line 168: Macro("pop b", [LoadMem(SP), StoreReg(B), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
+# Line 169: Instruction(LoadLo(Constant(0)))
+# Line 170: Instruction(Add(SP))
+# Line 171: Instruction(StoreReg(C))
+# Line 172: Instruction(LoadReg(B))
+# Line 173: Instruction(StoreMem(C))
+# Line 174: Comment("Done  statement Call { local: \"sum2\", function: \"fib\", parameters: [Ident(\"n\")] }")
+# Line 175: Comment("Begin statement Return { value: Operation(Add, Ident(\"sum1\"), Ident(\"sum2\")) }")
+# Line 176: Comment("Evaluating expression: Operation(Add, Ident(\"sum1\"), Ident(\"sum2\"))")
+# Line 177: Comment("Evaluating expression: Ident(\"sum1\")")
+# Line 178: Instruction(LoadReg(D))
+# Line 179: Instruction(StoreReg(C))
+# Line 180: Comment("Evaluated expression: Ident(\"sum1\")")
+# Line 181: Comment("Evaluating expression: Ident(\"sum2\")")
+# Line 182: Instruction(LoadLo(Constant(0)))
+# Line 183: Instruction(Add(SP))
+# Line 184: Instruction(LoadMem(ACC))
+# Line 185: Comment("Evaluated expression: Ident(\"sum2\")")
+# Line 186: Instruction(Add(C))
+# Line 187: Instruction(StoreReg(B))
+# Line 188: Comment("Evaluated expression: Operation(Add, Ident(\"sum1\"), Ident(\"sum2\"))")
+# Line 189: Instruction(LoadLo(Constant(3)))
+# Line 190: Instruction(Add(SP))
+# Line 191: Instruction(StoreReg(C))
 # Line 192: Instruction(LoadReg(B))
-# Line 193: Instruction(Add(C))
-# Line 194: Instruction(StoreReg(B))
-# Line 195: Comment("Evaluated expression: Operation(Add, Ident(\"sum1\"), Ident(\"sum2\"))")
-# Line 196: Instruction(LoadLo(Constant(5)))
-# Line 197: Instruction(Add(SP))
-# Line 198: Instruction(StoreReg(C))
-# Line 199: Instruction(LoadReg(B))
-# Line 200: Instruction(StoreMem(C))
-# Line 201: Instruction(LoadLo(Label(":fib__EPILOGUE")))
-# Line 202: Instruction(LoadHi(Label(":fib__EPILOGUE")))
-# Line 203: Instruction(StoreReg(PC))
-# Line 204: Comment("Done  statement Return { value: Operation(Add, Ident(\"sum1\"), Ident(\"sum2\")) }")
-# Line 205: Label(":fib__EPILOGUE")
-# Line 206: Instruction(LoadLo(Constant(2)))
-# Line 207: Instruction(Add(SP))
-# Line 208: Instruction(StoreReg(SP))
-# Line 209: Comment("save regs: [D]")
-# Line 210: Macro("pop d", [LoadMem(SP), StoreReg(D), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
-# Line 211: Macro("ret", [LoadMem(SP), StoreReg(PC)])
-# Line 212: Comment("# Function: main")
-# Line 213: Label(":main")
-# Line 214: Comment("# sp+2 -> RESULT")
-# Line 215: Comment("# sp+1 -> RETURN_ADDRESS")
-# Line 216: Comment("# Register(D) -> result")
-# Line 217: Comment("save regs: [D]")
-# Line 218: Macro("push d", [LoadLo(Constant(15)), Add(SP), StoreReg(SP), LoadReg(D), StoreMem(SP)])
-# Line 219: Comment("Begin statement Call { local: \"result\", function: \"fib\", parameters: [Number(5)] }")
-# Line 220: Macro("dec sp", [LoadLo(Constant(15)), Add(SP), StoreReg(SP)])
-# Line 221: Comment("Evaluating expression: Number(5)")
-# Line 222: Instruction(LoadLo(Constant(5)))
-# Line 223: Instruction(LoadHi(Constant(0)))
-# Line 224: Instruction(StoreReg(B))
-# Line 225: Comment("Evaluated expression: Number(5)")
-# Line 226: Macro("push b", [LoadLo(Constant(15)), Add(SP), StoreReg(SP), LoadReg(B), StoreMem(SP)])
-# Line 227: Macro("call :fib", [LoadLo(Constant(15)), Add(SP), StoreReg(SP), LoadLo(Constant(5)), Add(PC), StoreMem(SP), LoadLo(Label(":fib")), LoadHi(Label(":fib")), StoreReg(PC), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
-# Line 228: Instruction(LoadLo(Constant(1)))
-# Line 229: Instruction(Add(SP))
-# Line 230: Instruction(StoreReg(SP))
-# Line 231: Macro("pop b", [LoadMem(SP), StoreReg(B), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
-# Line 232: Instruction(LoadReg(B))
-# Line 233: Instruction(StoreReg(D))
-# Line 234: Comment("Done  statement Call { local: \"result\", function: \"fib\", parameters: [Number(5)] }")
-# Line 235: Comment("Begin statement Return { value: Ident(\"result\") }")
-# Line 236: Comment("Evaluating expression: Ident(\"result\")")
-# Line 237: Instruction(LoadReg(D))
-# Line 238: Instruction(StoreReg(B))
-# Line 239: Comment("Evaluated expression: Ident(\"result\")")
-# Line 240: Instruction(LoadLo(Constant(2)))
-# Line 241: Instruction(Add(SP))
-# Line 242: Instruction(StoreReg(C))
-# Line 243: Instruction(LoadReg(B))
-# Line 244: Instruction(StoreMem(C))
-# Line 245: Instruction(LoadLo(Label(":main__EPILOGUE")))
-# Line 246: Instruction(LoadHi(Label(":main__EPILOGUE")))
-# Line 247: Instruction(StoreReg(PC))
-# Line 248: Comment("Done  statement Return { value: Ident(\"result\") }")
-# Line 249: Label(":main__EPILOGUE")
-# Line 250: Comment("save regs: [D]")
-# Line 251: Macro("pop d", [LoadMem(SP), StoreReg(D), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
-# Line 252: Macro("ret", [LoadMem(SP), StoreReg(PC)])
+# Line 193: Instruction(StoreMem(C))
+# Line 194: Instruction(LoadLo(Label(":fib__EPILOGUE")))
+# Line 195: Instruction(LoadHi(Label(":fib__EPILOGUE")))
+# Line 196: Instruction(StoreReg(PC))
+# Line 197: Comment("Done  statement Return { value: Operation(Add, Ident(\"sum1\"), Ident(\"sum2\")) }")
+# Line 198: Label(":fib__EPILOGUE")
+# Line 199: Instruction(LoadLo(Constant(1)))
+# Line 200: Instruction(Add(SP))
+# Line 201: Instruction(StoreReg(SP))
+# Line 202: Macro("ret", [LoadMem(SP), StoreReg(PC)])
+# Line 203: Comment("Function { name: \"main\", args: [], locals: {\"result\"}, body: [Call { local: \"result\", function: \"fib\", parameters: [Number(5)] }, Return { value: Ident(\"result\") }] }")
+# Line 204: Comment("# Function: main")
+# Line 205: Label(":main")
+# Line 206: Comment("# sp+1 -> RESULT")
+# Line 207: Comment("# sp+0 -> RETURN_ADDRESS")
+# Line 208: Comment("# Register(D) -> result")
+# Line 209: Comment("Begin statement Call { local: \"result\", function: \"fib\", parameters: [Number(5)] }")
+# Line 210: Macro("dec sp", [LoadLo(Constant(15)), Add(SP), StoreReg(SP)])
+# Line 211: Comment("Evaluating expression: Number(5)")
+# Line 212: Instruction(LoadLo(Constant(5)))
+# Line 213: Instruction(LoadHi(Constant(0)))
+# Line 214: Instruction(StoreReg(B))
+# Line 215: Comment("Evaluated expression: Number(5)")
+# Line 216: Macro("push b", [LoadLo(Constant(15)), Add(SP), StoreReg(SP), LoadReg(B), StoreMem(SP)])
+# Line 217: Macro("call :fib", [LoadLo(Constant(15)), Add(SP), StoreReg(SP), LoadLo(Constant(5)), Add(PC), StoreMem(SP), LoadLo(Label(":fib")), LoadHi(Label(":fib")), StoreReg(PC), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
+# Line 218: Instruction(LoadLo(Constant(1)))
+# Line 219: Instruction(Add(SP))
+# Line 220: Instruction(StoreReg(SP))
+# Line 221: Macro("pop b", [LoadMem(SP), StoreReg(B), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
+# Line 222: Instruction(LoadReg(B))
+# Line 223: Instruction(StoreReg(D))
+# Line 224: Comment("Done  statement Call { local: \"result\", function: \"fib\", parameters: [Number(5)] }")
+# Line 225: Comment("Begin statement Return { value: Ident(\"result\") }")
+# Line 226: Comment("Evaluating expression: Ident(\"result\")")
+# Line 227: Instruction(LoadReg(D))
+# Line 228: Instruction(StoreReg(B))
+# Line 229: Comment("Evaluated expression: Ident(\"result\")")
+# Line 230: Instruction(LoadLo(Constant(1)))
+# Line 231: Instruction(Add(SP))
+# Line 232: Instruction(StoreReg(C))
+# Line 233: Instruction(LoadReg(B))
+# Line 234: Instruction(StoreMem(C))
+# Line 235: Instruction(LoadLo(Label(":main__EPILOGUE")))
+# Line 236: Instruction(LoadHi(Label(":main__EPILOGUE")))
+# Line 237: Instruction(StoreReg(PC))
+# Line 238: Comment("Done  statement Return { value: Ident(\"result\") }")
+# Line 239: Label(":main__EPILOGUE")
+# Line 240: Macro("ret", [LoadMem(SP), StoreReg(PC)])
+# (":fib", 24)
+# (":fib_IF_SKIP_0", 46)
+# (":fib_IF_SKIP_1", 82)
+# (":fib__EPILOGUE", 195)
+# (":main", 200)
+# (":main__EPILOGUE", 243)
+# set stack to 0xff
+8f # @00 LoadLo(Constant(15))
+06 # @01 StoreReg(SP)
+# call main
+8f # @02 LoadLo(Constant(15))
+5e # @03 Add(SP)
+06 # @04 StoreReg(SP)
+# begin resolving macro: 'call :main'
+8f # @05 LoadLo(Constant(15))
+5e # @06 Add(SP)
+06 # @07 StoreReg(SP)
+85 # @08 LoadLo(Constant(5))
+5f # @09 Add(PC)
+0e # @0a StoreMem(SP)
+88 # @0b LoadLo(Label(":main")) LoadLo(Constant(8))
+9c # @0c LoadHi(Label(":main")) LoadHi(Constant(12))
+07 # @0d StoreReg(PC)
+81 # @0e LoadLo(Constant(1))
+5e # @0f Add(SP)
+06 # @10 StoreReg(SP)
+# end resolving macro: 'call :main'
+# begin resolving macro: 'pop b'
+7e # @11 LoadMem(SP)
+01 # @12 StoreReg(B)
+81 # @13 LoadLo(Constant(1))
+5e # @14 Add(SP)
+06 # @15 StoreReg(SP)
+# end resolving macro: 'pop b'
+# begin resolving macro: 'halt'
+8f # @16 LoadLo(Constant(15))
+07 # @17 StoreReg(PC)
+# end resolving macro: 'halt'
+# Function { name: "fib", args: ["n"], locals: {"sum1", "sum2"}, body: [If { predicate: Operation(Equals, Ident("n"), Number(0)), when_true: [Return { value: Number(1) }] }, Assign { local: "n", value: Operation(Subtract, Ident("n"), Number(1)) }, If { predicate: Operation(Equals, Ident("n"), Number(0)), when_true: [Return { value: Number(1) }] }, Call { local: "sum1", function: "fib", parameters: [Ident("n")] }, Assign { local: "n", value: Operation(Subtract, Ident("n"), Number(1)) }, Call { local: "sum2", function: "fib", parameters: [Ident("n")] }, Return { value: Operation(Add, Ident("sum1"), Ident("sum2")) }] }
+# # Function: fib
+# ":fib"
+# # sp+3 -> RESULT
+# # sp+2 -> n
+# # sp+1 -> RETURN_ADDRESS
+# # Register(D) -> sum1
+# # Stack(0) -> sum2
+# create stack space
+8f # @18 LoadLo(Constant(15))
+5e # @19 Add(SP)
+06 # @1a StoreReg(SP)
+# Begin statement If { predicate: Operation(Equals, Ident("n"), Number(0)), when_true: [Return { value: Number(1) }] }
+# Evaluating expression: Operation(Equals, Ident("n"), Number(0))
+# Evaluating expression: Ident("n")
+82 # @1b LoadLo(Constant(2))
+5e # @1c Add(SP)
+78 # @1d LoadMem(ACC)
+02 # @1e StoreReg(C)
+# Evaluated expression: Ident("n")
+# Evaluating expression: Number(0)
+80 # @1f LoadLo(Constant(0))
+90 # @20 LoadHi(Constant(0))
+# Evaluated expression: Number(0)
+42 # @21 Xor(C)
+# Evaluated expression: Operation(Equals, Ident("n"), Number(0))
+ec # @22 Jnz(Label(":fib_IF_SKIP_0")) Jnz(Constant(12))
+# Begin statement Return { value: Number(1) }
+# Evaluating expression: Number(1)
+81 # @23 LoadLo(Constant(1))
+90 # @24 LoadHi(Constant(0))
+01 # @25 StoreReg(B)
+# Evaluated expression: Number(1)
+83 # @26 LoadLo(Constant(3))
+5e # @27 Add(SP)
+02 # @28 StoreReg(C)
+71 # @29 LoadReg(B)
+0a # @2a StoreMem(C)
+83 # @2b LoadLo(Label(":fib__EPILOGUE")) LoadLo(Constant(3))
+9c # @2c LoadHi(Label(":fib__EPILOGUE")) LoadHi(Constant(12))
+07 # @2d StoreReg(PC)
+# Done  statement Return { value: Number(1) }
+# ":fib_IF_SKIP_0"
+# Done  statement If { predicate: Operation(Equals, Ident("n"), Number(0)), when_true: [Return { value: Number(1) }] }
+# Begin statement Assign { local: "n", value: Operation(Subtract, Ident("n"), Number(1)) }
+# Evaluating expression: Operation(Subtract, Ident("n"), Number(1))
+# Evaluating expression: Ident("n")
+82 # @2e LoadLo(Constant(2))
+5e # @2f Add(SP)
+78 # @30 LoadMem(ACC)
+02 # @31 StoreReg(C)
+# Evaluated expression: Ident("n")
+# Evaluating expression: Number(1)
+81 # @32 LoadLo(Constant(1))
+90 # @33 LoadHi(Constant(0))
+# Evaluated expression: Number(1)
+60 # @34 Not(ACC)
+01 # @35 StoreReg(B)
+81 # @36 LoadLo(Constant(1))
+59 # @37 Add(B)
+5a # @38 Add(C)
+01 # @39 StoreReg(B)
+# Evaluated expression: Operation(Subtract, Ident("n"), Number(1))
+82 # @3a LoadLo(Constant(2))
+5e # @3b Add(SP)
+02 # @3c StoreReg(C)
+71 # @3d LoadReg(B)
+0a # @3e StoreMem(C)
+# Done  statement Assign { local: "n", value: Operation(Subtract, Ident("n"), Number(1)) }
+# Begin statement If { predicate: Operation(Equals, Ident("n"), Number(0)), when_true: [Return { value: Number(1) }] }
+# Evaluating expression: Operation(Equals, Ident("n"), Number(0))
+# Evaluating expression: Ident("n")
+82 # @3f LoadLo(Constant(2))
+5e # @40 Add(SP)
+78 # @41 LoadMem(ACC)
+02 # @42 StoreReg(C)
+# Evaluated expression: Ident("n")
+# Evaluating expression: Number(0)
+80 # @43 LoadLo(Constant(0))
+90 # @44 LoadHi(Constant(0))
+# Evaluated expression: Number(0)
+42 # @45 Xor(C)
+# Evaluated expression: Operation(Equals, Ident("n"), Number(0))
+ec # @46 Jnz(Label(":fib_IF_SKIP_1")) Jnz(Constant(12))
+# Begin statement Return { value: Number(1) }
+# Evaluating expression: Number(1)
+81 # @47 LoadLo(Constant(1))
+90 # @48 LoadHi(Constant(0))
+01 # @49 StoreReg(B)
+# Evaluated expression: Number(1)
+83 # @4a LoadLo(Constant(3))
+5e # @4b Add(SP)
+02 # @4c StoreReg(C)
+71 # @4d LoadReg(B)
+0a # @4e StoreMem(C)
+83 # @4f LoadLo(Label(":fib__EPILOGUE")) LoadLo(Constant(3))
+9c # @50 LoadHi(Label(":fib__EPILOGUE")) LoadHi(Constant(12))
+07 # @51 StoreReg(PC)
+# Done  statement Return { value: Number(1) }
+# ":fib_IF_SKIP_1"
+# Done  statement If { predicate: Operation(Equals, Ident("n"), Number(0)), when_true: [Return { value: Number(1) }] }
+# Begin statement Call { local: "sum1", function: "fib", parameters: [Ident("n")] }
+# begin resolving macro: 'dec sp'
+8f # @52 LoadLo(Constant(15))
+5e # @53 Add(SP)
+06 # @54 StoreReg(SP)
+# end resolving macro: 'dec sp'
+# Evaluating expression: Ident("n")
+83 # @55 LoadLo(Constant(3))
+5e # @56 Add(SP)
+78 # @57 LoadMem(ACC)
+01 # @58 StoreReg(B)
+# Evaluated expression: Ident("n")
+# begin resolving macro: 'push b'
+8f # @59 LoadLo(Constant(15))
+5e # @5a Add(SP)
+06 # @5b StoreReg(SP)
+71 # @5c LoadReg(B)
+0e # @5d StoreMem(SP)
+# end resolving macro: 'push b'
+# begin resolving macro: 'call :fib'
+8f # @5e LoadLo(Constant(15))
+5e # @5f Add(SP)
+06 # @60 StoreReg(SP)
+85 # @61 LoadLo(Constant(5))
+5f # @62 Add(PC)
+0e # @63 StoreMem(SP)
+88 # @64 LoadLo(Label(":fib")) LoadLo(Constant(8))
+91 # @65 LoadHi(Label(":fib")) LoadHi(Constant(1))
+07 # @66 StoreReg(PC)
+81 # @67 LoadLo(Constant(1))
+5e # @68 Add(SP)
+06 # @69 StoreReg(SP)
+# end resolving macro: 'call :fib'
+81 # @6a LoadLo(Constant(1))
+5e # @6b Add(SP)
+06 # @6c StoreReg(SP)
+# begin resolving macro: 'pop b'
+7e # @6d LoadMem(SP)
+01 # @6e StoreReg(B)
+81 # @6f LoadLo(Constant(1))
+5e # @70 Add(SP)
+06 # @71 StoreReg(SP)
+# end resolving macro: 'pop b'
+71 # @72 LoadReg(B)
+03 # @73 StoreReg(D)
+# Done  statement Call { local: "sum1", function: "fib", parameters: [Ident("n")] }
+# Begin statement Assign { local: "n", value: Operation(Subtract, Ident("n"), Number(1)) }
+# Evaluating expression: Operation(Subtract, Ident("n"), Number(1))
+# Evaluating expression: Ident("n")
+82 # @74 LoadLo(Constant(2))
+5e # @75 Add(SP)
+78 # @76 LoadMem(ACC)
+02 # @77 StoreReg(C)
+# Evaluated expression: Ident("n")
+# Evaluating expression: Number(1)
+81 # @78 LoadLo(Constant(1))
+90 # @79 LoadHi(Constant(0))
+# Evaluated expression: Number(1)
+60 # @7a Not(ACC)
+01 # @7b StoreReg(B)
+81 # @7c LoadLo(Constant(1))
+59 # @7d Add(B)
+5a # @7e Add(C)
+01 # @7f StoreReg(B)
+# Evaluated expression: Operation(Subtract, Ident("n"), Number(1))
+82 # @80 LoadLo(Constant(2))
+5e # @81 Add(SP)
+02 # @82 StoreReg(C)
+71 # @83 LoadReg(B)
+0a # @84 StoreMem(C)
+# Done  statement Assign { local: "n", value: Operation(Subtract, Ident("n"), Number(1)) }
+# Begin statement Call { local: "sum2", function: "fib", parameters: [Ident("n")] }
+# begin resolving macro: 'dec sp'
+8f # @85 LoadLo(Constant(15))
+5e # @86 Add(SP)
+06 # @87 StoreReg(SP)
+# end resolving macro: 'dec sp'
+# begin resolving macro: 'push d'
+8f # @88 LoadLo(Constant(15))
+5e # @89 Add(SP)
+06 # @8a StoreReg(SP)
+73 # @8b LoadReg(D)
+0e # @8c StoreMem(SP)
+# end resolving macro: 'push d'
+# Evaluating expression: Ident("n")
+84 # @8d LoadLo(Constant(4))
+5e # @8e Add(SP)
+78 # @8f LoadMem(ACC)
+01 # @90 StoreReg(B)
+# Evaluated expression: Ident("n")
+# begin resolving macro: 'push b'
+8f # @91 LoadLo(Constant(15))
+5e # @92 Add(SP)
+06 # @93 StoreReg(SP)
+71 # @94 LoadReg(B)
+0e # @95 StoreMem(SP)
+# end resolving macro: 'push b'
+# begin resolving macro: 'call :fib'
+8f # @96 LoadLo(Constant(15))
+5e # @97 Add(SP)
+06 # @98 StoreReg(SP)
+85 # @99 LoadLo(Constant(5))
+5f # @9a Add(PC)
+0e # @9b StoreMem(SP)
+88 # @9c LoadLo(Label(":fib")) LoadLo(Constant(8))
+91 # @9d LoadHi(Label(":fib")) LoadHi(Constant(1))
+07 # @9e StoreReg(PC)
+81 # @9f LoadLo(Constant(1))
+5e # @a0 Add(SP)
+06 # @a1 StoreReg(SP)
+# end resolving macro: 'call :fib'
+81 # @a2 LoadLo(Constant(1))
+5e # @a3 Add(SP)
+06 # @a4 StoreReg(SP)
+# begin resolving macro: 'pop d'
+7e # @a5 LoadMem(SP)
+03 # @a6 StoreReg(D)
+81 # @a7 LoadLo(Constant(1))
+5e # @a8 Add(SP)
+06 # @a9 StoreReg(SP)
+# end resolving macro: 'pop d'
+# begin resolving macro: 'pop b'
+7e # @aa LoadMem(SP)
+01 # @ab StoreReg(B)
+81 # @ac LoadLo(Constant(1))
+5e # @ad Add(SP)
+06 # @ae StoreReg(SP)
+# end resolving macro: 'pop b'
+80 # @af LoadLo(Constant(0))
+5e # @b0 Add(SP)
+02 # @b1 StoreReg(C)
+71 # @b2 LoadReg(B)
+0a # @b3 StoreMem(C)
+# Done  statement Call { local: "sum2", function: "fib", parameters: [Ident("n")] }
+# Begin statement Return { value: Operation(Add, Ident("sum1"), Ident("sum2")) }
+# Evaluating expression: Operation(Add, Ident("sum1"), Ident("sum2"))
+# Evaluating expression: Ident("sum1")
+73 # @b4 LoadReg(D)
+02 # @b5 StoreReg(C)
+# Evaluated expression: Ident("sum1")
+# Evaluating expression: Ident("sum2")
+80 # @b6 LoadLo(Constant(0))
+5e # @b7 Add(SP)
+78 # @b8 LoadMem(ACC)
+# Evaluated expression: Ident("sum2")
+5a # @b9 Add(C)
+01 # @ba StoreReg(B)
+# Evaluated expression: Operation(Add, Ident("sum1"), Ident("sum2"))
+83 # @bb LoadLo(Constant(3))
+5e # @bc Add(SP)
+02 # @bd StoreReg(C)
+71 # @be LoadReg(B)
+0a # @bf StoreMem(C)
+83 # @c0 LoadLo(Label(":fib__EPILOGUE")) LoadLo(Constant(3))
+9c # @c1 LoadHi(Label(":fib__EPILOGUE")) LoadHi(Constant(12))
+07 # @c2 StoreReg(PC)
+# Done  statement Return { value: Operation(Add, Ident("sum1"), Ident("sum2")) }
+# ":fib__EPILOGUE"
+81 # @c3 LoadLo(Constant(1))
+5e # @c4 Add(SP)
+06 # @c5 StoreReg(SP)
+# begin resolving macro: 'ret'
+7e # @c6 LoadMem(SP)
+07 # @c7 StoreReg(PC)
+# end resolving macro: 'ret'
+# Function { name: "main", args: [], locals: {"result"}, body: [Call { local: "result", function: "fib", parameters: [Number(5)] }, Return { value: Ident("result") }] }
+# # Function: main
+# ":main"
+# # sp+1 -> RESULT
+# # sp+0 -> RETURN_ADDRESS
+# # Register(D) -> result
+# Begin statement Call { local: "result", function: "fib", parameters: [Number(5)] }
+# begin resolving macro: 'dec sp'
+8f # @c8 LoadLo(Constant(15))
+5e # @c9 Add(SP)
+06 # @ca StoreReg(SP)
+# end resolving macro: 'dec sp'
+# Evaluating expression: Number(5)
+85 # @cb LoadLo(Constant(5))
+90 # @cc LoadHi(Constant(0))
+01 # @cd StoreReg(B)
+# Evaluated expression: Number(5)
+# begin resolving macro: 'push b'
+8f # @ce LoadLo(Constant(15))
+5e # @cf Add(SP)
+06 # @d0 StoreReg(SP)
+71 # @d1 LoadReg(B)
+0e # @d2 StoreMem(SP)
+# end resolving macro: 'push b'
+# begin resolving macro: 'call :fib'
+8f # @d3 LoadLo(Constant(15))
+5e # @d4 Add(SP)
+06 # @d5 StoreReg(SP)
+85 # @d6 LoadLo(Constant(5))
+5f # @d7 Add(PC)
+0e # @d8 StoreMem(SP)
+88 # @d9 LoadLo(Label(":fib")) LoadLo(Constant(8))
+91 # @da LoadHi(Label(":fib")) LoadHi(Constant(1))
+07 # @db StoreReg(PC)
+81 # @dc LoadLo(Constant(1))
+5e # @dd Add(SP)
+06 # @de StoreReg(SP)
+# end resolving macro: 'call :fib'
+81 # @df LoadLo(Constant(1))
+5e # @e0 Add(SP)
+06 # @e1 StoreReg(SP)
+# begin resolving macro: 'pop b'
+7e # @e2 LoadMem(SP)
+01 # @e3 StoreReg(B)
+81 # @e4 LoadLo(Constant(1))
+5e # @e5 Add(SP)
+06 # @e6 StoreReg(SP)
+# end resolving macro: 'pop b'
+71 # @e7 LoadReg(B)
+03 # @e8 StoreReg(D)
+# Done  statement Call { local: "result", function: "fib", parameters: [Number(5)] }
+# Begin statement Return { value: Ident("result") }
+# Evaluating expression: Ident("result")
+73 # @e9 LoadReg(D)
+01 # @ea StoreReg(B)
+# Evaluated expression: Ident("result")
+81 # @eb LoadLo(Constant(1))
+5e # @ec Add(SP)
+02 # @ed StoreReg(C)
+71 # @ee LoadReg(B)
+0a # @ef StoreMem(C)
+83 # @f0 LoadLo(Label(":main__EPILOGUE")) LoadLo(Constant(3))
+9f # @f1 LoadHi(Label(":main__EPILOGUE")) LoadHi(Constant(15))
+07 # @f2 StoreReg(PC)
+# Done  statement Return { value: Ident("result") }
+# ":main__EPILOGUE"
+# begin resolving macro: 'ret'
+7e # @f3 LoadMem(SP)
+07 # @f4 StoreReg(PC)
+# end resolving macro: 'ret'
+# begin simulation
+# PC:00 [0, 0, 0, 0, 0, 0, 0, 0] LoadLo(Constant(15)) [255, 0, 0, 0, 0, 0, 0, 0]
+# PC:01 [255, 0, 0, 0, 0, 0, 0, 1] StoreReg(SP) [255, 0, 0, 0, 0, 0, 255, 1]
+# PC:02 [255, 0, 0, 0, 0, 0, 255, 2] LoadLo(Constant(15)) [255, 0, 0, 0, 0, 0, 255, 2]
+# PC:03 [255, 0, 0, 0, 0, 0, 255, 3] Add(SP) [254, 0, 0, 0, 0, 1, 255, 3]
+# PC:04 [254, 0, 0, 0, 0, 1, 255, 4] StoreReg(SP) [254, 0, 0, 0, 0, 1, 254, 4]
+# PC:05 [254, 0, 0, 0, 0, 1, 254, 5] LoadLo(Constant(15)) [255, 0, 0, 0, 0, 1, 254, 5]
+# PC:06 [255, 0, 0, 0, 0, 1, 254, 6] Add(SP) [253, 0, 0, 0, 0, 1, 254, 6]
+# PC:07 [253, 0, 0, 0, 0, 1, 254, 7] StoreReg(SP) [253, 0, 0, 0, 0, 1, 253, 7]
+# PC:08 [253, 0, 0, 0, 0, 1, 253, 8] LoadLo(Constant(5)) [5, 0, 0, 0, 0, 1, 253, 8]
+# PC:09 [5, 0, 0, 0, 0, 1, 253, 9] Add(PC) [14, 0, 0, 0, 0, 0, 253, 9]
+# PC:0a [14, 0, 0, 0, 0, 0, 253, 10] StoreMem(SP) [14, 0, 0, 0, 0, 0, 253, 10]
+# PC:0b [14, 0, 0, 0, 0, 0, 253, 11] LoadLo(Constant(8)) [248, 0, 0, 0, 0, 0, 253, 11]
+# PC:0c [248, 0, 0, 0, 0, 0, 253, 12] LoadHi(Constant(12)) [200, 0, 0, 0, 0, 0, 253, 12]
+# PC:0d [200, 0, 0, 0, 0, 0, 253, 13] StoreReg(PC) [200, 0, 0, 0, 0, 0, 253, 200]
+# PC:c8 [200, 0, 0, 0, 0, 0, 253, 200] LoadLo(Constant(15)) [255, 0, 0, 0, 0, 0, 253, 200]
+# PC:c9 [255, 0, 0, 0, 0, 0, 253, 201] Add(SP) [252, 0, 0, 0, 0, 1, 253, 201]
+# PC:ca [252, 0, 0, 0, 0, 1, 253, 202] StoreReg(SP) [252, 0, 0, 0, 0, 1, 252, 202]
+# PC:cb [252, 0, 0, 0, 0, 1, 252, 203] LoadLo(Constant(5)) [5, 0, 0, 0, 0, 1, 252, 203]
+# PC:cc [5, 0, 0, 0, 0, 1, 252, 204] LoadHi(Constant(0)) [5, 0, 0, 0, 0, 1, 252, 204]
+# PC:cd [5, 0, 0, 0, 0, 1, 252, 205] StoreReg(B) [5, 5, 0, 0, 0, 1, 252, 205]
+# PC:ce [5, 5, 0, 0, 0, 1, 252, 206] LoadLo(Constant(15)) [255, 5, 0, 0, 0, 1, 252, 206]
+# PC:cf [255, 5, 0, 0, 0, 1, 252, 207] Add(SP) [251, 5, 0, 0, 0, 1, 252, 207]
+# PC:d0 [251, 5, 0, 0, 0, 1, 252, 208] StoreReg(SP) [251, 5, 0, 0, 0, 1, 251, 208]
+# PC:d1 [251, 5, 0, 0, 0, 1, 251, 209] LoadReg(B) [5, 5, 0, 0, 0, 1, 251, 209]
+# PC:d2 [5, 5, 0, 0, 0, 1, 251, 210] StoreMem(SP) [5, 5, 0, 0, 0, 1, 251, 210]
+# PC:d3 [5, 5, 0, 0, 0, 1, 251, 211] LoadLo(Constant(15)) [255, 5, 0, 0, 0, 1, 251, 211]
+# PC:d4 [255, 5, 0, 0, 0, 1, 251, 212] Add(SP) [250, 5, 0, 0, 0, 1, 251, 212]
+# PC:d5 [250, 5, 0, 0, 0, 1, 251, 213] StoreReg(SP) [250, 5, 0, 0, 0, 1, 250, 213]
+# PC:d6 [250, 5, 0, 0, 0, 1, 250, 214] LoadLo(Constant(5)) [5, 5, 0, 0, 0, 1, 250, 214]
+# PC:d7 [5, 5, 0, 0, 0, 1, 250, 215] Add(PC) [220, 5, 0, 0, 0, 0, 250, 215]
+# PC:d8 [220, 5, 0, 0, 0, 0, 250, 216] StoreMem(SP) [220, 5, 0, 0, 0, 0, 250, 216]
+# PC:d9 [220, 5, 0, 0, 0, 0, 250, 217] LoadLo(Constant(8)) [248, 5, 0, 0, 0, 0, 250, 217]
+# PC:da [248, 5, 0, 0, 0, 0, 250, 218] LoadHi(Constant(1)) [24, 5, 0, 0, 0, 0, 250, 218]
+# PC:db [24, 5, 0, 0, 0, 0, 250, 219] StoreReg(PC) [24, 5, 0, 0, 0, 0, 250, 24]
+# PC:18 [24, 5, 0, 0, 0, 0, 250, 24] LoadLo(Constant(15)) [255, 5, 0, 0, 0, 0, 250, 24]
+# PC:19 [255, 5, 0, 0, 0, 0, 250, 25] Add(SP) [249, 5, 0, 0, 0, 1, 250, 25]
+# PC:1a [249, 5, 0, 0, 0, 1, 250, 26] StoreReg(SP) [249, 5, 0, 0, 0, 1, 249, 26]
+# PC:1b [249, 5, 0, 0, 0, 1, 249, 27] LoadLo(Constant(2)) [2, 5, 0, 0, 0, 1, 249, 27]
+# PC:1c [2, 5, 0, 0, 0, 1, 249, 28] Add(SP) [251, 5, 0, 0, 0, 0, 249, 28]
+# PC:1d [251, 5, 0, 0, 0, 0, 249, 29] LoadMem(ACC) [5, 5, 0, 0, 0, 0, 249, 29]
+# PC:1e [5, 5, 0, 0, 0, 0, 249, 30] StoreReg(C) [5, 5, 5, 0, 0, 0, 249, 30]
+# PC:1f [5, 5, 5, 0, 0, 0, 249, 31] LoadLo(Constant(0)) [0, 5, 5, 0, 0, 0, 249, 31]
+# PC:20 [0, 5, 5, 0, 0, 0, 249, 32] LoadHi(Constant(0)) [0, 5, 5, 0, 0, 0, 249, 32]
+# PC:21 [0, 5, 5, 0, 0, 0, 249, 33] Xor(C) [5, 5, 5, 0, 0, 0, 249, 33]
+# PC:22 [5, 5, 5, 0, 0, 0, 249, 34] Jnz(Constant(12)) [5, 5, 5, 0, 0, 0, 249, 46]
+# PC:2e [5, 5, 5, 0, 0, 0, 249, 46] LoadLo(Constant(2)) [2, 5, 5, 0, 0, 0, 249, 46]
+# PC:2f [2, 5, 5, 0, 0, 0, 249, 47] Add(SP) [251, 5, 5, 0, 0, 0, 249, 47]
+# PC:30 [251, 5, 5, 0, 0, 0, 249, 48] LoadMem(ACC) [5, 5, 5, 0, 0, 0, 249, 48]
+# PC:31 [5, 5, 5, 0, 0, 0, 249, 49] StoreReg(C) [5, 5, 5, 0, 0, 0, 249, 49]
+# PC:32 [5, 5, 5, 0, 0, 0, 249, 50] LoadLo(Constant(1)) [1, 5, 5, 0, 0, 0, 249, 50]
+# PC:33 [1, 5, 5, 0, 0, 0, 249, 51] LoadHi(Constant(0)) [1, 5, 5, 0, 0, 0, 249, 51]
+# PC:34 [1, 5, 5, 0, 0, 0, 249, 52] Not(ACC) [254, 5, 5, 0, 0, 0, 249, 52]
+# PC:35 [254, 5, 5, 0, 0, 0, 249, 53] StoreReg(B) [254, 254, 5, 0, 0, 0, 249, 53]
+# PC:36 [254, 254, 5, 0, 0, 0, 249, 54] LoadLo(Constant(1)) [1, 254, 5, 0, 0, 0, 249, 54]
+# PC:37 [1, 254, 5, 0, 0, 0, 249, 55] Add(B) [255, 254, 5, 0, 0, 0, 249, 55]
+# PC:38 [255, 254, 5, 0, 0, 0, 249, 56] Add(C) [4, 254, 5, 0, 0, 1, 249, 56]
+# PC:39 [4, 254, 5, 0, 0, 1, 249, 57] StoreReg(B) [4, 4, 5, 0, 0, 1, 249, 57]
+# PC:3a [4, 4, 5, 0, 0, 1, 249, 58] LoadLo(Constant(2)) [2, 4, 5, 0, 0, 1, 249, 58]
+# PC:3b [2, 4, 5, 0, 0, 1, 249, 59] Add(SP) [251, 4, 5, 0, 0, 0, 249, 59]
+# PC:3c [251, 4, 5, 0, 0, 0, 249, 60] StoreReg(C) [251, 4, 251, 0, 0, 0, 249, 60]
+# PC:3d [251, 4, 251, 0, 0, 0, 249, 61] LoadReg(B) [4, 4, 251, 0, 0, 0, 249, 61]
+# PC:3e [4, 4, 251, 0, 0, 0, 249, 62] StoreMem(C) [4, 4, 251, 0, 0, 0, 249, 62]
+# PC:3f [4, 4, 251, 0, 0, 0, 249, 63] LoadLo(Constant(2)) [2, 4, 251, 0, 0, 0, 249, 63]
+# PC:40 [2, 4, 251, 0, 0, 0, 249, 64] Add(SP) [251, 4, 251, 0, 0, 0, 249, 64]
+# PC:41 [251, 4, 251, 0, 0, 0, 249, 65] LoadMem(ACC) [4, 4, 251, 0, 0, 0, 249, 65]
+# PC:42 [4, 4, 251, 0, 0, 0, 249, 66] StoreReg(C) [4, 4, 4, 0, 0, 0, 249, 66]
+# PC:43 [4, 4, 4, 0, 0, 0, 249, 67] LoadLo(Constant(0)) [0, 4, 4, 0, 0, 0, 249, 67]
+# PC:44 [0, 4, 4, 0, 0, 0, 249, 68] LoadHi(Constant(0)) [0, 4, 4, 0, 0, 0, 249, 68]
+# PC:45 [0, 4, 4, 0, 0, 0, 249, 69] Xor(C) [4, 4, 4, 0, 0, 0, 249, 69]
+# PC:46 [4, 4, 4, 0, 0, 0, 249, 70] Jnz(Constant(12)) [4, 4, 4, 0, 0, 0, 249, 82]
+# PC:52 [4, 4, 4, 0, 0, 0, 249, 82] LoadLo(Constant(15)) [255, 4, 4, 0, 0, 0, 249, 82]
+# PC:53 [255, 4, 4, 0, 0, 0, 249, 83] Add(SP) [248, 4, 4, 0, 0, 1, 249, 83]
+# PC:54 [248, 4, 4, 0, 0, 1, 249, 84] StoreReg(SP) [248, 4, 4, 0, 0, 1, 248, 84]
+# PC:55 [248, 4, 4, 0, 0, 1, 248, 85] LoadLo(Constant(3)) [3, 4, 4, 0, 0, 1, 248, 85]
+# PC:56 [3, 4, 4, 0, 0, 1, 248, 86] Add(SP) [251, 4, 4, 0, 0, 0, 248, 86]
+# PC:57 [251, 4, 4, 0, 0, 0, 248, 87] LoadMem(ACC) [4, 4, 4, 0, 0, 0, 248, 87]
+# PC:58 [4, 4, 4, 0, 0, 0, 248, 88] StoreReg(B) [4, 4, 4, 0, 0, 0, 248, 88]
+# PC:59 [4, 4, 4, 0, 0, 0, 248, 89] LoadLo(Constant(15)) [255, 4, 4, 0, 0, 0, 248, 89]
+# PC:5a [255, 4, 4, 0, 0, 0, 248, 90] Add(SP) [247, 4, 4, 0, 0, 1, 248, 90]
+# PC:5b [247, 4, 4, 0, 0, 1, 248, 91] StoreReg(SP) [247, 4, 4, 0, 0, 1, 247, 91]
+# PC:5c [247, 4, 4, 0, 0, 1, 247, 92] LoadReg(B) [4, 4, 4, 0, 0, 1, 247, 92]
+# PC:5d [4, 4, 4, 0, 0, 1, 247, 93] StoreMem(SP) [4, 4, 4, 0, 0, 1, 247, 93]
+# PC:5e [4, 4, 4, 0, 0, 1, 247, 94] LoadLo(Constant(15)) [255, 4, 4, 0, 0, 1, 247, 94]
+# PC:5f [255, 4, 4, 0, 0, 1, 247, 95] Add(SP) [246, 4, 4, 0, 0, 1, 247, 95]
+# PC:60 [246, 4, 4, 0, 0, 1, 247, 96] StoreReg(SP) [246, 4, 4, 0, 0, 1, 246, 96]
+# PC:61 [246, 4, 4, 0, 0, 1, 246, 97] LoadLo(Constant(5)) [5, 4, 4, 0, 0, 1, 246, 97]
+# PC:62 [5, 4, 4, 0, 0, 1, 246, 98] Add(PC) [103, 4, 4, 0, 0, 0, 246, 98]
+# PC:63 [103, 4, 4, 0, 0, 0, 246, 99] StoreMem(SP) [103, 4, 4, 0, 0, 0, 246, 99]
+# PC:64 [103, 4, 4, 0, 0, 0, 246, 100] LoadLo(Constant(8)) [248, 4, 4, 0, 0, 0, 246, 100]
+# PC:65 [248, 4, 4, 0, 0, 0, 246, 101] LoadHi(Constant(1)) [24, 4, 4, 0, 0, 0, 246, 101]
+# PC:66 [24, 4, 4, 0, 0, 0, 246, 102] StoreReg(PC) [24, 4, 4, 0, 0, 0, 246, 24]
+# PC:18 [24, 4, 4, 0, 0, 0, 246, 24] LoadLo(Constant(15)) [255, 4, 4, 0, 0, 0, 246, 24]
+# PC:19 [255, 4, 4, 0, 0, 0, 246, 25] Add(SP) [245, 4, 4, 0, 0, 1, 246, 25]
+# PC:1a [245, 4, 4, 0, 0, 1, 246, 26] StoreReg(SP) [245, 4, 4, 0, 0, 1, 245, 26]
+# PC:1b [245, 4, 4, 0, 0, 1, 245, 27] LoadLo(Constant(2)) [2, 4, 4, 0, 0, 1, 245, 27]
+# PC:1c [2, 4, 4, 0, 0, 1, 245, 28] Add(SP) [247, 4, 4, 0, 0, 0, 245, 28]
+# PC:1d [247, 4, 4, 0, 0, 0, 245, 29] LoadMem(ACC) [4, 4, 4, 0, 0, 0, 245, 29]
+# PC:1e [4, 4, 4, 0, 0, 0, 245, 30] StoreReg(C) [4, 4, 4, 0, 0, 0, 245, 30]
+# PC:1f [4, 4, 4, 0, 0, 0, 245, 31] LoadLo(Constant(0)) [0, 4, 4, 0, 0, 0, 245, 31]
+# PC:20 [0, 4, 4, 0, 0, 0, 245, 32] LoadHi(Constant(0)) [0, 4, 4, 0, 0, 0, 245, 32]
+# PC:21 [0, 4, 4, 0, 0, 0, 245, 33] Xor(C) [4, 4, 4, 0, 0, 0, 245, 33]
+# PC:22 [4, 4, 4, 0, 0, 0, 245, 34] Jnz(Constant(12)) [4, 4, 4, 0, 0, 0, 245, 46]
+# PC:2e [4, 4, 4, 0, 0, 0, 245, 46] LoadLo(Constant(2)) [2, 4, 4, 0, 0, 0, 245, 46]
+# PC:2f [2, 4, 4, 0, 0, 0, 245, 47] Add(SP) [247, 4, 4, 0, 0, 0, 245, 47]
+# PC:30 [247, 4, 4, 0, 0, 0, 245, 48] LoadMem(ACC) [4, 4, 4, 0, 0, 0, 245, 48]
+# PC:31 [4, 4, 4, 0, 0, 0, 245, 49] StoreReg(C) [4, 4, 4, 0, 0, 0, 245, 49]
+# PC:32 [4, 4, 4, 0, 0, 0, 245, 50] LoadLo(Constant(1)) [1, 4, 4, 0, 0, 0, 245, 50]
+# PC:33 [1, 4, 4, 0, 0, 0, 245, 51] LoadHi(Constant(0)) [1, 4, 4, 0, 0, 0, 245, 51]
+# PC:34 [1, 4, 4, 0, 0, 0, 245, 52] Not(ACC) [254, 4, 4, 0, 0, 0, 245, 52]
+# PC:35 [254, 4, 4, 0, 0, 0, 245, 53] StoreReg(B) [254, 254, 4, 0, 0, 0, 245, 53]
+# PC:36 [254, 254, 4, 0, 0, 0, 245, 54] LoadLo(Constant(1)) [1, 254, 4, 0, 0, 0, 245, 54]
+# PC:37 [1, 254, 4, 0, 0, 0, 245, 55] Add(B) [255, 254, 4, 0, 0, 0, 245, 55]
+# PC:38 [255, 254, 4, 0, 0, 0, 245, 56] Add(C) [3, 254, 4, 0, 0, 1, 245, 56]
+# PC:39 [3, 254, 4, 0, 0, 1, 245, 57] StoreReg(B) [3, 3, 4, 0, 0, 1, 245, 57]
+# PC:3a [3, 3, 4, 0, 0, 1, 245, 58] LoadLo(Constant(2)) [2, 3, 4, 0, 0, 1, 245, 58]
+# PC:3b [2, 3, 4, 0, 0, 1, 245, 59] Add(SP) [247, 3, 4, 0, 0, 0, 245, 59]
+# PC:3c [247, 3, 4, 0, 0, 0, 245, 60] StoreReg(C) [247, 3, 247, 0, 0, 0, 245, 60]
+# PC:3d [247, 3, 247, 0, 0, 0, 245, 61] LoadReg(B) [3, 3, 247, 0, 0, 0, 245, 61]
+# PC:3e [3, 3, 247, 0, 0, 0, 245, 62] StoreMem(C) [3, 3, 247, 0, 0, 0, 245, 62]
+# PC:3f [3, 3, 247, 0, 0, 0, 245, 63] LoadLo(Constant(2)) [2, 3, 247, 0, 0, 0, 245, 63]
+# PC:40 [2, 3, 247, 0, 0, 0, 245, 64] Add(SP) [247, 3, 247, 0, 0, 0, 245, 64]
+# PC:41 [247, 3, 247, 0, 0, 0, 245, 65] LoadMem(ACC) [3, 3, 247, 0, 0, 0, 245, 65]
+# PC:42 [3, 3, 247, 0, 0, 0, 245, 66] StoreReg(C) [3, 3, 3, 0, 0, 0, 245, 66]
+# PC:43 [3, 3, 3, 0, 0, 0, 245, 67] LoadLo(Constant(0)) [0, 3, 3, 0, 0, 0, 245, 67]
+# PC:44 [0, 3, 3, 0, 0, 0, 245, 68] LoadHi(Constant(0)) [0, 3, 3, 0, 0, 0, 245, 68]
+# PC:45 [0, 3, 3, 0, 0, 0, 245, 69] Xor(C) [3, 3, 3, 0, 0, 0, 245, 69]
+# PC:46 [3, 3, 3, 0, 0, 0, 245, 70] Jnz(Constant(12)) [3, 3, 3, 0, 0, 0, 245, 82]
+# PC:52 [3, 3, 3, 0, 0, 0, 245, 82] LoadLo(Constant(15)) [255, 3, 3, 0, 0, 0, 245, 82]
+# PC:53 [255, 3, 3, 0, 0, 0, 245, 83] Add(SP) [244, 3, 3, 0, 0, 1, 245, 83]
+# PC:54 [244, 3, 3, 0, 0, 1, 245, 84] StoreReg(SP) [244, 3, 3, 0, 0, 1, 244, 84]
+# PC:55 [244, 3, 3, 0, 0, 1, 244, 85] LoadLo(Constant(3)) [3, 3, 3, 0, 0, 1, 244, 85]
+# PC:56 [3, 3, 3, 0, 0, 1, 244, 86] Add(SP) [247, 3, 3, 0, 0, 0, 244, 86]
+# PC:57 [247, 3, 3, 0, 0, 0, 244, 87] LoadMem(ACC) [3, 3, 3, 0, 0, 0, 244, 87]
+# PC:58 [3, 3, 3, 0, 0, 0, 244, 88] StoreReg(B) [3, 3, 3, 0, 0, 0, 244, 88]
+# PC:59 [3, 3, 3, 0, 0, 0, 244, 89] LoadLo(Constant(15)) [255, 3, 3, 0, 0, 0, 244, 89]
+# PC:5a [255, 3, 3, 0, 0, 0, 244, 90] Add(SP) [243, 3, 3, 0, 0, 1, 244, 90]
+# PC:5b [243, 3, 3, 0, 0, 1, 244, 91] StoreReg(SP) [243, 3, 3, 0, 0, 1, 243, 91]
+# PC:5c [243, 3, 3, 0, 0, 1, 243, 92] LoadReg(B) [3, 3, 3, 0, 0, 1, 243, 92]
+# PC:5d [3, 3, 3, 0, 0, 1, 243, 93] StoreMem(SP) [3, 3, 3, 0, 0, 1, 243, 93]
+# PC:5e [3, 3, 3, 0, 0, 1, 243, 94] LoadLo(Constant(15)) [255, 3, 3, 0, 0, 1, 243, 94]
+# PC:5f [255, 3, 3, 0, 0, 1, 243, 95] Add(SP) [242, 3, 3, 0, 0, 1, 243, 95]
+# PC:60 [242, 3, 3, 0, 0, 1, 243, 96] StoreReg(SP) [242, 3, 3, 0, 0, 1, 242, 96]
+# PC:61 [242, 3, 3, 0, 0, 1, 242, 97] LoadLo(Constant(5)) [5, 3, 3, 0, 0, 1, 242, 97]
+# PC:62 [5, 3, 3, 0, 0, 1, 242, 98] Add(PC) [103, 3, 3, 0, 0, 0, 242, 98]
+# PC:63 [103, 3, 3, 0, 0, 0, 242, 99] StoreMem(SP) [103, 3, 3, 0, 0, 0, 242, 99]
+# PC:64 [103, 3, 3, 0, 0, 0, 242, 100] LoadLo(Constant(8)) [248, 3, 3, 0, 0, 0, 242, 100]
+# PC:65 [248, 3, 3, 0, 0, 0, 242, 101] LoadHi(Constant(1)) [24, 3, 3, 0, 0, 0, 242, 101]
+# PC:66 [24, 3, 3, 0, 0, 0, 242, 102] StoreReg(PC) [24, 3, 3, 0, 0, 0, 242, 24]
+# PC:18 [24, 3, 3, 0, 0, 0, 242, 24] LoadLo(Constant(15)) [255, 3, 3, 0, 0, 0, 242, 24]
+# PC:19 [255, 3, 3, 0, 0, 0, 242, 25] Add(SP) [241, 3, 3, 0, 0, 1, 242, 25]
+# PC:1a [241, 3, 3, 0, 0, 1, 242, 26] StoreReg(SP) [241, 3, 3, 0, 0, 1, 241, 26]
+# PC:1b [241, 3, 3, 0, 0, 1, 241, 27] LoadLo(Constant(2)) [2, 3, 3, 0, 0, 1, 241, 27]
+# PC:1c [2, 3, 3, 0, 0, 1, 241, 28] Add(SP) [243, 3, 3, 0, 0, 0, 241, 28]
+# PC:1d [243, 3, 3, 0, 0, 0, 241, 29] LoadMem(ACC) [3, 3, 3, 0, 0, 0, 241, 29]
+# PC:1e [3, 3, 3, 0, 0, 0, 241, 30] StoreReg(C) [3, 3, 3, 0, 0, 0, 241, 30]
+# PC:1f [3, 3, 3, 0, 0, 0, 241, 31] LoadLo(Constant(0)) [0, 3, 3, 0, 0, 0, 241, 31]
+# PC:20 [0, 3, 3, 0, 0, 0, 241, 32] LoadHi(Constant(0)) [0, 3, 3, 0, 0, 0, 241, 32]
+# PC:21 [0, 3, 3, 0, 0, 0, 241, 33] Xor(C) [3, 3, 3, 0, 0, 0, 241, 33]
+# PC:22 [3, 3, 3, 0, 0, 0, 241, 34] Jnz(Constant(12)) [3, 3, 3, 0, 0, 0, 241, 46]
+# PC:2e [3, 3, 3, 0, 0, 0, 241, 46] LoadLo(Constant(2)) [2, 3, 3, 0, 0, 0, 241, 46]
+# PC:2f [2, 3, 3, 0, 0, 0, 241, 47] Add(SP) [243, 3, 3, 0, 0, 0, 241, 47]
+# PC:30 [243, 3, 3, 0, 0, 0, 241, 48] LoadMem(ACC) [3, 3, 3, 0, 0, 0, 241, 48]
+# PC:31 [3, 3, 3, 0, 0, 0, 241, 49] StoreReg(C) [3, 3, 3, 0, 0, 0, 241, 49]
+# PC:32 [3, 3, 3, 0, 0, 0, 241, 50] LoadLo(Constant(1)) [1, 3, 3, 0, 0, 0, 241, 50]
+# PC:33 [1, 3, 3, 0, 0, 0, 241, 51] LoadHi(Constant(0)) [1, 3, 3, 0, 0, 0, 241, 51]
+# PC:34 [1, 3, 3, 0, 0, 0, 241, 52] Not(ACC) [254, 3, 3, 0, 0, 0, 241, 52]
+# PC:35 [254, 3, 3, 0, 0, 0, 241, 53] StoreReg(B) [254, 254, 3, 0, 0, 0, 241, 53]
+# PC:36 [254, 254, 3, 0, 0, 0, 241, 54] LoadLo(Constant(1)) [1, 254, 3, 0, 0, 0, 241, 54]
+# PC:37 [1, 254, 3, 0, 0, 0, 241, 55] Add(B) [255, 254, 3, 0, 0, 0, 241, 55]
+# PC:38 [255, 254, 3, 0, 0, 0, 241, 56] Add(C) [2, 254, 3, 0, 0, 1, 241, 56]
+# PC:39 [2, 254, 3, 0, 0, 1, 241, 57] StoreReg(B) [2, 2, 3, 0, 0, 1, 241, 57]
+# PC:3a [2, 2, 3, 0, 0, 1, 241, 58] LoadLo(Constant(2)) [2, 2, 3, 0, 0, 1, 241, 58]
+# PC:3b [2, 2, 3, 0, 0, 1, 241, 59] Add(SP) [243, 2, 3, 0, 0, 0, 241, 59]
+# PC:3c [243, 2, 3, 0, 0, 0, 241, 60] StoreReg(C) [243, 2, 243, 0, 0, 0, 241, 60]
+# PC:3d [243, 2, 243, 0, 0, 0, 241, 61] LoadReg(B) [2, 2, 243, 0, 0, 0, 241, 61]
+# PC:3e [2, 2, 243, 0, 0, 0, 241, 62] StoreMem(C) [2, 2, 243, 0, 0, 0, 241, 62]
+# PC:3f [2, 2, 243, 0, 0, 0, 241, 63] LoadLo(Constant(2)) [2, 2, 243, 0, 0, 0, 241, 63]
+# PC:40 [2, 2, 243, 0, 0, 0, 241, 64] Add(SP) [243, 2, 243, 0, 0, 0, 241, 64]
+# PC:41 [243, 2, 243, 0, 0, 0, 241, 65] LoadMem(ACC) [2, 2, 243, 0, 0, 0, 241, 65]
+# PC:42 [2, 2, 243, 0, 0, 0, 241, 66] StoreReg(C) [2, 2, 2, 0, 0, 0, 241, 66]
+# PC:43 [2, 2, 2, 0, 0, 0, 241, 67] LoadLo(Constant(0)) [0, 2, 2, 0, 0, 0, 241, 67]
+# PC:44 [0, 2, 2, 0, 0, 0, 241, 68] LoadHi(Constant(0)) [0, 2, 2, 0, 0, 0, 241, 68]
+# PC:45 [0, 2, 2, 0, 0, 0, 241, 69] Xor(C) [2, 2, 2, 0, 0, 0, 241, 69]
+# PC:46 [2, 2, 2, 0, 0, 0, 241, 70] Jnz(Constant(12)) [2, 2, 2, 0, 0, 0, 241, 82]
+# PC:52 [2, 2, 2, 0, 0, 0, 241, 82] LoadLo(Constant(15)) [255, 2, 2, 0, 0, 0, 241, 82]
+# PC:53 [255, 2, 2, 0, 0, 0, 241, 83] Add(SP) [240, 2, 2, 0, 0, 1, 241, 83]
+# PC:54 [240, 2, 2, 0, 0, 1, 241, 84] StoreReg(SP) [240, 2, 2, 0, 0, 1, 240, 84]
+# PC:55 [240, 2, 2, 0, 0, 1, 240, 85] LoadLo(Constant(3)) [3, 2, 2, 0, 0, 1, 240, 85]
+# PC:56 [3, 2, 2, 0, 0, 1, 240, 86] Add(SP) [243, 2, 2, 0, 0, 0, 240, 86]
+# PC:57 [243, 2, 2, 0, 0, 0, 240, 87] LoadMem(ACC) [2, 2, 2, 0, 0, 0, 240, 87]
+# PC:58 [2, 2, 2, 0, 0, 0, 240, 88] StoreReg(B) [2, 2, 2, 0, 0, 0, 240, 88]
+# PC:59 [2, 2, 2, 0, 0, 0, 240, 89] LoadLo(Constant(15)) [255, 2, 2, 0, 0, 0, 240, 89]
+# PC:5a [255, 2, 2, 0, 0, 0, 240, 90] Add(SP) [239, 2, 2, 0, 0, 1, 240, 90]
+# PC:5b [239, 2, 2, 0, 0, 1, 240, 91] StoreReg(SP) [239, 2, 2, 0, 0, 1, 239, 91]
+# PC:5c [239, 2, 2, 0, 0, 1, 239, 92] LoadReg(B) [2, 2, 2, 0, 0, 1, 239, 92]
+# PC:5d [2, 2, 2, 0, 0, 1, 239, 93] StoreMem(SP) [2, 2, 2, 0, 0, 1, 239, 93]
+# PC:5e [2, 2, 2, 0, 0, 1, 239, 94] LoadLo(Constant(15)) [255, 2, 2, 0, 0, 1, 239, 94]
+# PC:5f [255, 2, 2, 0, 0, 1, 239, 95] Add(SP) [238, 2, 2, 0, 0, 1, 239, 95]
+# PC:60 [238, 2, 2, 0, 0, 1, 239, 96] StoreReg(SP) [238, 2, 2, 0, 0, 1, 238, 96]
+# PC:61 [238, 2, 2, 0, 0, 1, 238, 97] LoadLo(Constant(5)) [5, 2, 2, 0, 0, 1, 238, 97]
+# PC:62 [5, 2, 2, 0, 0, 1, 238, 98] Add(PC) [103, 2, 2, 0, 0, 0, 238, 98]
+# PC:63 [103, 2, 2, 0, 0, 0, 238, 99] StoreMem(SP) [103, 2, 2, 0, 0, 0, 238, 99]
+# PC:64 [103, 2, 2, 0, 0, 0, 238, 100] LoadLo(Constant(8)) [248, 2, 2, 0, 0, 0, 238, 100]
+# PC:65 [248, 2, 2, 0, 0, 0, 238, 101] LoadHi(Constant(1)) [24, 2, 2, 0, 0, 0, 238, 101]
+# PC:66 [24, 2, 2, 0, 0, 0, 238, 102] StoreReg(PC) [24, 2, 2, 0, 0, 0, 238, 24]
+# PC:18 [24, 2, 2, 0, 0, 0, 238, 24] LoadLo(Constant(15)) [255, 2, 2, 0, 0, 0, 238, 24]
+# PC:19 [255, 2, 2, 0, 0, 0, 238, 25] Add(SP) [237, 2, 2, 0, 0, 1, 238, 25]
+# PC:1a [237, 2, 2, 0, 0, 1, 238, 26] StoreReg(SP) [237, 2, 2, 0, 0, 1, 237, 26]
+# PC:1b [237, 2, 2, 0, 0, 1, 237, 27] LoadLo(Constant(2)) [2, 2, 2, 0, 0, 1, 237, 27]
+# PC:1c [2, 2, 2, 0, 0, 1, 237, 28] Add(SP) [239, 2, 2, 0, 0, 0, 237, 28]
+# PC:1d [239, 2, 2, 0, 0, 0, 237, 29] LoadMem(ACC) [2, 2, 2, 0, 0, 0, 237, 29]
+# PC:1e [2, 2, 2, 0, 0, 0, 237, 30] StoreReg(C) [2, 2, 2, 0, 0, 0, 237, 30]
+# PC:1f [2, 2, 2, 0, 0, 0, 237, 31] LoadLo(Constant(0)) [0, 2, 2, 0, 0, 0, 237, 31]
+# PC:20 [0, 2, 2, 0, 0, 0, 237, 32] LoadHi(Constant(0)) [0, 2, 2, 0, 0, 0, 237, 32]
+# PC:21 [0, 2, 2, 0, 0, 0, 237, 33] Xor(C) [2, 2, 2, 0, 0, 0, 237, 33]
+# PC:22 [2, 2, 2, 0, 0, 0, 237, 34] Jnz(Constant(12)) [2, 2, 2, 0, 0, 0, 237, 46]
+# PC:2e [2, 2, 2, 0, 0, 0, 237, 46] LoadLo(Constant(2)) [2, 2, 2, 0, 0, 0, 237, 46]
+# PC:2f [2, 2, 2, 0, 0, 0, 237, 47] Add(SP) [239, 2, 2, 0, 0, 0, 237, 47]
+# PC:30 [239, 2, 2, 0, 0, 0, 237, 48] LoadMem(ACC) [2, 2, 2, 0, 0, 0, 237, 48]
+# PC:31 [2, 2, 2, 0, 0, 0, 237, 49] StoreReg(C) [2, 2, 2, 0, 0, 0, 237, 49]
+# PC:32 [2, 2, 2, 0, 0, 0, 237, 50] LoadLo(Constant(1)) [1, 2, 2, 0, 0, 0, 237, 50]
+# PC:33 [1, 2, 2, 0, 0, 0, 237, 51] LoadHi(Constant(0)) [1, 2, 2, 0, 0, 0, 237, 51]
+# PC:34 [1, 2, 2, 0, 0, 0, 237, 52] Not(ACC) [254, 2, 2, 0, 0, 0, 237, 52]
+# PC:35 [254, 2, 2, 0, 0, 0, 237, 53] StoreReg(B) [254, 254, 2, 0, 0, 0, 237, 53]
+# PC:36 [254, 254, 2, 0, 0, 0, 237, 54] LoadLo(Constant(1)) [1, 254, 2, 0, 0, 0, 237, 54]
+# PC:37 [1, 254, 2, 0, 0, 0, 237, 55] Add(B) [255, 254, 2, 0, 0, 0, 237, 55]
+# PC:38 [255, 254, 2, 0, 0, 0, 237, 56] Add(C) [1, 254, 2, 0, 0, 1, 237, 56]
+# PC:39 [1, 254, 2, 0, 0, 1, 237, 57] StoreReg(B) [1, 1, 2, 0, 0, 1, 237, 57]
+# PC:3a [1, 1, 2, 0, 0, 1, 237, 58] LoadLo(Constant(2)) [2, 1, 2, 0, 0, 1, 237, 58]
+# PC:3b [2, 1, 2, 0, 0, 1, 237, 59] Add(SP) [239, 1, 2, 0, 0, 0, 237, 59]
+# PC:3c [239, 1, 2, 0, 0, 0, 237, 60] StoreReg(C) [239, 1, 239, 0, 0, 0, 237, 60]
+# PC:3d [239, 1, 239, 0, 0, 0, 237, 61] LoadReg(B) [1, 1, 239, 0, 0, 0, 237, 61]
+# PC:3e [1, 1, 239, 0, 0, 0, 237, 62] StoreMem(C) [1, 1, 239, 0, 0, 0, 237, 62]
+# PC:3f [1, 1, 239, 0, 0, 0, 237, 63] LoadLo(Constant(2)) [2, 1, 239, 0, 0, 0, 237, 63]
+# PC:40 [2, 1, 239, 0, 0, 0, 237, 64] Add(SP) [239, 1, 239, 0, 0, 0, 237, 64]
+# PC:41 [239, 1, 239, 0, 0, 0, 237, 65] LoadMem(ACC) [1, 1, 239, 0, 0, 0, 237, 65]
+# PC:42 [1, 1, 239, 0, 0, 0, 237, 66] StoreReg(C) [1, 1, 1, 0, 0, 0, 237, 66]
+# PC:43 [1, 1, 1, 0, 0, 0, 237, 67] LoadLo(Constant(0)) [0, 1, 1, 0, 0, 0, 237, 67]
+# PC:44 [0, 1, 1, 0, 0, 0, 237, 68] LoadHi(Constant(0)) [0, 1, 1, 0, 0, 0, 237, 68]
+# PC:45 [0, 1, 1, 0, 0, 0, 237, 69] Xor(C) [1, 1, 1, 0, 0, 0, 237, 69]
+# PC:46 [1, 1, 1, 0, 0, 0, 237, 70] Jnz(Constant(12)) [1, 1, 1, 0, 0, 0, 237, 82]
+# PC:52 [1, 1, 1, 0, 0, 0, 237, 82] LoadLo(Constant(15)) [255, 1, 1, 0, 0, 0, 237, 82]
+# PC:53 [255, 1, 1, 0, 0, 0, 237, 83] Add(SP) [236, 1, 1, 0, 0, 1, 237, 83]
+# PC:54 [236, 1, 1, 0, 0, 1, 237, 84] StoreReg(SP) [236, 1, 1, 0, 0, 1, 236, 84]
+# PC:55 [236, 1, 1, 0, 0, 1, 236, 85] LoadLo(Constant(3)) [3, 1, 1, 0, 0, 1, 236, 85]
+# PC:56 [3, 1, 1, 0, 0, 1, 236, 86] Add(SP) [239, 1, 1, 0, 0, 0, 236, 86]
+# PC:57 [239, 1, 1, 0, 0, 0, 236, 87] LoadMem(ACC) [1, 1, 1, 0, 0, 0, 236, 87]
+# PC:58 [1, 1, 1, 0, 0, 0, 236, 88] StoreReg(B) [1, 1, 1, 0, 0, 0, 236, 88]
+# PC:59 [1, 1, 1, 0, 0, 0, 236, 89] LoadLo(Constant(15)) [255, 1, 1, 0, 0, 0, 236, 89]
+# PC:5a [255, 1, 1, 0, 0, 0, 236, 90] Add(SP) [235, 1, 1, 0, 0, 1, 236, 90]
+# PC:5b [235, 1, 1, 0, 0, 1, 236, 91] StoreReg(SP) [235, 1, 1, 0, 0, 1, 235, 91]
+# PC:5c [235, 1, 1, 0, 0, 1, 235, 92] LoadReg(B) [1, 1, 1, 0, 0, 1, 235, 92]
+# PC:5d [1, 1, 1, 0, 0, 1, 235, 93] StoreMem(SP) [1, 1, 1, 0, 0, 1, 235, 93]
+# PC:5e [1, 1, 1, 0, 0, 1, 235, 94] LoadLo(Constant(15)) [255, 1, 1, 0, 0, 1, 235, 94]
+# PC:5f [255, 1, 1, 0, 0, 1, 235, 95] Add(SP) [234, 1, 1, 0, 0, 1, 235, 95]
+# PC:60 [234, 1, 1, 0, 0, 1, 235, 96] StoreReg(SP) [234, 1, 1, 0, 0, 1, 234, 96]
+# PC:61 [234, 1, 1, 0, 0, 1, 234, 97] LoadLo(Constant(5)) [5, 1, 1, 0, 0, 1, 234, 97]
+# PC:62 [5, 1, 1, 0, 0, 1, 234, 98] Add(PC) [103, 1, 1, 0, 0, 0, 234, 98]
+# PC:63 [103, 1, 1, 0, 0, 0, 234, 99] StoreMem(SP) [103, 1, 1, 0, 0, 0, 234, 99]
+# PC:64 [103, 1, 1, 0, 0, 0, 234, 100] LoadLo(Constant(8)) [248, 1, 1, 0, 0, 0, 234, 100]
+# PC:65 [248, 1, 1, 0, 0, 0, 234, 101] LoadHi(Constant(1)) [24, 1, 1, 0, 0, 0, 234, 101]
+# PC:66 [24, 1, 1, 0, 0, 0, 234, 102] StoreReg(PC) [24, 1, 1, 0, 0, 0, 234, 24]
+# PC:18 [24, 1, 1, 0, 0, 0, 234, 24] LoadLo(Constant(15)) [255, 1, 1, 0, 0, 0, 234, 24]
+# PC:19 [255, 1, 1, 0, 0, 0, 234, 25] Add(SP) [233, 1, 1, 0, 0, 1, 234, 25]
+# PC:1a [233, 1, 1, 0, 0, 1, 234, 26] StoreReg(SP) [233, 1, 1, 0, 0, 1, 233, 26]
+# PC:1b [233, 1, 1, 0, 0, 1, 233, 27] LoadLo(Constant(2)) [2, 1, 1, 0, 0, 1, 233, 27]
+# PC:1c [2, 1, 1, 0, 0, 1, 233, 28] Add(SP) [235, 1, 1, 0, 0, 0, 233, 28]
+# PC:1d [235, 1, 1, 0, 0, 0, 233, 29] LoadMem(ACC) [1, 1, 1, 0, 0, 0, 233, 29]
+# PC:1e [1, 1, 1, 0, 0, 0, 233, 30] StoreReg(C) [1, 1, 1, 0, 0, 0, 233, 30]
+# PC:1f [1, 1, 1, 0, 0, 0, 233, 31] LoadLo(Constant(0)) [0, 1, 1, 0, 0, 0, 233, 31]
+# PC:20 [0, 1, 1, 0, 0, 0, 233, 32] LoadHi(Constant(0)) [0, 1, 1, 0, 0, 0, 233, 32]
+# PC:21 [0, 1, 1, 0, 0, 0, 233, 33] Xor(C) [1, 1, 1, 0, 0, 0, 233, 33]
+# PC:22 [1, 1, 1, 0, 0, 0, 233, 34] Jnz(Constant(12)) [1, 1, 1, 0, 0, 0, 233, 46]
+# PC:2e [1, 1, 1, 0, 0, 0, 233, 46] LoadLo(Constant(2)) [2, 1, 1, 0, 0, 0, 233, 46]
+# PC:2f [2, 1, 1, 0, 0, 0, 233, 47] Add(SP) [235, 1, 1, 0, 0, 0, 233, 47]
+# PC:30 [235, 1, 1, 0, 0, 0, 233, 48] LoadMem(ACC) [1, 1, 1, 0, 0, 0, 233, 48]
+# PC:31 [1, 1, 1, 0, 0, 0, 233, 49] StoreReg(C) [1, 1, 1, 0, 0, 0, 233, 49]
+# PC:32 [1, 1, 1, 0, 0, 0, 233, 50] LoadLo(Constant(1)) [1, 1, 1, 0, 0, 0, 233, 50]
+# PC:33 [1, 1, 1, 0, 0, 0, 233, 51] LoadHi(Constant(0)) [1, 1, 1, 0, 0, 0, 233, 51]
+# PC:34 [1, 1, 1, 0, 0, 0, 233, 52] Not(ACC) [254, 1, 1, 0, 0, 0, 233, 52]
+# PC:35 [254, 1, 1, 0, 0, 0, 233, 53] StoreReg(B) [254, 254, 1, 0, 0, 0, 233, 53]
+# PC:36 [254, 254, 1, 0, 0, 0, 233, 54] LoadLo(Constant(1)) [1, 254, 1, 0, 0, 0, 233, 54]
+# PC:37 [1, 254, 1, 0, 0, 0, 233, 55] Add(B) [255, 254, 1, 0, 0, 0, 233, 55]
+# PC:38 [255, 254, 1, 0, 0, 0, 233, 56] Add(C) [0, 254, 1, 0, 0, 1, 233, 56]
+# PC:39 [0, 254, 1, 0, 0, 1, 233, 57] StoreReg(B) [0, 0, 1, 0, 0, 1, 233, 57]
+# PC:3a [0, 0, 1, 0, 0, 1, 233, 58] LoadLo(Constant(2)) [2, 0, 1, 0, 0, 1, 233, 58]
+# PC:3b [2, 0, 1, 0, 0, 1, 233, 59] Add(SP) [235, 0, 1, 0, 0, 0, 233, 59]
+# PC:3c [235, 0, 1, 0, 0, 0, 233, 60] StoreReg(C) [235, 0, 235, 0, 0, 0, 233, 60]
+# PC:3d [235, 0, 235, 0, 0, 0, 233, 61] LoadReg(B) [0, 0, 235, 0, 0, 0, 233, 61]
+# PC:3e [0, 0, 235, 0, 0, 0, 233, 62] StoreMem(C) [0, 0, 235, 0, 0, 0, 233, 62]
+# PC:3f [0, 0, 235, 0, 0, 0, 233, 63] LoadLo(Constant(2)) [2, 0, 235, 0, 0, 0, 233, 63]
+# PC:40 [2, 0, 235, 0, 0, 0, 233, 64] Add(SP) [235, 0, 235, 0, 0, 0, 233, 64]
+# PC:41 [235, 0, 235, 0, 0, 0, 233, 65] LoadMem(ACC) [0, 0, 235, 0, 0, 0, 233, 65]
+# PC:42 [0, 0, 235, 0, 0, 0, 233, 66] StoreReg(C) [0, 0, 0, 0, 0, 0, 233, 66]
+# PC:43 [0, 0, 0, 0, 0, 0, 233, 67] LoadLo(Constant(0)) [0, 0, 0, 0, 0, 0, 233, 67]
+# PC:44 [0, 0, 0, 0, 0, 0, 233, 68] LoadHi(Constant(0)) [0, 0, 0, 0, 0, 0, 233, 68]
+# PC:45 [0, 0, 0, 0, 0, 0, 233, 69] Xor(C) [0, 0, 0, 0, 0, 0, 233, 69]
+# PC:46 [0, 0, 0, 0, 0, 0, 233, 70] Jnz(Constant(12)) [0, 0, 0, 0, 0, 0, 233, 70]
+# PC:47 [0, 0, 0, 0, 0, 0, 233, 71] LoadLo(Constant(1)) [1, 0, 0, 0, 0, 0, 233, 71]
+# PC:48 [1, 0, 0, 0, 0, 0, 233, 72] LoadHi(Constant(0)) [1, 0, 0, 0, 0, 0, 233, 72]
+# PC:49 [1, 0, 0, 0, 0, 0, 233, 73] StoreReg(B) [1, 1, 0, 0, 0, 0, 233, 73]
+# PC:4a [1, 1, 0, 0, 0, 0, 233, 74] LoadLo(Constant(3)) [3, 1, 0, 0, 0, 0, 233, 74]
+# PC:4b [3, 1, 0, 0, 0, 0, 233, 75] Add(SP) [236, 1, 0, 0, 0, 0, 233, 75]
+# PC:4c [236, 1, 0, 0, 0, 0, 233, 76] StoreReg(C) [236, 1, 236, 0, 0, 0, 233, 76]
+# PC:4d [236, 1, 236, 0, 0, 0, 233, 77] LoadReg(B) [1, 1, 236, 0, 0, 0, 233, 77]
+# PC:4e [1, 1, 236, 0, 0, 0, 233, 78] StoreMem(C) [1, 1, 236, 0, 0, 0, 233, 78]
+# PC:4f [1, 1, 236, 0, 0, 0, 233, 79] LoadLo(Constant(3)) [3, 1, 236, 0, 0, 0, 233, 79]
+# PC:50 [3, 1, 236, 0, 0, 0, 233, 80] LoadHi(Constant(12)) [195, 1, 236, 0, 0, 0, 233, 80]
+# PC:51 [195, 1, 236, 0, 0, 0, 233, 81] StoreReg(PC) [195, 1, 236, 0, 0, 0, 233, 195]
+# PC:c3 [195, 1, 236, 0, 0, 0, 233, 195] LoadLo(Constant(1)) [1, 1, 236, 0, 0, 0, 233, 195]
+# PC:c4 [1, 1, 236, 0, 0, 0, 233, 196] Add(SP) [234, 1, 236, 0, 0, 0, 233, 196]
+# PC:c5 [234, 1, 236, 0, 0, 0, 233, 197] StoreReg(SP) [234, 1, 236, 0, 0, 0, 234, 197]
+# PC:c6 [234, 1, 236, 0, 0, 0, 234, 198] LoadMem(SP) [103, 1, 236, 0, 0, 0, 234, 198]
+# PC:c7 [103, 1, 236, 0, 0, 0, 234, 199] StoreReg(PC) [103, 1, 236, 0, 0, 0, 234, 103]
+# PC:67 [103, 1, 236, 0, 0, 0, 234, 103] LoadLo(Constant(1)) [1, 1, 236, 0, 0, 0, 234, 103]
+# PC:68 [1, 1, 236, 0, 0, 0, 234, 104] Add(SP) [235, 1, 236, 0, 0, 0, 234, 104]
+# PC:69 [235, 1, 236, 0, 0, 0, 234, 105] StoreReg(SP) [235, 1, 236, 0, 0, 0, 235, 105]
+# PC:6a [235, 1, 236, 0, 0, 0, 235, 106] LoadLo(Constant(1)) [1, 1, 236, 0, 0, 0, 235, 106]
+# PC:6b [1, 1, 236, 0, 0, 0, 235, 107] Add(SP) [236, 1, 236, 0, 0, 0, 235, 107]
+# PC:6c [236, 1, 236, 0, 0, 0, 235, 108] StoreReg(SP) [236, 1, 236, 0, 0, 0, 236, 108]
+# PC:6d [236, 1, 236, 0, 0, 0, 236, 109] LoadMem(SP) [1, 1, 236, 0, 0, 0, 236, 109]
+# PC:6e [1, 1, 236, 0, 0, 0, 236, 110] StoreReg(B) [1, 1, 236, 0, 0, 0, 236, 110]
+# PC:6f [1, 1, 236, 0, 0, 0, 236, 111] LoadLo(Constant(1)) [1, 1, 236, 0, 0, 0, 236, 111]
+# PC:70 [1, 1, 236, 0, 0, 0, 236, 112] Add(SP) [237, 1, 236, 0, 0, 0, 236, 112]
+# PC:71 [237, 1, 236, 0, 0, 0, 236, 113] StoreReg(SP) [237, 1, 236, 0, 0, 0, 237, 113]
+# PC:72 [237, 1, 236, 0, 0, 0, 237, 114] LoadReg(B) [1, 1, 236, 0, 0, 0, 237, 114]
+# PC:73 [1, 1, 236, 0, 0, 0, 237, 115] StoreReg(D) [1, 1, 236, 1, 0, 0, 237, 115]
+# PC:74 [1, 1, 236, 1, 0, 0, 237, 116] LoadLo(Constant(2)) [2, 1, 236, 1, 0, 0, 237, 116]
+# PC:75 [2, 1, 236, 1, 0, 0, 237, 117] Add(SP) [239, 1, 236, 1, 0, 0, 237, 117]
+# PC:76 [239, 1, 236, 1, 0, 0, 237, 118] LoadMem(ACC) [1, 1, 236, 1, 0, 0, 237, 118]
+# PC:77 [1, 1, 236, 1, 0, 0, 237, 119] StoreReg(C) [1, 1, 1, 1, 0, 0, 237, 119]
+# PC:78 [1, 1, 1, 1, 0, 0, 237, 120] LoadLo(Constant(1)) [1, 1, 1, 1, 0, 0, 237, 120]
+# PC:79 [1, 1, 1, 1, 0, 0, 237, 121] LoadHi(Constant(0)) [1, 1, 1, 1, 0, 0, 237, 121]
+# PC:7a [1, 1, 1, 1, 0, 0, 237, 122] Not(ACC) [254, 1, 1, 1, 0, 0, 237, 122]
+# PC:7b [254, 1, 1, 1, 0, 0, 237, 123] StoreReg(B) [254, 254, 1, 1, 0, 0, 237, 123]
+# PC:7c [254, 254, 1, 1, 0, 0, 237, 124] LoadLo(Constant(1)) [1, 254, 1, 1, 0, 0, 237, 124]
+# PC:7d [1, 254, 1, 1, 0, 0, 237, 125] Add(B) [255, 254, 1, 1, 0, 0, 237, 125]
+# PC:7e [255, 254, 1, 1, 0, 0, 237, 126] Add(C) [0, 254, 1, 1, 0, 1, 237, 126]
+# PC:7f [0, 254, 1, 1, 0, 1, 237, 127] StoreReg(B) [0, 0, 1, 1, 0, 1, 237, 127]
+# PC:80 [0, 0, 1, 1, 0, 1, 237, 128] LoadLo(Constant(2)) [2, 0, 1, 1, 0, 1, 237, 128]
+# PC:81 [2, 0, 1, 1, 0, 1, 237, 129] Add(SP) [239, 0, 1, 1, 0, 0, 237, 129]
+# PC:82 [239, 0, 1, 1, 0, 0, 237, 130] StoreReg(C) [239, 0, 239, 1, 0, 0, 237, 130]
+# PC:83 [239, 0, 239, 1, 0, 0, 237, 131] LoadReg(B) [0, 0, 239, 1, 0, 0, 237, 131]
+# PC:84 [0, 0, 239, 1, 0, 0, 237, 132] StoreMem(C) [0, 0, 239, 1, 0, 0, 237, 132]
+# PC:85 [0, 0, 239, 1, 0, 0, 237, 133] LoadLo(Constant(15)) [255, 0, 239, 1, 0, 0, 237, 133]
+# PC:86 [255, 0, 239, 1, 0, 0, 237, 134] Add(SP) [236, 0, 239, 1, 0, 1, 237, 134]
+# PC:87 [236, 0, 239, 1, 0, 1, 237, 135] StoreReg(SP) [236, 0, 239, 1, 0, 1, 236, 135]
+# PC:88 [236, 0, 239, 1, 0, 1, 236, 136] LoadLo(Constant(15)) [255, 0, 239, 1, 0, 1, 236, 136]
+# PC:89 [255, 0, 239, 1, 0, 1, 236, 137] Add(SP) [235, 0, 239, 1, 0, 1, 236, 137]
+# PC:8a [235, 0, 239, 1, 0, 1, 236, 138] StoreReg(SP) [235, 0, 239, 1, 0, 1, 235, 138]
+# PC:8b [235, 0, 239, 1, 0, 1, 235, 139] LoadReg(D) [1, 0, 239, 1, 0, 1, 235, 139]
+# PC:8c [1, 0, 239, 1, 0, 1, 235, 140] StoreMem(SP) [1, 0, 239, 1, 0, 1, 235, 140]
+# PC:8d [1, 0, 239, 1, 0, 1, 235, 141] LoadLo(Constant(4)) [4, 0, 239, 1, 0, 1, 235, 141]
+# PC:8e [4, 0, 239, 1, 0, 1, 235, 142] Add(SP) [239, 0, 239, 1, 0, 0, 235, 142]
+# PC:8f [239, 0, 239, 1, 0, 0, 235, 143] LoadMem(ACC) [0, 0, 239, 1, 0, 0, 235, 143]
+# PC:90 [0, 0, 239, 1, 0, 0, 235, 144] StoreReg(B) [0, 0, 239, 1, 0, 0, 235, 144]
+# PC:91 [0, 0, 239, 1, 0, 0, 235, 145] LoadLo(Constant(15)) [255, 0, 239, 1, 0, 0, 235, 145]
+# PC:92 [255, 0, 239, 1, 0, 0, 235, 146] Add(SP) [234, 0, 239, 1, 0, 1, 235, 146]
+# PC:93 [234, 0, 239, 1, 0, 1, 235, 147] StoreReg(SP) [234, 0, 239, 1, 0, 1, 234, 147]
+# PC:94 [234, 0, 239, 1, 0, 1, 234, 148] LoadReg(B) [0, 0, 239, 1, 0, 1, 234, 148]
+# PC:95 [0, 0, 239, 1, 0, 1, 234, 149] StoreMem(SP) [0, 0, 239, 1, 0, 1, 234, 149]
+# PC:96 [0, 0, 239, 1, 0, 1, 234, 150] LoadLo(Constant(15)) [255, 0, 239, 1, 0, 1, 234, 150]
+# PC:97 [255, 0, 239, 1, 0, 1, 234, 151] Add(SP) [233, 0, 239, 1, 0, 1, 234, 151]
+# PC:98 [233, 0, 239, 1, 0, 1, 234, 152] StoreReg(SP) [233, 0, 239, 1, 0, 1, 233, 152]
+# PC:99 [233, 0, 239, 1, 0, 1, 233, 153] LoadLo(Constant(5)) [5, 0, 239, 1, 0, 1, 233, 153]
+# PC:9a [5, 0, 239, 1, 0, 1, 233, 154] Add(PC) [159, 0, 239, 1, 0, 0, 233, 154]
+# PC:9b [159, 0, 239, 1, 0, 0, 233, 155] StoreMem(SP) [159, 0, 239, 1, 0, 0, 233, 155]
+# PC:9c [159, 0, 239, 1, 0, 0, 233, 156] LoadLo(Constant(8)) [248, 0, 239, 1, 0, 0, 233, 156]
+# PC:9d [248, 0, 239, 1, 0, 0, 233, 157] LoadHi(Constant(1)) [24, 0, 239, 1, 0, 0, 233, 157]
+# PC:9e [24, 0, 239, 1, 0, 0, 233, 158] StoreReg(PC) [24, 0, 239, 1, 0, 0, 233, 24]
+# PC:18 [24, 0, 239, 1, 0, 0, 233, 24] LoadLo(Constant(15)) [255, 0, 239, 1, 0, 0, 233, 24]
+# PC:19 [255, 0, 239, 1, 0, 0, 233, 25] Add(SP) [232, 0, 239, 1, 0, 1, 233, 25]
+# PC:1a [232, 0, 239, 1, 0, 1, 233, 26] StoreReg(SP) [232, 0, 239, 1, 0, 1, 232, 26]
+# PC:1b [232, 0, 239, 1, 0, 1, 232, 27] LoadLo(Constant(2)) [2, 0, 239, 1, 0, 1, 232, 27]
+# PC:1c [2, 0, 239, 1, 0, 1, 232, 28] Add(SP) [234, 0, 239, 1, 0, 0, 232, 28]
+# PC:1d [234, 0, 239, 1, 0, 0, 232, 29] LoadMem(ACC) [0, 0, 239, 1, 0, 0, 232, 29]
+# PC:1e [0, 0, 239, 1, 0, 0, 232, 30] StoreReg(C) [0, 0, 0, 1, 0, 0, 232, 30]
+# PC:1f [0, 0, 0, 1, 0, 0, 232, 31] LoadLo(Constant(0)) [0, 0, 0, 1, 0, 0, 232, 31]
+# PC:20 [0, 0, 0, 1, 0, 0, 232, 32] LoadHi(Constant(0)) [0, 0, 0, 1, 0, 0, 232, 32]
+# PC:21 [0, 0, 0, 1, 0, 0, 232, 33] Xor(C) [0, 0, 0, 1, 0, 0, 232, 33]
+# PC:22 [0, 0, 0, 1, 0, 0, 232, 34] Jnz(Constant(12)) [0, 0, 0, 1, 0, 0, 232, 34]
+# PC:23 [0, 0, 0, 1, 0, 0, 232, 35] LoadLo(Constant(1)) [1, 0, 0, 1, 0, 0, 232, 35]
+# PC:24 [1, 0, 0, 1, 0, 0, 232, 36] LoadHi(Constant(0)) [1, 0, 0, 1, 0, 0, 232, 36]
+# PC:25 [1, 0, 0, 1, 0, 0, 232, 37] StoreReg(B) [1, 1, 0, 1, 0, 0, 232, 37]
+# PC:26 [1, 1, 0, 1, 0, 0, 232, 38] LoadLo(Constant(3)) [3, 1, 0, 1, 0, 0, 232, 38]
+# PC:27 [3, 1, 0, 1, 0, 0, 232, 39] Add(SP) [235, 1, 0, 1, 0, 0, 232, 39]
+# PC:28 [235, 1, 0, 1, 0, 0, 232, 40] StoreReg(C) [235, 1, 235, 1, 0, 0, 232, 40]
+# PC:29 [235, 1, 235, 1, 0, 0, 232, 41] LoadReg(B) [1, 1, 235, 1, 0, 0, 232, 41]
+# PC:2a [1, 1, 235, 1, 0, 0, 232, 42] StoreMem(C) [1, 1, 235, 1, 0, 0, 232, 42]
+# PC:2b [1, 1, 235, 1, 0, 0, 232, 43] LoadLo(Constant(3)) [3, 1, 235, 1, 0, 0, 232, 43]
+# PC:2c [3, 1, 235, 1, 0, 0, 232, 44] LoadHi(Constant(12)) [195, 1, 235, 1, 0, 0, 232, 44]
+# PC:2d [195, 1, 235, 1, 0, 0, 232, 45] StoreReg(PC) [195, 1, 235, 1, 0, 0, 232, 195]
+# PC:c3 [195, 1, 235, 1, 0, 0, 232, 195] LoadLo(Constant(1)) [1, 1, 235, 1, 0, 0, 232, 195]
+# PC:c4 [1, 1, 235, 1, 0, 0, 232, 196] Add(SP) [233, 1, 235, 1, 0, 0, 232, 196]
+# PC:c5 [233, 1, 235, 1, 0, 0, 232, 197] StoreReg(SP) [233, 1, 235, 1, 0, 0, 233, 197]
+# PC:c6 [233, 1, 235, 1, 0, 0, 233, 198] LoadMem(SP) [159, 1, 235, 1, 0, 0, 233, 198]
+# PC:c7 [159, 1, 235, 1, 0, 0, 233, 199] StoreReg(PC) [159, 1, 235, 1, 0, 0, 233, 159]
+# PC:9f [159, 1, 235, 1, 0, 0, 233, 159] LoadLo(Constant(1)) [1, 1, 235, 1, 0, 0, 233, 159]
+# PC:a0 [1, 1, 235, 1, 0, 0, 233, 160] Add(SP) [234, 1, 235, 1, 0, 0, 233, 160]
+# PC:a1 [234, 1, 235, 1, 0, 0, 233, 161] StoreReg(SP) [234, 1, 235, 1, 0, 0, 234, 161]
+# PC:a2 [234, 1, 235, 1, 0, 0, 234, 162] LoadLo(Constant(1)) [1, 1, 235, 1, 0, 0, 234, 162]
+# PC:a3 [1, 1, 235, 1, 0, 0, 234, 163] Add(SP) [235, 1, 235, 1, 0, 0, 234, 163]
+# PC:a4 [235, 1, 235, 1, 0, 0, 234, 164] StoreReg(SP) [235, 1, 235, 1, 0, 0, 235, 164]
+# PC:a5 [235, 1, 235, 1, 0, 0, 235, 165] LoadMem(SP) [1, 1, 235, 1, 0, 0, 235, 165]
+# PC:a6 [1, 1, 235, 1, 0, 0, 235, 166] StoreReg(D) [1, 1, 235, 1, 0, 0, 235, 166]
+# PC:a7 [1, 1, 235, 1, 0, 0, 235, 167] LoadLo(Constant(1)) [1, 1, 235, 1, 0, 0, 235, 167]
+# PC:a8 [1, 1, 235, 1, 0, 0, 235, 168] Add(SP) [236, 1, 235, 1, 0, 0, 235, 168]
+# PC:a9 [236, 1, 235, 1, 0, 0, 235, 169] StoreReg(SP) [236, 1, 235, 1, 0, 0, 236, 169]
+# PC:aa [236, 1, 235, 1, 0, 0, 236, 170] LoadMem(SP) [1, 1, 235, 1, 0, 0, 236, 170]
+# PC:ab [1, 1, 235, 1, 0, 0, 236, 171] StoreReg(B) [1, 1, 235, 1, 0, 0, 236, 171]
+# PC:ac [1, 1, 235, 1, 0, 0, 236, 172] LoadLo(Constant(1)) [1, 1, 235, 1, 0, 0, 236, 172]
+# PC:ad [1, 1, 235, 1, 0, 0, 236, 173] Add(SP) [237, 1, 235, 1, 0, 0, 236, 173]
+# PC:ae [237, 1, 235, 1, 0, 0, 236, 174] StoreReg(SP) [237, 1, 235, 1, 0, 0, 237, 174]
+# PC:af [237, 1, 235, 1, 0, 0, 237, 175] LoadLo(Constant(0)) [0, 1, 235, 1, 0, 0, 237, 175]
+# PC:b0 [0, 1, 235, 1, 0, 0, 237, 176] Add(SP) [237, 1, 235, 1, 0, 0, 237, 176]
+# PC:b1 [237, 1, 235, 1, 0, 0, 237, 177] StoreReg(C) [237, 1, 237, 1, 0, 0, 237, 177]
+# PC:b2 [237, 1, 237, 1, 0, 0, 237, 178] LoadReg(B) [1, 1, 237, 1, 0, 0, 237, 178]
+# PC:b3 [1, 1, 237, 1, 0, 0, 237, 179] StoreMem(C) [1, 1, 237, 1, 0, 0, 237, 179]
+# PC:b4 [1, 1, 237, 1, 0, 0, 237, 180] LoadReg(D) [1, 1, 237, 1, 0, 0, 237, 180]
+# PC:b5 [1, 1, 237, 1, 0, 0, 237, 181] StoreReg(C) [1, 1, 1, 1, 0, 0, 237, 181]
+# PC:b6 [1, 1, 1, 1, 0, 0, 237, 182] LoadLo(Constant(0)) [0, 1, 1, 1, 0, 0, 237, 182]
+# PC:b7 [0, 1, 1, 1, 0, 0, 237, 183] Add(SP) [237, 1, 1, 1, 0, 0, 237, 183]
+# PC:b8 [237, 1, 1, 1, 0, 0, 237, 184] LoadMem(ACC) [1, 1, 1, 1, 0, 0, 237, 184]
+# PC:b9 [1, 1, 1, 1, 0, 0, 237, 185] Add(C) [2, 1, 1, 1, 0, 0, 237, 185]
+# PC:ba [2, 1, 1, 1, 0, 0, 237, 186] StoreReg(B) [2, 2, 1, 1, 0, 0, 237, 186]
+# PC:bb [2, 2, 1, 1, 0, 0, 237, 187] LoadLo(Constant(3)) [3, 2, 1, 1, 0, 0, 237, 187]
+# PC:bc [3, 2, 1, 1, 0, 0, 237, 188] Add(SP) [240, 2, 1, 1, 0, 0, 237, 188]
+# PC:bd [240, 2, 1, 1, 0, 0, 237, 189] StoreReg(C) [240, 2, 240, 1, 0, 0, 237, 189]
+# PC:be [240, 2, 240, 1, 0, 0, 237, 190] LoadReg(B) [2, 2, 240, 1, 0, 0, 237, 190]
+# PC:bf [2, 2, 240, 1, 0, 0, 237, 191] StoreMem(C) [2, 2, 240, 1, 0, 0, 237, 191]
+# PC:c0 [2, 2, 240, 1, 0, 0, 237, 192] LoadLo(Constant(3)) [3, 2, 240, 1, 0, 0, 237, 192]
+# PC:c1 [3, 2, 240, 1, 0, 0, 237, 193] LoadHi(Constant(12)) [195, 2, 240, 1, 0, 0, 237, 193]
+# PC:c2 [195, 2, 240, 1, 0, 0, 237, 194] StoreReg(PC) [195, 2, 240, 1, 0, 0, 237, 195]
+# PC:c3 [195, 2, 240, 1, 0, 0, 237, 195] LoadLo(Constant(1)) [1, 2, 240, 1, 0, 0, 237, 195]
+# PC:c4 [1, 2, 240, 1, 0, 0, 237, 196] Add(SP) [238, 2, 240, 1, 0, 0, 237, 196]
+# PC:c5 [238, 2, 240, 1, 0, 0, 237, 197] StoreReg(SP) [238, 2, 240, 1, 0, 0, 238, 197]
+# PC:c6 [238, 2, 240, 1, 0, 0, 238, 198] LoadMem(SP) [103, 2, 240, 1, 0, 0, 238, 198]
+# PC:c7 [103, 2, 240, 1, 0, 0, 238, 199] StoreReg(PC) [103, 2, 240, 1, 0, 0, 238, 103]
+# PC:67 [103, 2, 240, 1, 0, 0, 238, 103] LoadLo(Constant(1)) [1, 2, 240, 1, 0, 0, 238, 103]
+# PC:68 [1, 2, 240, 1, 0, 0, 238, 104] Add(SP) [239, 2, 240, 1, 0, 0, 238, 104]
+# PC:69 [239, 2, 240, 1, 0, 0, 238, 105] StoreReg(SP) [239, 2, 240, 1, 0, 0, 239, 105]
+# PC:6a [239, 2, 240, 1, 0, 0, 239, 106] LoadLo(Constant(1)) [1, 2, 240, 1, 0, 0, 239, 106]
+# PC:6b [1, 2, 240, 1, 0, 0, 239, 107] Add(SP) [240, 2, 240, 1, 0, 0, 239, 107]
+# PC:6c [240, 2, 240, 1, 0, 0, 239, 108] StoreReg(SP) [240, 2, 240, 1, 0, 0, 240, 108]
+# PC:6d [240, 2, 240, 1, 0, 0, 240, 109] LoadMem(SP) [2, 2, 240, 1, 0, 0, 240, 109]
+# PC:6e [2, 2, 240, 1, 0, 0, 240, 110] StoreReg(B) [2, 2, 240, 1, 0, 0, 240, 110]
+# PC:6f [2, 2, 240, 1, 0, 0, 240, 111] LoadLo(Constant(1)) [1, 2, 240, 1, 0, 0, 240, 111]
+# PC:70 [1, 2, 240, 1, 0, 0, 240, 112] Add(SP) [241, 2, 240, 1, 0, 0, 240, 112]
+# PC:71 [241, 2, 240, 1, 0, 0, 240, 113] StoreReg(SP) [241, 2, 240, 1, 0, 0, 241, 113]
+# PC:72 [241, 2, 240, 1, 0, 0, 241, 114] LoadReg(B) [2, 2, 240, 1, 0, 0, 241, 114]
+# PC:73 [2, 2, 240, 1, 0, 0, 241, 115] StoreReg(D) [2, 2, 240, 2, 0, 0, 241, 115]
+# PC:74 [2, 2, 240, 2, 0, 0, 241, 116] LoadLo(Constant(2)) [2, 2, 240, 2, 0, 0, 241, 116]
+# PC:75 [2, 2, 240, 2, 0, 0, 241, 117] Add(SP) [243, 2, 240, 2, 0, 0, 241, 117]
+# PC:76 [243, 2, 240, 2, 0, 0, 241, 118] LoadMem(ACC) [2, 2, 240, 2, 0, 0, 241, 118]
+# PC:77 [2, 2, 240, 2, 0, 0, 241, 119] StoreReg(C) [2, 2, 2, 2, 0, 0, 241, 119]
+# PC:78 [2, 2, 2, 2, 0, 0, 241, 120] LoadLo(Constant(1)) [1, 2, 2, 2, 0, 0, 241, 120]
+# PC:79 [1, 2, 2, 2, 0, 0, 241, 121] LoadHi(Constant(0)) [1, 2, 2, 2, 0, 0, 241, 121]
+# PC:7a [1, 2, 2, 2, 0, 0, 241, 122] Not(ACC) [254, 2, 2, 2, 0, 0, 241, 122]
+# PC:7b [254, 2, 2, 2, 0, 0, 241, 123] StoreReg(B) [254, 254, 2, 2, 0, 0, 241, 123]
+# PC:7c [254, 254, 2, 2, 0, 0, 241, 124] LoadLo(Constant(1)) [1, 254, 2, 2, 0, 0, 241, 124]
+# PC:7d [1, 254, 2, 2, 0, 0, 241, 125] Add(B) [255, 254, 2, 2, 0, 0, 241, 125]
+# PC:7e [255, 254, 2, 2, 0, 0, 241, 126] Add(C) [1, 254, 2, 2, 0, 1, 241, 126]
+# PC:7f [1, 254, 2, 2, 0, 1, 241, 127] StoreReg(B) [1, 1, 2, 2, 0, 1, 241, 127]
+# PC:80 [1, 1, 2, 2, 0, 1, 241, 128] LoadLo(Constant(2)) [2, 1, 2, 2, 0, 1, 241, 128]
+# PC:81 [2, 1, 2, 2, 0, 1, 241, 129] Add(SP) [243, 1, 2, 2, 0, 0, 241, 129]
+# PC:82 [243, 1, 2, 2, 0, 0, 241, 130] StoreReg(C) [243, 1, 243, 2, 0, 0, 241, 130]
+# PC:83 [243, 1, 243, 2, 0, 0, 241, 131] LoadReg(B) [1, 1, 243, 2, 0, 0, 241, 131]
+# PC:84 [1, 1, 243, 2, 0, 0, 241, 132] StoreMem(C) [1, 1, 243, 2, 0, 0, 241, 132]
+# PC:85 [1, 1, 243, 2, 0, 0, 241, 133] LoadLo(Constant(15)) [255, 1, 243, 2, 0, 0, 241, 133]
+# PC:86 [255, 1, 243, 2, 0, 0, 241, 134] Add(SP) [240, 1, 243, 2, 0, 1, 241, 134]
+# PC:87 [240, 1, 243, 2, 0, 1, 241, 135] StoreReg(SP) [240, 1, 243, 2, 0, 1, 240, 135]
+# PC:88 [240, 1, 243, 2, 0, 1, 240, 136] LoadLo(Constant(15)) [255, 1, 243, 2, 0, 1, 240, 136]
+# PC:89 [255, 1, 243, 2, 0, 1, 240, 137] Add(SP) [239, 1, 243, 2, 0, 1, 240, 137]
+# PC:8a [239, 1, 243, 2, 0, 1, 240, 138] StoreReg(SP) [239, 1, 243, 2, 0, 1, 239, 138]
+# PC:8b [239, 1, 243, 2, 0, 1, 239, 139] LoadReg(D) [2, 1, 243, 2, 0, 1, 239, 139]
+# PC:8c [2, 1, 243, 2, 0, 1, 239, 140] StoreMem(SP) [2, 1, 243, 2, 0, 1, 239, 140]
+# PC:8d [2, 1, 243, 2, 0, 1, 239, 141] LoadLo(Constant(4)) [4, 1, 243, 2, 0, 1, 239, 141]
+# PC:8e [4, 1, 243, 2, 0, 1, 239, 142] Add(SP) [243, 1, 243, 2, 0, 0, 239, 142]
+# PC:8f [243, 1, 243, 2, 0, 0, 239, 143] LoadMem(ACC) [1, 1, 243, 2, 0, 0, 239, 143]
+# PC:90 [1, 1, 243, 2, 0, 0, 239, 144] StoreReg(B) [1, 1, 243, 2, 0, 0, 239, 144]
+# PC:91 [1, 1, 243, 2, 0, 0, 239, 145] LoadLo(Constant(15)) [255, 1, 243, 2, 0, 0, 239, 145]
+# PC:92 [255, 1, 243, 2, 0, 0, 239, 146] Add(SP) [238, 1, 243, 2, 0, 1, 239, 146]
+# PC:93 [238, 1, 243, 2, 0, 1, 239, 147] StoreReg(SP) [238, 1, 243, 2, 0, 1, 238, 147]
+# PC:94 [238, 1, 243, 2, 0, 1, 238, 148] LoadReg(B) [1, 1, 243, 2, 0, 1, 238, 148]
+# PC:95 [1, 1, 243, 2, 0, 1, 238, 149] StoreMem(SP) [1, 1, 243, 2, 0, 1, 238, 149]
+# PC:96 [1, 1, 243, 2, 0, 1, 238, 150] LoadLo(Constant(15)) [255, 1, 243, 2, 0, 1, 238, 150]
+# PC:97 [255, 1, 243, 2, 0, 1, 238, 151] Add(SP) [237, 1, 243, 2, 0, 1, 238, 151]
+# PC:98 [237, 1, 243, 2, 0, 1, 238, 152] StoreReg(SP) [237, 1, 243, 2, 0, 1, 237, 152]
+# PC:99 [237, 1, 243, 2, 0, 1, 237, 153] LoadLo(Constant(5)) [5, 1, 243, 2, 0, 1, 237, 153]
+# PC:9a [5, 1, 243, 2, 0, 1, 237, 154] Add(PC) [159, 1, 243, 2, 0, 0, 237, 154]
+# PC:9b [159, 1, 243, 2, 0, 0, 237, 155] StoreMem(SP) [159, 1, 243, 2, 0, 0, 237, 155]
+# PC:9c [159, 1, 243, 2, 0, 0, 237, 156] LoadLo(Constant(8)) [248, 1, 243, 2, 0, 0, 237, 156]
+# PC:9d [248, 1, 243, 2, 0, 0, 237, 157] LoadHi(Constant(1)) [24, 1, 243, 2, 0, 0, 237, 157]
+# PC:9e [24, 1, 243, 2, 0, 0, 237, 158] StoreReg(PC) [24, 1, 243, 2, 0, 0, 237, 24]
+# PC:18 [24, 1, 243, 2, 0, 0, 237, 24] LoadLo(Constant(15)) [255, 1, 243, 2, 0, 0, 237, 24]
+# PC:19 [255, 1, 243, 2, 0, 0, 237, 25] Add(SP) [236, 1, 243, 2, 0, 1, 237, 25]
+# PC:1a [236, 1, 243, 2, 0, 1, 237, 26] StoreReg(SP) [236, 1, 243, 2, 0, 1, 236, 26]
+# PC:1b [236, 1, 243, 2, 0, 1, 236, 27] LoadLo(Constant(2)) [2, 1, 243, 2, 0, 1, 236, 27]
+# PC:1c [2, 1, 243, 2, 0, 1, 236, 28] Add(SP) [238, 1, 243, 2, 0, 0, 236, 28]
+# PC:1d [238, 1, 243, 2, 0, 0, 236, 29] LoadMem(ACC) [1, 1, 243, 2, 0, 0, 236, 29]
+# PC:1e [1, 1, 243, 2, 0, 0, 236, 30] StoreReg(C) [1, 1, 1, 2, 0, 0, 236, 30]
+# PC:1f [1, 1, 1, 2, 0, 0, 236, 31] LoadLo(Constant(0)) [0, 1, 1, 2, 0, 0, 236, 31]
+# PC:20 [0, 1, 1, 2, 0, 0, 236, 32] LoadHi(Constant(0)) [0, 1, 1, 2, 0, 0, 236, 32]
+# PC:21 [0, 1, 1, 2, 0, 0, 236, 33] Xor(C) [1, 1, 1, 2, 0, 0, 236, 33]
+# PC:22 [1, 1, 1, 2, 0, 0, 236, 34] Jnz(Constant(12)) [1, 1, 1, 2, 0, 0, 236, 46]
+# PC:2e [1, 1, 1, 2, 0, 0, 236, 46] LoadLo(Constant(2)) [2, 1, 1, 2, 0, 0, 236, 46]
+# PC:2f [2, 1, 1, 2, 0, 0, 236, 47] Add(SP) [238, 1, 1, 2, 0, 0, 236, 47]
+# PC:30 [238, 1, 1, 2, 0, 0, 236, 48] LoadMem(ACC) [1, 1, 1, 2, 0, 0, 236, 48]
+# PC:31 [1, 1, 1, 2, 0, 0, 236, 49] StoreReg(C) [1, 1, 1, 2, 0, 0, 236, 49]
+# PC:32 [1, 1, 1, 2, 0, 0, 236, 50] LoadLo(Constant(1)) [1, 1, 1, 2, 0, 0, 236, 50]
+# PC:33 [1, 1, 1, 2, 0, 0, 236, 51] LoadHi(Constant(0)) [1, 1, 1, 2, 0, 0, 236, 51]
+# PC:34 [1, 1, 1, 2, 0, 0, 236, 52] Not(ACC) [254, 1, 1, 2, 0, 0, 236, 52]
+# PC:35 [254, 1, 1, 2, 0, 0, 236, 53] StoreReg(B) [254, 254, 1, 2, 0, 0, 236, 53]
+# PC:36 [254, 254, 1, 2, 0, 0, 236, 54] LoadLo(Constant(1)) [1, 254, 1, 2, 0, 0, 236, 54]
+# PC:37 [1, 254, 1, 2, 0, 0, 236, 55] Add(B) [255, 254, 1, 2, 0, 0, 236, 55]
+# PC:38 [255, 254, 1, 2, 0, 0, 236, 56] Add(C) [0, 254, 1, 2, 0, 1, 236, 56]
+# PC:39 [0, 254, 1, 2, 0, 1, 236, 57] StoreReg(B) [0, 0, 1, 2, 0, 1, 236, 57]
+# PC:3a [0, 0, 1, 2, 0, 1, 236, 58] LoadLo(Constant(2)) [2, 0, 1, 2, 0, 1, 236, 58]
+# PC:3b [2, 0, 1, 2, 0, 1, 236, 59] Add(SP) [238, 0, 1, 2, 0, 0, 236, 59]
+# PC:3c [238, 0, 1, 2, 0, 0, 236, 60] StoreReg(C) [238, 0, 238, 2, 0, 0, 236, 60]
+# PC:3d [238, 0, 238, 2, 0, 0, 236, 61] LoadReg(B) [0, 0, 238, 2, 0, 0, 236, 61]
+# PC:3e [0, 0, 238, 2, 0, 0, 236, 62] StoreMem(C) [0, 0, 238, 2, 0, 0, 236, 62]
+# PC:3f [0, 0, 238, 2, 0, 0, 236, 63] LoadLo(Constant(2)) [2, 0, 238, 2, 0, 0, 236, 63]
+# PC:40 [2, 0, 238, 2, 0, 0, 236, 64] Add(SP) [238, 0, 238, 2, 0, 0, 236, 64]
+# PC:41 [238, 0, 238, 2, 0, 0, 236, 65] LoadMem(ACC) [0, 0, 238, 2, 0, 0, 236, 65]
+# PC:42 [0, 0, 238, 2, 0, 0, 236, 66] StoreReg(C) [0, 0, 0, 2, 0, 0, 236, 66]
+# PC:43 [0, 0, 0, 2, 0, 0, 236, 67] LoadLo(Constant(0)) [0, 0, 0, 2, 0, 0, 236, 67]
+# PC:44 [0, 0, 0, 2, 0, 0, 236, 68] LoadHi(Constant(0)) [0, 0, 0, 2, 0, 0, 236, 68]
+# PC:45 [0, 0, 0, 2, 0, 0, 236, 69] Xor(C) [0, 0, 0, 2, 0, 0, 236, 69]
+# PC:46 [0, 0, 0, 2, 0, 0, 236, 70] Jnz(Constant(12)) [0, 0, 0, 2, 0, 0, 236, 70]
+# PC:47 [0, 0, 0, 2, 0, 0, 236, 71] LoadLo(Constant(1)) [1, 0, 0, 2, 0, 0, 236, 71]
+# PC:48 [1, 0, 0, 2, 0, 0, 236, 72] LoadHi(Constant(0)) [1, 0, 0, 2, 0, 0, 236, 72]
+# PC:49 [1, 0, 0, 2, 0, 0, 236, 73] StoreReg(B) [1, 1, 0, 2, 0, 0, 236, 73]
+# PC:4a [1, 1, 0, 2, 0, 0, 236, 74] LoadLo(Constant(3)) [3, 1, 0, 2, 0, 0, 236, 74]
+# PC:4b [3, 1, 0, 2, 0, 0, 236, 75] Add(SP) [239, 1, 0, 2, 0, 0, 236, 75]
+# PC:4c [239, 1, 0, 2, 0, 0, 236, 76] StoreReg(C) [239, 1, 239, 2, 0, 0, 236, 76]
+# PC:4d [239, 1, 239, 2, 0, 0, 236, 77] LoadReg(B) [1, 1, 239, 2, 0, 0, 236, 77]
+# PC:4e [1, 1, 239, 2, 0, 0, 236, 78] StoreMem(C) [1, 1, 239, 2, 0, 0, 236, 78]
+# PC:4f [1, 1, 239, 2, 0, 0, 236, 79] LoadLo(Constant(3)) [3, 1, 239, 2, 0, 0, 236, 79]
+# PC:50 [3, 1, 239, 2, 0, 0, 236, 80] LoadHi(Constant(12)) [195, 1, 239, 2, 0, 0, 236, 80]
+# PC:51 [195, 1, 239, 2, 0, 0, 236, 81] StoreReg(PC) [195, 1, 239, 2, 0, 0, 236, 195]
+# PC:c3 [195, 1, 239, 2, 0, 0, 236, 195] LoadLo(Constant(1)) [1, 1, 239, 2, 0, 0, 236, 195]
+# PC:c4 [1, 1, 239, 2, 0, 0, 236, 196] Add(SP) [237, 1, 239, 2, 0, 0, 236, 196]
+# PC:c5 [237, 1, 239, 2, 0, 0, 236, 197] StoreReg(SP) [237, 1, 239, 2, 0, 0, 237, 197]
+# PC:c6 [237, 1, 239, 2, 0, 0, 237, 198] LoadMem(SP) [159, 1, 239, 2, 0, 0, 237, 198]
+# PC:c7 [159, 1, 239, 2, 0, 0, 237, 199] StoreReg(PC) [159, 1, 239, 2, 0, 0, 237, 159]
+# PC:9f [159, 1, 239, 2, 0, 0, 237, 159] LoadLo(Constant(1)) [1, 1, 239, 2, 0, 0, 237, 159]
+# PC:a0 [1, 1, 239, 2, 0, 0, 237, 160] Add(SP) [238, 1, 239, 2, 0, 0, 237, 160]
+# PC:a1 [238, 1, 239, 2, 0, 0, 237, 161] StoreReg(SP) [238, 1, 239, 2, 0, 0, 238, 161]
+# PC:a2 [238, 1, 239, 2, 0, 0, 238, 162] LoadLo(Constant(1)) [1, 1, 239, 2, 0, 0, 238, 162]
+# PC:a3 [1, 1, 239, 2, 0, 0, 238, 163] Add(SP) [239, 1, 239, 2, 0, 0, 238, 163]
+# PC:a4 [239, 1, 239, 2, 0, 0, 238, 164] StoreReg(SP) [239, 1, 239, 2, 0, 0, 239, 164]
+# PC:a5 [239, 1, 239, 2, 0, 0, 239, 165] LoadMem(SP) [1, 1, 239, 2, 0, 0, 239, 165]
+# PC:a6 [1, 1, 239, 2, 0, 0, 239, 166] StoreReg(D) [1, 1, 239, 1, 0, 0, 239, 166]
+# PC:a7 [1, 1, 239, 1, 0, 0, 239, 167] LoadLo(Constant(1)) [1, 1, 239, 1, 0, 0, 239, 167]
+# PC:a8 [1, 1, 239, 1, 0, 0, 239, 168] Add(SP) [240, 1, 239, 1, 0, 0, 239, 168]
+# PC:a9 [240, 1, 239, 1, 0, 0, 239, 169] StoreReg(SP) [240, 1, 239, 1, 0, 0, 240, 169]
+# PC:aa [240, 1, 239, 1, 0, 0, 240, 170] LoadMem(SP) [2, 1, 239, 1, 0, 0, 240, 170]
+# PC:ab [2, 1, 239, 1, 0, 0, 240, 171] StoreReg(B) [2, 2, 239, 1, 0, 0, 240, 171]
+# PC:ac [2, 2, 239, 1, 0, 0, 240, 172] LoadLo(Constant(1)) [1, 2, 239, 1, 0, 0, 240, 172]
+# PC:ad [1, 2, 239, 1, 0, 0, 240, 173] Add(SP) [241, 2, 239, 1, 0, 0, 240, 173]
+# PC:ae [241, 2, 239, 1, 0, 0, 240, 174] StoreReg(SP) [241, 2, 239, 1, 0, 0, 241, 174]
+# PC:af [241, 2, 239, 1, 0, 0, 241, 175] LoadLo(Constant(0)) [0, 2, 239, 1, 0, 0, 241, 175]
+# PC:b0 [0, 2, 239, 1, 0, 0, 241, 176] Add(SP) [241, 2, 239, 1, 0, 0, 241, 176]
+# PC:b1 [241, 2, 239, 1, 0, 0, 241, 177] StoreReg(C) [241, 2, 241, 1, 0, 0, 241, 177]
+# PC:b2 [241, 2, 241, 1, 0, 0, 241, 178] LoadReg(B) [2, 2, 241, 1, 0, 0, 241, 178]
+# PC:b3 [2, 2, 241, 1, 0, 0, 241, 179] StoreMem(C) [2, 2, 241, 1, 0, 0, 241, 179]
+# PC:b4 [2, 2, 241, 1, 0, 0, 241, 180] LoadReg(D) [1, 2, 241, 1, 0, 0, 241, 180]
+# PC:b5 [1, 2, 241, 1, 0, 0, 241, 181] StoreReg(C) [1, 2, 1, 1, 0, 0, 241, 181]
+# PC:b6 [1, 2, 1, 1, 0, 0, 241, 182] LoadLo(Constant(0)) [0, 2, 1, 1, 0, 0, 241, 182]
+# PC:b7 [0, 2, 1, 1, 0, 0, 241, 183] Add(SP) [241, 2, 1, 1, 0, 0, 241, 183]
+# PC:b8 [241, 2, 1, 1, 0, 0, 241, 184] LoadMem(ACC) [2, 2, 1, 1, 0, 0, 241, 184]
+# PC:b9 [2, 2, 1, 1, 0, 0, 241, 185] Add(C) [3, 2, 1, 1, 0, 0, 241, 185]
+# PC:ba [3, 2, 1, 1, 0, 0, 241, 186] StoreReg(B) [3, 3, 1, 1, 0, 0, 241, 186]
+# PC:bb [3, 3, 1, 1, 0, 0, 241, 187] LoadLo(Constant(3)) [3, 3, 1, 1, 0, 0, 241, 187]
+# PC:bc [3, 3, 1, 1, 0, 0, 241, 188] Add(SP) [244, 3, 1, 1, 0, 0, 241, 188]
+# PC:bd [244, 3, 1, 1, 0, 0, 241, 189] StoreReg(C) [244, 3, 244, 1, 0, 0, 241, 189]
+# PC:be [244, 3, 244, 1, 0, 0, 241, 190] LoadReg(B) [3, 3, 244, 1, 0, 0, 241, 190]
+# PC:bf [3, 3, 244, 1, 0, 0, 241, 191] StoreMem(C) [3, 3, 244, 1, 0, 0, 241, 191]
+# PC:c0 [3, 3, 244, 1, 0, 0, 241, 192] LoadLo(Constant(3)) [3, 3, 244, 1, 0, 0, 241, 192]
+# PC:c1 [3, 3, 244, 1, 0, 0, 241, 193] LoadHi(Constant(12)) [195, 3, 244, 1, 0, 0, 241, 193]
+# PC:c2 [195, 3, 244, 1, 0, 0, 241, 194] StoreReg(PC) [195, 3, 244, 1, 0, 0, 241, 195]
+# PC:c3 [195, 3, 244, 1, 0, 0, 241, 195] LoadLo(Constant(1)) [1, 3, 244, 1, 0, 0, 241, 195]
+# PC:c4 [1, 3, 244, 1, 0, 0, 241, 196] Add(SP) [242, 3, 244, 1, 0, 0, 241, 196]
+# PC:c5 [242, 3, 244, 1, 0, 0, 241, 197] StoreReg(SP) [242, 3, 244, 1, 0, 0, 242, 197]
+# PC:c6 [242, 3, 244, 1, 0, 0, 242, 198] LoadMem(SP) [103, 3, 244, 1, 0, 0, 242, 198]
+# PC:c7 [103, 3, 244, 1, 0, 0, 242, 199] StoreReg(PC) [103, 3, 244, 1, 0, 0, 242, 103]
+# PC:67 [103, 3, 244, 1, 0, 0, 242, 103] LoadLo(Constant(1)) [1, 3, 244, 1, 0, 0, 242, 103]
+# PC:68 [1, 3, 244, 1, 0, 0, 242, 104] Add(SP) [243, 3, 244, 1, 0, 0, 242, 104]
+# PC:69 [243, 3, 244, 1, 0, 0, 242, 105] StoreReg(SP) [243, 3, 244, 1, 0, 0, 243, 105]
+# PC:6a [243, 3, 244, 1, 0, 0, 243, 106] LoadLo(Constant(1)) [1, 3, 244, 1, 0, 0, 243, 106]
+# PC:6b [1, 3, 244, 1, 0, 0, 243, 107] Add(SP) [244, 3, 244, 1, 0, 0, 243, 107]
+# PC:6c [244, 3, 244, 1, 0, 0, 243, 108] StoreReg(SP) [244, 3, 244, 1, 0, 0, 244, 108]
+# PC:6d [244, 3, 244, 1, 0, 0, 244, 109] LoadMem(SP) [3, 3, 244, 1, 0, 0, 244, 109]
+# PC:6e [3, 3, 244, 1, 0, 0, 244, 110] StoreReg(B) [3, 3, 244, 1, 0, 0, 244, 110]
+# PC:6f [3, 3, 244, 1, 0, 0, 244, 111] LoadLo(Constant(1)) [1, 3, 244, 1, 0, 0, 244, 111]
+# PC:70 [1, 3, 244, 1, 0, 0, 244, 112] Add(SP) [245, 3, 244, 1, 0, 0, 244, 112]
+# PC:71 [245, 3, 244, 1, 0, 0, 244, 113] StoreReg(SP) [245, 3, 244, 1, 0, 0, 245, 113]
+# PC:72 [245, 3, 244, 1, 0, 0, 245, 114] LoadReg(B) [3, 3, 244, 1, 0, 0, 245, 114]
+# PC:73 [3, 3, 244, 1, 0, 0, 245, 115] StoreReg(D) [3, 3, 244, 3, 0, 0, 245, 115]
+# PC:74 [3, 3, 244, 3, 0, 0, 245, 116] LoadLo(Constant(2)) [2, 3, 244, 3, 0, 0, 245, 116]
+# PC:75 [2, 3, 244, 3, 0, 0, 245, 117] Add(SP) [247, 3, 244, 3, 0, 0, 245, 117]
+# PC:76 [247, 3, 244, 3, 0, 0, 245, 118] LoadMem(ACC) [3, 3, 244, 3, 0, 0, 245, 118]
+# PC:77 [3, 3, 244, 3, 0, 0, 245, 119] StoreReg(C) [3, 3, 3, 3, 0, 0, 245, 119]
+# PC:78 [3, 3, 3, 3, 0, 0, 245, 120] LoadLo(Constant(1)) [1, 3, 3, 3, 0, 0, 245, 120]
+# PC:79 [1, 3, 3, 3, 0, 0, 245, 121] LoadHi(Constant(0)) [1, 3, 3, 3, 0, 0, 245, 121]
+# PC:7a [1, 3, 3, 3, 0, 0, 245, 122] Not(ACC) [254, 3, 3, 3, 0, 0, 245, 122]
+# PC:7b [254, 3, 3, 3, 0, 0, 245, 123] StoreReg(B) [254, 254, 3, 3, 0, 0, 245, 123]
+# PC:7c [254, 254, 3, 3, 0, 0, 245, 124] LoadLo(Constant(1)) [1, 254, 3, 3, 0, 0, 245, 124]
+# PC:7d [1, 254, 3, 3, 0, 0, 245, 125] Add(B) [255, 254, 3, 3, 0, 0, 245, 125]
+# PC:7e [255, 254, 3, 3, 0, 0, 245, 126] Add(C) [2, 254, 3, 3, 0, 1, 245, 126]
+# PC:7f [2, 254, 3, 3, 0, 1, 245, 127] StoreReg(B) [2, 2, 3, 3, 0, 1, 245, 127]
+# PC:80 [2, 2, 3, 3, 0, 1, 245, 128] LoadLo(Constant(2)) [2, 2, 3, 3, 0, 1, 245, 128]
+# PC:81 [2, 2, 3, 3, 0, 1, 245, 129] Add(SP) [247, 2, 3, 3, 0, 0, 245, 129]
+# PC:82 [247, 2, 3, 3, 0, 0, 245, 130] StoreReg(C) [247, 2, 247, 3, 0, 0, 245, 130]
+# PC:83 [247, 2, 247, 3, 0, 0, 245, 131] LoadReg(B) [2, 2, 247, 3, 0, 0, 245, 131]
+# PC:84 [2, 2, 247, 3, 0, 0, 245, 132] StoreMem(C) [2, 2, 247, 3, 0, 0, 245, 132]
+# PC:85 [2, 2, 247, 3, 0, 0, 245, 133] LoadLo(Constant(15)) [255, 2, 247, 3, 0, 0, 245, 133]
+# PC:86 [255, 2, 247, 3, 0, 0, 245, 134] Add(SP) [244, 2, 247, 3, 0, 1, 245, 134]
+# PC:87 [244, 2, 247, 3, 0, 1, 245, 135] StoreReg(SP) [244, 2, 247, 3, 0, 1, 244, 135]
+# PC:88 [244, 2, 247, 3, 0, 1, 244, 136] LoadLo(Constant(15)) [255, 2, 247, 3, 0, 1, 244, 136]
+# PC:89 [255, 2, 247, 3, 0, 1, 244, 137] Add(SP) [243, 2, 247, 3, 0, 1, 244, 137]
+# PC:8a [243, 2, 247, 3, 0, 1, 244, 138] StoreReg(SP) [243, 2, 247, 3, 0, 1, 243, 138]
+# PC:8b [243, 2, 247, 3, 0, 1, 243, 139] LoadReg(D) [3, 2, 247, 3, 0, 1, 243, 139]
+# PC:8c [3, 2, 247, 3, 0, 1, 243, 140] StoreMem(SP) [3, 2, 247, 3, 0, 1, 243, 140]
+# PC:8d [3, 2, 247, 3, 0, 1, 243, 141] LoadLo(Constant(4)) [4, 2, 247, 3, 0, 1, 243, 141]
+# PC:8e [4, 2, 247, 3, 0, 1, 243, 142] Add(SP) [247, 2, 247, 3, 0, 0, 243, 142]
+# PC:8f [247, 2, 247, 3, 0, 0, 243, 143] LoadMem(ACC) [2, 2, 247, 3, 0, 0, 243, 143]
+# PC:90 [2, 2, 247, 3, 0, 0, 243, 144] StoreReg(B) [2, 2, 247, 3, 0, 0, 243, 144]
+# PC:91 [2, 2, 247, 3, 0, 0, 243, 145] LoadLo(Constant(15)) [255, 2, 247, 3, 0, 0, 243, 145]
+# PC:92 [255, 2, 247, 3, 0, 0, 243, 146] Add(SP) [242, 2, 247, 3, 0, 1, 243, 146]
+# PC:93 [242, 2, 247, 3, 0, 1, 243, 147] StoreReg(SP) [242, 2, 247, 3, 0, 1, 242, 147]
+# PC:94 [242, 2, 247, 3, 0, 1, 242, 148] LoadReg(B) [2, 2, 247, 3, 0, 1, 242, 148]
+# PC:95 [2, 2, 247, 3, 0, 1, 242, 149] StoreMem(SP) [2, 2, 247, 3, 0, 1, 242, 149]
+# PC:96 [2, 2, 247, 3, 0, 1, 242, 150] LoadLo(Constant(15)) [255, 2, 247, 3, 0, 1, 242, 150]
+# PC:97 [255, 2, 247, 3, 0, 1, 242, 151] Add(SP) [241, 2, 247, 3, 0, 1, 242, 151]
+# PC:98 [241, 2, 247, 3, 0, 1, 242, 152] StoreReg(SP) [241, 2, 247, 3, 0, 1, 241, 152]
+# PC:99 [241, 2, 247, 3, 0, 1, 241, 153] LoadLo(Constant(5)) [5, 2, 247, 3, 0, 1, 241, 153]
+# PC:9a [5, 2, 247, 3, 0, 1, 241, 154] Add(PC) [159, 2, 247, 3, 0, 0, 241, 154]
+# PC:9b [159, 2, 247, 3, 0, 0, 241, 155] StoreMem(SP) [159, 2, 247, 3, 0, 0, 241, 155]
+# PC:9c [159, 2, 247, 3, 0, 0, 241, 156] LoadLo(Constant(8)) [248, 2, 247, 3, 0, 0, 241, 156]
+# PC:9d [248, 2, 247, 3, 0, 0, 241, 157] LoadHi(Constant(1)) [24, 2, 247, 3, 0, 0, 241, 157]
+# PC:9e [24, 2, 247, 3, 0, 0, 241, 158] StoreReg(PC) [24, 2, 247, 3, 0, 0, 241, 24]
+# PC:18 [24, 2, 247, 3, 0, 0, 241, 24] LoadLo(Constant(15)) [255, 2, 247, 3, 0, 0, 241, 24]
+# PC:19 [255, 2, 247, 3, 0, 0, 241, 25] Add(SP) [240, 2, 247, 3, 0, 1, 241, 25]
+# PC:1a [240, 2, 247, 3, 0, 1, 241, 26] StoreReg(SP) [240, 2, 247, 3, 0, 1, 240, 26]
+# PC:1b [240, 2, 247, 3, 0, 1, 240, 27] LoadLo(Constant(2)) [2, 2, 247, 3, 0, 1, 240, 27]
+# PC:1c [2, 2, 247, 3, 0, 1, 240, 28] Add(SP) [242, 2, 247, 3, 0, 0, 240, 28]
+# PC:1d [242, 2, 247, 3, 0, 0, 240, 29] LoadMem(ACC) [2, 2, 247, 3, 0, 0, 240, 29]
+# PC:1e [2, 2, 247, 3, 0, 0, 240, 30] StoreReg(C) [2, 2, 2, 3, 0, 0, 240, 30]
+# PC:1f [2, 2, 2, 3, 0, 0, 240, 31] LoadLo(Constant(0)) [0, 2, 2, 3, 0, 0, 240, 31]
+# PC:20 [0, 2, 2, 3, 0, 0, 240, 32] LoadHi(Constant(0)) [0, 2, 2, 3, 0, 0, 240, 32]
+# PC:21 [0, 2, 2, 3, 0, 0, 240, 33] Xor(C) [2, 2, 2, 3, 0, 0, 240, 33]
+# PC:22 [2, 2, 2, 3, 0, 0, 240, 34] Jnz(Constant(12)) [2, 2, 2, 3, 0, 0, 240, 46]
+# PC:2e [2, 2, 2, 3, 0, 0, 240, 46] LoadLo(Constant(2)) [2, 2, 2, 3, 0, 0, 240, 46]
+# PC:2f [2, 2, 2, 3, 0, 0, 240, 47] Add(SP) [242, 2, 2, 3, 0, 0, 240, 47]
+# PC:30 [242, 2, 2, 3, 0, 0, 240, 48] LoadMem(ACC) [2, 2, 2, 3, 0, 0, 240, 48]
+# PC:31 [2, 2, 2, 3, 0, 0, 240, 49] StoreReg(C) [2, 2, 2, 3, 0, 0, 240, 49]
+# PC:32 [2, 2, 2, 3, 0, 0, 240, 50] LoadLo(Constant(1)) [1, 2, 2, 3, 0, 0, 240, 50]
+# PC:33 [1, 2, 2, 3, 0, 0, 240, 51] LoadHi(Constant(0)) [1, 2, 2, 3, 0, 0, 240, 51]
+# PC:34 [1, 2, 2, 3, 0, 0, 240, 52] Not(ACC) [254, 2, 2, 3, 0, 0, 240, 52]
+# PC:35 [254, 2, 2, 3, 0, 0, 240, 53] StoreReg(B) [254, 254, 2, 3, 0, 0, 240, 53]
+# PC:36 [254, 254, 2, 3, 0, 0, 240, 54] LoadLo(Constant(1)) [1, 254, 2, 3, 0, 0, 240, 54]
+# PC:37 [1, 254, 2, 3, 0, 0, 240, 55] Add(B) [255, 254, 2, 3, 0, 0, 240, 55]
+# PC:38 [255, 254, 2, 3, 0, 0, 240, 56] Add(C) [1, 254, 2, 3, 0, 1, 240, 56]
+# PC:39 [1, 254, 2, 3, 0, 1, 240, 57] StoreReg(B) [1, 1, 2, 3, 0, 1, 240, 57]
+# PC:3a [1, 1, 2, 3, 0, 1, 240, 58] LoadLo(Constant(2)) [2, 1, 2, 3, 0, 1, 240, 58]
+# PC:3b [2, 1, 2, 3, 0, 1, 240, 59] Add(SP) [242, 1, 2, 3, 0, 0, 240, 59]
+# PC:3c [242, 1, 2, 3, 0, 0, 240, 60] StoreReg(C) [242, 1, 242, 3, 0, 0, 240, 60]
+# PC:3d [242, 1, 242, 3, 0, 0, 240, 61] LoadReg(B) [1, 1, 242, 3, 0, 0, 240, 61]
+# PC:3e [1, 1, 242, 3, 0, 0, 240, 62] StoreMem(C) [1, 1, 242, 3, 0, 0, 240, 62]
+# PC:3f [1, 1, 242, 3, 0, 0, 240, 63] LoadLo(Constant(2)) [2, 1, 242, 3, 0, 0, 240, 63]
+# PC:40 [2, 1, 242, 3, 0, 0, 240, 64] Add(SP) [242, 1, 242, 3, 0, 0, 240, 64]
+# PC:41 [242, 1, 242, 3, 0, 0, 240, 65] LoadMem(ACC) [1, 1, 242, 3, 0, 0, 240, 65]
+# PC:42 [1, 1, 242, 3, 0, 0, 240, 66] StoreReg(C) [1, 1, 1, 3, 0, 0, 240, 66]
+# PC:43 [1, 1, 1, 3, 0, 0, 240, 67] LoadLo(Constant(0)) [0, 1, 1, 3, 0, 0, 240, 67]
+# PC:44 [0, 1, 1, 3, 0, 0, 240, 68] LoadHi(Constant(0)) [0, 1, 1, 3, 0, 0, 240, 68]
+# PC:45 [0, 1, 1, 3, 0, 0, 240, 69] Xor(C) [1, 1, 1, 3, 0, 0, 240, 69]
+# PC:46 [1, 1, 1, 3, 0, 0, 240, 70] Jnz(Constant(12)) [1, 1, 1, 3, 0, 0, 240, 82]
+# PC:52 [1, 1, 1, 3, 0, 0, 240, 82] LoadLo(Constant(15)) [255, 1, 1, 3, 0, 0, 240, 82]
+# PC:53 [255, 1, 1, 3, 0, 0, 240, 83] Add(SP) [239, 1, 1, 3, 0, 1, 240, 83]
+# PC:54 [239, 1, 1, 3, 0, 1, 240, 84] StoreReg(SP) [239, 1, 1, 3, 0, 1, 239, 84]
+# PC:55 [239, 1, 1, 3, 0, 1, 239, 85] LoadLo(Constant(3)) [3, 1, 1, 3, 0, 1, 239, 85]
+# PC:56 [3, 1, 1, 3, 0, 1, 239, 86] Add(SP) [242, 1, 1, 3, 0, 0, 239, 86]
+# PC:57 [242, 1, 1, 3, 0, 0, 239, 87] LoadMem(ACC) [1, 1, 1, 3, 0, 0, 239, 87]
+# PC:58 [1, 1, 1, 3, 0, 0, 239, 88] StoreReg(B) [1, 1, 1, 3, 0, 0, 239, 88]
+# PC:59 [1, 1, 1, 3, 0, 0, 239, 89] LoadLo(Constant(15)) [255, 1, 1, 3, 0, 0, 239, 89]
+# PC:5a [255, 1, 1, 3, 0, 0, 239, 90] Add(SP) [238, 1, 1, 3, 0, 1, 239, 90]
+# PC:5b [238, 1, 1, 3, 0, 1, 239, 91] StoreReg(SP) [238, 1, 1, 3, 0, 1, 238, 91]
+# PC:5c [238, 1, 1, 3, 0, 1, 238, 92] LoadReg(B) [1, 1, 1, 3, 0, 1, 238, 92]
+# PC:5d [1, 1, 1, 3, 0, 1, 238, 93] StoreMem(SP) [1, 1, 1, 3, 0, 1, 238, 93]
+# PC:5e [1, 1, 1, 3, 0, 1, 238, 94] LoadLo(Constant(15)) [255, 1, 1, 3, 0, 1, 238, 94]
+# PC:5f [255, 1, 1, 3, 0, 1, 238, 95] Add(SP) [237, 1, 1, 3, 0, 1, 238, 95]
+# PC:60 [237, 1, 1, 3, 0, 1, 238, 96] StoreReg(SP) [237, 1, 1, 3, 0, 1, 237, 96]
+# PC:61 [237, 1, 1, 3, 0, 1, 237, 97] LoadLo(Constant(5)) [5, 1, 1, 3, 0, 1, 237, 97]
+# PC:62 [5, 1, 1, 3, 0, 1, 237, 98] Add(PC) [103, 1, 1, 3, 0, 0, 237, 98]
+# PC:63 [103, 1, 1, 3, 0, 0, 237, 99] StoreMem(SP) [103, 1, 1, 3, 0, 0, 237, 99]
+# PC:64 [103, 1, 1, 3, 0, 0, 237, 100] LoadLo(Constant(8)) [248, 1, 1, 3, 0, 0, 237, 100]
+# PC:65 [248, 1, 1, 3, 0, 0, 237, 101] LoadHi(Constant(1)) [24, 1, 1, 3, 0, 0, 237, 101]
+# PC:66 [24, 1, 1, 3, 0, 0, 237, 102] StoreReg(PC) [24, 1, 1, 3, 0, 0, 237, 24]
+# PC:18 [24, 1, 1, 3, 0, 0, 237, 24] LoadLo(Constant(15)) [255, 1, 1, 3, 0, 0, 237, 24]
+# PC:19 [255, 1, 1, 3, 0, 0, 237, 25] Add(SP) [236, 1, 1, 3, 0, 1, 237, 25]
+# PC:1a [236, 1, 1, 3, 0, 1, 237, 26] StoreReg(SP) [236, 1, 1, 3, 0, 1, 236, 26]
+# PC:1b [236, 1, 1, 3, 0, 1, 236, 27] LoadLo(Constant(2)) [2, 1, 1, 3, 0, 1, 236, 27]
+# PC:1c [2, 1, 1, 3, 0, 1, 236, 28] Add(SP) [238, 1, 1, 3, 0, 0, 236, 28]
+# PC:1d [238, 1, 1, 3, 0, 0, 236, 29] LoadMem(ACC) [1, 1, 1, 3, 0, 0, 236, 29]
+# PC:1e [1, 1, 1, 3, 0, 0, 236, 30] StoreReg(C) [1, 1, 1, 3, 0, 0, 236, 30]
+# PC:1f [1, 1, 1, 3, 0, 0, 236, 31] LoadLo(Constant(0)) [0, 1, 1, 3, 0, 0, 236, 31]
+# PC:20 [0, 1, 1, 3, 0, 0, 236, 32] LoadHi(Constant(0)) [0, 1, 1, 3, 0, 0, 236, 32]
+# PC:21 [0, 1, 1, 3, 0, 0, 236, 33] Xor(C) [1, 1, 1, 3, 0, 0, 236, 33]
+# PC:22 [1, 1, 1, 3, 0, 0, 236, 34] Jnz(Constant(12)) [1, 1, 1, 3, 0, 0, 236, 46]
+# PC:2e [1, 1, 1, 3, 0, 0, 236, 46] LoadLo(Constant(2)) [2, 1, 1, 3, 0, 0, 236, 46]
+# PC:2f [2, 1, 1, 3, 0, 0, 236, 47] Add(SP) [238, 1, 1, 3, 0, 0, 236, 47]
+# PC:30 [238, 1, 1, 3, 0, 0, 236, 48] LoadMem(ACC) [1, 1, 1, 3, 0, 0, 236, 48]
+# PC:31 [1, 1, 1, 3, 0, 0, 236, 49] StoreReg(C) [1, 1, 1, 3, 0, 0, 236, 49]
+# PC:32 [1, 1, 1, 3, 0, 0, 236, 50] LoadLo(Constant(1)) [1, 1, 1, 3, 0, 0, 236, 50]
+# PC:33 [1, 1, 1, 3, 0, 0, 236, 51] LoadHi(Constant(0)) [1, 1, 1, 3, 0, 0, 236, 51]
+# PC:34 [1, 1, 1, 3, 0, 0, 236, 52] Not(ACC) [254, 1, 1, 3, 0, 0, 236, 52]
+# PC:35 [254, 1, 1, 3, 0, 0, 236, 53] StoreReg(B) [254, 254, 1, 3, 0, 0, 236, 53]
+# PC:36 [254, 254, 1, 3, 0, 0, 236, 54] LoadLo(Constant(1)) [1, 254, 1, 3, 0, 0, 236, 54]
+# PC:37 [1, 254, 1, 3, 0, 0, 236, 55] Add(B) [255, 254, 1, 3, 0, 0, 236, 55]
+# PC:38 [255, 254, 1, 3, 0, 0, 236, 56] Add(C) [0, 254, 1, 3, 0, 1, 236, 56]
+# PC:39 [0, 254, 1, 3, 0, 1, 236, 57] StoreReg(B) [0, 0, 1, 3, 0, 1, 236, 57]
+# PC:3a [0, 0, 1, 3, 0, 1, 236, 58] LoadLo(Constant(2)) [2, 0, 1, 3, 0, 1, 236, 58]
+# PC:3b [2, 0, 1, 3, 0, 1, 236, 59] Add(SP) [238, 0, 1, 3, 0, 0, 236, 59]
+# PC:3c [238, 0, 1, 3, 0, 0, 236, 60] StoreReg(C) [238, 0, 238, 3, 0, 0, 236, 60]
+# PC:3d [238, 0, 238, 3, 0, 0, 236, 61] LoadReg(B) [0, 0, 238, 3, 0, 0, 236, 61]
+# PC:3e [0, 0, 238, 3, 0, 0, 236, 62] StoreMem(C) [0, 0, 238, 3, 0, 0, 236, 62]
+# PC:3f [0, 0, 238, 3, 0, 0, 236, 63] LoadLo(Constant(2)) [2, 0, 238, 3, 0, 0, 236, 63]
+# PC:40 [2, 0, 238, 3, 0, 0, 236, 64] Add(SP) [238, 0, 238, 3, 0, 0, 236, 64]
+# PC:41 [238, 0, 238, 3, 0, 0, 236, 65] LoadMem(ACC) [0, 0, 238, 3, 0, 0, 236, 65]
+# PC:42 [0, 0, 238, 3, 0, 0, 236, 66] StoreReg(C) [0, 0, 0, 3, 0, 0, 236, 66]
+# PC:43 [0, 0, 0, 3, 0, 0, 236, 67] LoadLo(Constant(0)) [0, 0, 0, 3, 0, 0, 236, 67]
+# PC:44 [0, 0, 0, 3, 0, 0, 236, 68] LoadHi(Constant(0)) [0, 0, 0, 3, 0, 0, 236, 68]
+# PC:45 [0, 0, 0, 3, 0, 0, 236, 69] Xor(C) [0, 0, 0, 3, 0, 0, 236, 69]
+# PC:46 [0, 0, 0, 3, 0, 0, 236, 70] Jnz(Constant(12)) [0, 0, 0, 3, 0, 0, 236, 70]
+# PC:47 [0, 0, 0, 3, 0, 0, 236, 71] LoadLo(Constant(1)) [1, 0, 0, 3, 0, 0, 236, 71]
+# PC:48 [1, 0, 0, 3, 0, 0, 236, 72] LoadHi(Constant(0)) [1, 0, 0, 3, 0, 0, 236, 72]
+# PC:49 [1, 0, 0, 3, 0, 0, 236, 73] StoreReg(B) [1, 1, 0, 3, 0, 0, 236, 73]
+# PC:4a [1, 1, 0, 3, 0, 0, 236, 74] LoadLo(Constant(3)) [3, 1, 0, 3, 0, 0, 236, 74]
+# PC:4b [3, 1, 0, 3, 0, 0, 236, 75] Add(SP) [239, 1, 0, 3, 0, 0, 236, 75]
+# PC:4c [239, 1, 0, 3, 0, 0, 236, 76] StoreReg(C) [239, 1, 239, 3, 0, 0, 236, 76]
+# PC:4d [239, 1, 239, 3, 0, 0, 236, 77] LoadReg(B) [1, 1, 239, 3, 0, 0, 236, 77]
+# PC:4e [1, 1, 239, 3, 0, 0, 236, 78] StoreMem(C) [1, 1, 239, 3, 0, 0, 236, 78]
+# PC:4f [1, 1, 239, 3, 0, 0, 236, 79] LoadLo(Constant(3)) [3, 1, 239, 3, 0, 0, 236, 79]
+# PC:50 [3, 1, 239, 3, 0, 0, 236, 80] LoadHi(Constant(12)) [195, 1, 239, 3, 0, 0, 236, 80]
+# PC:51 [195, 1, 239, 3, 0, 0, 236, 81] StoreReg(PC) [195, 1, 239, 3, 0, 0, 236, 195]
+# PC:c3 [195, 1, 239, 3, 0, 0, 236, 195] LoadLo(Constant(1)) [1, 1, 239, 3, 0, 0, 236, 195]
+# PC:c4 [1, 1, 239, 3, 0, 0, 236, 196] Add(SP) [237, 1, 239, 3, 0, 0, 236, 196]
+# PC:c5 [237, 1, 239, 3, 0, 0, 236, 197] StoreReg(SP) [237, 1, 239, 3, 0, 0, 237, 197]
+# PC:c6 [237, 1, 239, 3, 0, 0, 237, 198] LoadMem(SP) [103, 1, 239, 3, 0, 0, 237, 198]
+# PC:c7 [103, 1, 239, 3, 0, 0, 237, 199] StoreReg(PC) [103, 1, 239, 3, 0, 0, 237, 103]
+# PC:67 [103, 1, 239, 3, 0, 0, 237, 103] LoadLo(Constant(1)) [1, 1, 239, 3, 0, 0, 237, 103]
+# PC:68 [1, 1, 239, 3, 0, 0, 237, 104] Add(SP) [238, 1, 239, 3, 0, 0, 237, 104]
+# PC:69 [238, 1, 239, 3, 0, 0, 237, 105] StoreReg(SP) [238, 1, 239, 3, 0, 0, 238, 105]
+# PC:6a [238, 1, 239, 3, 0, 0, 238, 106] LoadLo(Constant(1)) [1, 1, 239, 3, 0, 0, 238, 106]
+# PC:6b [1, 1, 239, 3, 0, 0, 238, 107] Add(SP) [239, 1, 239, 3, 0, 0, 238, 107]
+# PC:6c [239, 1, 239, 3, 0, 0, 238, 108] StoreReg(SP) [239, 1, 239, 3, 0, 0, 239, 108]
+# PC:6d [239, 1, 239, 3, 0, 0, 239, 109] LoadMem(SP) [1, 1, 239, 3, 0, 0, 239, 109]
+# PC:6e [1, 1, 239, 3, 0, 0, 239, 110] StoreReg(B) [1, 1, 239, 3, 0, 0, 239, 110]
+# PC:6f [1, 1, 239, 3, 0, 0, 239, 111] LoadLo(Constant(1)) [1, 1, 239, 3, 0, 0, 239, 111]
+# PC:70 [1, 1, 239, 3, 0, 0, 239, 112] Add(SP) [240, 1, 239, 3, 0, 0, 239, 112]
+# PC:71 [240, 1, 239, 3, 0, 0, 239, 113] StoreReg(SP) [240, 1, 239, 3, 0, 0, 240, 113]
+# PC:72 [240, 1, 239, 3, 0, 0, 240, 114] LoadReg(B) [1, 1, 239, 3, 0, 0, 240, 114]
+# PC:73 [1, 1, 239, 3, 0, 0, 240, 115] StoreReg(D) [1, 1, 239, 1, 0, 0, 240, 115]
+# PC:74 [1, 1, 239, 1, 0, 0, 240, 116] LoadLo(Constant(2)) [2, 1, 239, 1, 0, 0, 240, 116]
+# PC:75 [2, 1, 239, 1, 0, 0, 240, 117] Add(SP) [242, 1, 239, 1, 0, 0, 240, 117]
+# PC:76 [242, 1, 239, 1, 0, 0, 240, 118] LoadMem(ACC) [1, 1, 239, 1, 0, 0, 240, 118]
+# PC:77 [1, 1, 239, 1, 0, 0, 240, 119] StoreReg(C) [1, 1, 1, 1, 0, 0, 240, 119]
+# PC:78 [1, 1, 1, 1, 0, 0, 240, 120] LoadLo(Constant(1)) [1, 1, 1, 1, 0, 0, 240, 120]
+# PC:79 [1, 1, 1, 1, 0, 0, 240, 121] LoadHi(Constant(0)) [1, 1, 1, 1, 0, 0, 240, 121]
+# PC:7a [1, 1, 1, 1, 0, 0, 240, 122] Not(ACC) [254, 1, 1, 1, 0, 0, 240, 122]
+# PC:7b [254, 1, 1, 1, 0, 0, 240, 123] StoreReg(B) [254, 254, 1, 1, 0, 0, 240, 123]
+# PC:7c [254, 254, 1, 1, 0, 0, 240, 124] LoadLo(Constant(1)) [1, 254, 1, 1, 0, 0, 240, 124]
+# PC:7d [1, 254, 1, 1, 0, 0, 240, 125] Add(B) [255, 254, 1, 1, 0, 0, 240, 125]
+# PC:7e [255, 254, 1, 1, 0, 0, 240, 126] Add(C) [0, 254, 1, 1, 0, 1, 240, 126]
+# PC:7f [0, 254, 1, 1, 0, 1, 240, 127] StoreReg(B) [0, 0, 1, 1, 0, 1, 240, 127]
+# PC:80 [0, 0, 1, 1, 0, 1, 240, 128] LoadLo(Constant(2)) [2, 0, 1, 1, 0, 1, 240, 128]
+# PC:81 [2, 0, 1, 1, 0, 1, 240, 129] Add(SP) [242, 0, 1, 1, 0, 0, 240, 129]
+# PC:82 [242, 0, 1, 1, 0, 0, 240, 130] StoreReg(C) [242, 0, 242, 1, 0, 0, 240, 130]
+# PC:83 [242, 0, 242, 1, 0, 0, 240, 131] LoadReg(B) [0, 0, 242, 1, 0, 0, 240, 131]
+# PC:84 [0, 0, 242, 1, 0, 0, 240, 132] StoreMem(C) [0, 0, 242, 1, 0, 0, 240, 132]
+# PC:85 [0, 0, 242, 1, 0, 0, 240, 133] LoadLo(Constant(15)) [255, 0, 242, 1, 0, 0, 240, 133]
+# PC:86 [255, 0, 242, 1, 0, 0, 240, 134] Add(SP) [239, 0, 242, 1, 0, 1, 240, 134]
+# PC:87 [239, 0, 242, 1, 0, 1, 240, 135] StoreReg(SP) [239, 0, 242, 1, 0, 1, 239, 135]
+# PC:88 [239, 0, 242, 1, 0, 1, 239, 136] LoadLo(Constant(15)) [255, 0, 242, 1, 0, 1, 239, 136]
+# PC:89 [255, 0, 242, 1, 0, 1, 239, 137] Add(SP) [238, 0, 242, 1, 0, 1, 239, 137]
+# PC:8a [238, 0, 242, 1, 0, 1, 239, 138] StoreReg(SP) [238, 0, 242, 1, 0, 1, 238, 138]
+# PC:8b [238, 0, 242, 1, 0, 1, 238, 139] LoadReg(D) [1, 0, 242, 1, 0, 1, 238, 139]
+# PC:8c [1, 0, 242, 1, 0, 1, 238, 140] StoreMem(SP) [1, 0, 242, 1, 0, 1, 238, 140]
+# PC:8d [1, 0, 242, 1, 0, 1, 238, 141] LoadLo(Constant(4)) [4, 0, 242, 1, 0, 1, 238, 141]
+# PC:8e [4, 0, 242, 1, 0, 1, 238, 142] Add(SP) [242, 0, 242, 1, 0, 0, 238, 142]
+# PC:8f [242, 0, 242, 1, 0, 0, 238, 143] LoadMem(ACC) [0, 0, 242, 1, 0, 0, 238, 143]
+# PC:90 [0, 0, 242, 1, 0, 0, 238, 144] StoreReg(B) [0, 0, 242, 1, 0, 0, 238, 144]
+# PC:91 [0, 0, 242, 1, 0, 0, 238, 145] LoadLo(Constant(15)) [255, 0, 242, 1, 0, 0, 238, 145]
+# PC:92 [255, 0, 242, 1, 0, 0, 238, 146] Add(SP) [237, 0, 242, 1, 0, 1, 238, 146]
+# PC:93 [237, 0, 242, 1, 0, 1, 238, 147] StoreReg(SP) [237, 0, 242, 1, 0, 1, 237, 147]
+# PC:94 [237, 0, 242, 1, 0, 1, 237, 148] LoadReg(B) [0, 0, 242, 1, 0, 1, 237, 148]
+# PC:95 [0, 0, 242, 1, 0, 1, 237, 149] StoreMem(SP) [0, 0, 242, 1, 0, 1, 237, 149]
+# PC:96 [0, 0, 242, 1, 0, 1, 237, 150] LoadLo(Constant(15)) [255, 0, 242, 1, 0, 1, 237, 150]
+# PC:97 [255, 0, 242, 1, 0, 1, 237, 151] Add(SP) [236, 0, 242, 1, 0, 1, 237, 151]
+# PC:98 [236, 0, 242, 1, 0, 1, 237, 152] StoreReg(SP) [236, 0, 242, 1, 0, 1, 236, 152]
+# PC:99 [236, 0, 242, 1, 0, 1, 236, 153] LoadLo(Constant(5)) [5, 0, 242, 1, 0, 1, 236, 153]
+# PC:9a [5, 0, 242, 1, 0, 1, 236, 154] Add(PC) [159, 0, 242, 1, 0, 0, 236, 154]
+# PC:9b [159, 0, 242, 1, 0, 0, 236, 155] StoreMem(SP) [159, 0, 242, 1, 0, 0, 236, 155]
+# PC:9c [159, 0, 242, 1, 0, 0, 236, 156] LoadLo(Constant(8)) [248, 0, 242, 1, 0, 0, 236, 156]
+# PC:9d [248, 0, 242, 1, 0, 0, 236, 157] LoadHi(Constant(1)) [24, 0, 242, 1, 0, 0, 236, 157]
+# PC:9e [24, 0, 242, 1, 0, 0, 236, 158] StoreReg(PC) [24, 0, 242, 1, 0, 0, 236, 24]
+# PC:18 [24, 0, 242, 1, 0, 0, 236, 24] LoadLo(Constant(15)) [255, 0, 242, 1, 0, 0, 236, 24]
+# PC:19 [255, 0, 242, 1, 0, 0, 236, 25] Add(SP) [235, 0, 242, 1, 0, 1, 236, 25]
+# PC:1a [235, 0, 242, 1, 0, 1, 236, 26] StoreReg(SP) [235, 0, 242, 1, 0, 1, 235, 26]
+# PC:1b [235, 0, 242, 1, 0, 1, 235, 27] LoadLo(Constant(2)) [2, 0, 242, 1, 0, 1, 235, 27]
+# PC:1c [2, 0, 242, 1, 0, 1, 235, 28] Add(SP) [237, 0, 242, 1, 0, 0, 235, 28]
+# PC:1d [237, 0, 242, 1, 0, 0, 235, 29] LoadMem(ACC) [0, 0, 242, 1, 0, 0, 235, 29]
+# PC:1e [0, 0, 242, 1, 0, 0, 235, 30] StoreReg(C) [0, 0, 0, 1, 0, 0, 235, 30]
+# PC:1f [0, 0, 0, 1, 0, 0, 235, 31] LoadLo(Constant(0)) [0, 0, 0, 1, 0, 0, 235, 31]
+# PC:20 [0, 0, 0, 1, 0, 0, 235, 32] LoadHi(Constant(0)) [0, 0, 0, 1, 0, 0, 235, 32]
+# PC:21 [0, 0, 0, 1, 0, 0, 235, 33] Xor(C) [0, 0, 0, 1, 0, 0, 235, 33]
+# PC:22 [0, 0, 0, 1, 0, 0, 235, 34] Jnz(Constant(12)) [0, 0, 0, 1, 0, 0, 235, 34]
+# PC:23 [0, 0, 0, 1, 0, 0, 235, 35] LoadLo(Constant(1)) [1, 0, 0, 1, 0, 0, 235, 35]
+# PC:24 [1, 0, 0, 1, 0, 0, 235, 36] LoadHi(Constant(0)) [1, 0, 0, 1, 0, 0, 235, 36]
+# PC:25 [1, 0, 0, 1, 0, 0, 235, 37] StoreReg(B) [1, 1, 0, 1, 0, 0, 235, 37]
+# PC:26 [1, 1, 0, 1, 0, 0, 235, 38] LoadLo(Constant(3)) [3, 1, 0, 1, 0, 0, 235, 38]
+# PC:27 [3, 1, 0, 1, 0, 0, 235, 39] Add(SP) [238, 1, 0, 1, 0, 0, 235, 39]
+# PC:28 [238, 1, 0, 1, 0, 0, 235, 40] StoreReg(C) [238, 1, 238, 1, 0, 0, 235, 40]
+# PC:29 [238, 1, 238, 1, 0, 0, 235, 41] LoadReg(B) [1, 1, 238, 1, 0, 0, 235, 41]
+# PC:2a [1, 1, 238, 1, 0, 0, 235, 42] StoreMem(C) [1, 1, 238, 1, 0, 0, 235, 42]
+# PC:2b [1, 1, 238, 1, 0, 0, 235, 43] LoadLo(Constant(3)) [3, 1, 238, 1, 0, 0, 235, 43]
+# PC:2c [3, 1, 238, 1, 0, 0, 235, 44] LoadHi(Constant(12)) [195, 1, 238, 1, 0, 0, 235, 44]
+# PC:2d [195, 1, 238, 1, 0, 0, 235, 45] StoreReg(PC) [195, 1, 238, 1, 0, 0, 235, 195]
+# PC:c3 [195, 1, 238, 1, 0, 0, 235, 195] LoadLo(Constant(1)) [1, 1, 238, 1, 0, 0, 235, 195]
+# PC:c4 [1, 1, 238, 1, 0, 0, 235, 196] Add(SP) [236, 1, 238, 1, 0, 0, 235, 196]
+# PC:c5 [236, 1, 238, 1, 0, 0, 235, 197] StoreReg(SP) [236, 1, 238, 1, 0, 0, 236, 197]
+# PC:c6 [236, 1, 238, 1, 0, 0, 236, 198] LoadMem(SP) [159, 1, 238, 1, 0, 0, 236, 198]
+# PC:c7 [159, 1, 238, 1, 0, 0, 236, 199] StoreReg(PC) [159, 1, 238, 1, 0, 0, 236, 159]
+# PC:9f [159, 1, 238, 1, 0, 0, 236, 159] LoadLo(Constant(1)) [1, 1, 238, 1, 0, 0, 236, 159]
+# PC:a0 [1, 1, 238, 1, 0, 0, 236, 160] Add(SP) [237, 1, 238, 1, 0, 0, 236, 160]
+# PC:a1 [237, 1, 238, 1, 0, 0, 236, 161] StoreReg(SP) [237, 1, 238, 1, 0, 0, 237, 161]
+# PC:a2 [237, 1, 238, 1, 0, 0, 237, 162] LoadLo(Constant(1)) [1, 1, 238, 1, 0, 0, 237, 162]
+# PC:a3 [1, 1, 238, 1, 0, 0, 237, 163] Add(SP) [238, 1, 238, 1, 0, 0, 237, 163]
+# PC:a4 [238, 1, 238, 1, 0, 0, 237, 164] StoreReg(SP) [238, 1, 238, 1, 0, 0, 238, 164]
+# PC:a5 [238, 1, 238, 1, 0, 0, 238, 165] LoadMem(SP) [1, 1, 238, 1, 0, 0, 238, 165]
+# PC:a6 [1, 1, 238, 1, 0, 0, 238, 166] StoreReg(D) [1, 1, 238, 1, 0, 0, 238, 166]
+# PC:a7 [1, 1, 238, 1, 0, 0, 238, 167] LoadLo(Constant(1)) [1, 1, 238, 1, 0, 0, 238, 167]
+# PC:a8 [1, 1, 238, 1, 0, 0, 238, 168] Add(SP) [239, 1, 238, 1, 0, 0, 238, 168]
+# PC:a9 [239, 1, 238, 1, 0, 0, 238, 169] StoreReg(SP) [239, 1, 238, 1, 0, 0, 239, 169]
+# PC:aa [239, 1, 238, 1, 0, 0, 239, 170] LoadMem(SP) [1, 1, 238, 1, 0, 0, 239, 170]
+# PC:ab [1, 1, 238, 1, 0, 0, 239, 171] StoreReg(B) [1, 1, 238, 1, 0, 0, 239, 171]
+# PC:ac [1, 1, 238, 1, 0, 0, 239, 172] LoadLo(Constant(1)) [1, 1, 238, 1, 0, 0, 239, 172]
+# PC:ad [1, 1, 238, 1, 0, 0, 239, 173] Add(SP) [240, 1, 238, 1, 0, 0, 239, 173]
+# PC:ae [240, 1, 238, 1, 0, 0, 239, 174] StoreReg(SP) [240, 1, 238, 1, 0, 0, 240, 174]
+# PC:af [240, 1, 238, 1, 0, 0, 240, 175] LoadLo(Constant(0)) [0, 1, 238, 1, 0, 0, 240, 175]
+# PC:b0 [0, 1, 238, 1, 0, 0, 240, 176] Add(SP) [240, 1, 238, 1, 0, 0, 240, 176]
+# PC:b1 [240, 1, 238, 1, 0, 0, 240, 177] StoreReg(C) [240, 1, 240, 1, 0, 0, 240, 177]
+# PC:b2 [240, 1, 240, 1, 0, 0, 240, 178] LoadReg(B) [1, 1, 240, 1, 0, 0, 240, 178]
+# PC:b3 [1, 1, 240, 1, 0, 0, 240, 179] StoreMem(C) [1, 1, 240, 1, 0, 0, 240, 179]
+# PC:b4 [1, 1, 240, 1, 0, 0, 240, 180] LoadReg(D) [1, 1, 240, 1, 0, 0, 240, 180]
+# PC:b5 [1, 1, 240, 1, 0, 0, 240, 181] StoreReg(C) [1, 1, 1, 1, 0, 0, 240, 181]
+# PC:b6 [1, 1, 1, 1, 0, 0, 240, 182] LoadLo(Constant(0)) [0, 1, 1, 1, 0, 0, 240, 182]
+# PC:b7 [0, 1, 1, 1, 0, 0, 240, 183] Add(SP) [240, 1, 1, 1, 0, 0, 240, 183]
+# PC:b8 [240, 1, 1, 1, 0, 0, 240, 184] LoadMem(ACC) [1, 1, 1, 1, 0, 0, 240, 184]
+# PC:b9 [1, 1, 1, 1, 0, 0, 240, 185] Add(C) [2, 1, 1, 1, 0, 0, 240, 185]
+# PC:ba [2, 1, 1, 1, 0, 0, 240, 186] StoreReg(B) [2, 2, 1, 1, 0, 0, 240, 186]
+# PC:bb [2, 2, 1, 1, 0, 0, 240, 187] LoadLo(Constant(3)) [3, 2, 1, 1, 0, 0, 240, 187]
+# PC:bc [3, 2, 1, 1, 0, 0, 240, 188] Add(SP) [243, 2, 1, 1, 0, 0, 240, 188]
+# PC:bd [243, 2, 1, 1, 0, 0, 240, 189] StoreReg(C) [243, 2, 243, 1, 0, 0, 240, 189]
+# PC:be [243, 2, 243, 1, 0, 0, 240, 190] LoadReg(B) [2, 2, 243, 1, 0, 0, 240, 190]
+# PC:bf [2, 2, 243, 1, 0, 0, 240, 191] StoreMem(C) [2, 2, 243, 1, 0, 0, 240, 191]
+# PC:c0 [2, 2, 243, 1, 0, 0, 240, 192] LoadLo(Constant(3)) [3, 2, 243, 1, 0, 0, 240, 192]
+# PC:c1 [3, 2, 243, 1, 0, 0, 240, 193] LoadHi(Constant(12)) [195, 2, 243, 1, 0, 0, 240, 193]
+# PC:c2 [195, 2, 243, 1, 0, 0, 240, 194] StoreReg(PC) [195, 2, 243, 1, 0, 0, 240, 195]
+# PC:c3 [195, 2, 243, 1, 0, 0, 240, 195] LoadLo(Constant(1)) [1, 2, 243, 1, 0, 0, 240, 195]
+# PC:c4 [1, 2, 243, 1, 0, 0, 240, 196] Add(SP) [241, 2, 243, 1, 0, 0, 240, 196]
+# PC:c5 [241, 2, 243, 1, 0, 0, 240, 197] StoreReg(SP) [241, 2, 243, 1, 0, 0, 241, 197]
+# PC:c6 [241, 2, 243, 1, 0, 0, 241, 198] LoadMem(SP) [159, 2, 243, 1, 0, 0, 241, 198]
+# PC:c7 [159, 2, 243, 1, 0, 0, 241, 199] StoreReg(PC) [159, 2, 243, 1, 0, 0, 241, 159]
+# PC:9f [159, 2, 243, 1, 0, 0, 241, 159] LoadLo(Constant(1)) [1, 2, 243, 1, 0, 0, 241, 159]
+# PC:a0 [1, 2, 243, 1, 0, 0, 241, 160] Add(SP) [242, 2, 243, 1, 0, 0, 241, 160]
+# PC:a1 [242, 2, 243, 1, 0, 0, 241, 161] StoreReg(SP) [242, 2, 243, 1, 0, 0, 242, 161]
+# PC:a2 [242, 2, 243, 1, 0, 0, 242, 162] LoadLo(Constant(1)) [1, 2, 243, 1, 0, 0, 242, 162]
+# PC:a3 [1, 2, 243, 1, 0, 0, 242, 163] Add(SP) [243, 2, 243, 1, 0, 0, 242, 163]
+# PC:a4 [243, 2, 243, 1, 0, 0, 242, 164] StoreReg(SP) [243, 2, 243, 1, 0, 0, 243, 164]
+# PC:a5 [243, 2, 243, 1, 0, 0, 243, 165] LoadMem(SP) [2, 2, 243, 1, 0, 0, 243, 165]
+# PC:a6 [2, 2, 243, 1, 0, 0, 243, 166] StoreReg(D) [2, 2, 243, 2, 0, 0, 243, 166]
+# PC:a7 [2, 2, 243, 2, 0, 0, 243, 167] LoadLo(Constant(1)) [1, 2, 243, 2, 0, 0, 243, 167]
+# PC:a8 [1, 2, 243, 2, 0, 0, 243, 168] Add(SP) [244, 2, 243, 2, 0, 0, 243, 168]
+# PC:a9 [244, 2, 243, 2, 0, 0, 243, 169] StoreReg(SP) [244, 2, 243, 2, 0, 0, 244, 169]
+# PC:aa [244, 2, 243, 2, 0, 0, 244, 170] LoadMem(SP) [3, 2, 243, 2, 0, 0, 244, 170]
+# PC:ab [3, 2, 243, 2, 0, 0, 244, 171] StoreReg(B) [3, 3, 243, 2, 0, 0, 244, 171]
+# PC:ac [3, 3, 243, 2, 0, 0, 244, 172] LoadLo(Constant(1)) [1, 3, 243, 2, 0, 0, 244, 172]
+# PC:ad [1, 3, 243, 2, 0, 0, 244, 173] Add(SP) [245, 3, 243, 2, 0, 0, 244, 173]
+# PC:ae [245, 3, 243, 2, 0, 0, 244, 174] StoreReg(SP) [245, 3, 243, 2, 0, 0, 245, 174]
+# PC:af [245, 3, 243, 2, 0, 0, 245, 175] LoadLo(Constant(0)) [0, 3, 243, 2, 0, 0, 245, 175]
+# PC:b0 [0, 3, 243, 2, 0, 0, 245, 176] Add(SP) [245, 3, 243, 2, 0, 0, 245, 176]
+# PC:b1 [245, 3, 243, 2, 0, 0, 245, 177] StoreReg(C) [245, 3, 245, 2, 0, 0, 245, 177]
+# PC:b2 [245, 3, 245, 2, 0, 0, 245, 178] LoadReg(B) [3, 3, 245, 2, 0, 0, 245, 178]
+# PC:b3 [3, 3, 245, 2, 0, 0, 245, 179] StoreMem(C) [3, 3, 245, 2, 0, 0, 245, 179]
+# PC:b4 [3, 3, 245, 2, 0, 0, 245, 180] LoadReg(D) [2, 3, 245, 2, 0, 0, 245, 180]
+# PC:b5 [2, 3, 245, 2, 0, 0, 245, 181] StoreReg(C) [2, 3, 2, 2, 0, 0, 245, 181]
+# PC:b6 [2, 3, 2, 2, 0, 0, 245, 182] LoadLo(Constant(0)) [0, 3, 2, 2, 0, 0, 245, 182]
+# PC:b7 [0, 3, 2, 2, 0, 0, 245, 183] Add(SP) [245, 3, 2, 2, 0, 0, 245, 183]
+# PC:b8 [245, 3, 2, 2, 0, 0, 245, 184] LoadMem(ACC) [3, 3, 2, 2, 0, 0, 245, 184]
+# PC:b9 [3, 3, 2, 2, 0, 0, 245, 185] Add(C) [5, 3, 2, 2, 0, 0, 245, 185]
+# PC:ba [5, 3, 2, 2, 0, 0, 245, 186] StoreReg(B) [5, 5, 2, 2, 0, 0, 245, 186]
+# PC:bb [5, 5, 2, 2, 0, 0, 245, 187] LoadLo(Constant(3)) [3, 5, 2, 2, 0, 0, 245, 187]
+# PC:bc [3, 5, 2, 2, 0, 0, 245, 188] Add(SP) [248, 5, 2, 2, 0, 0, 245, 188]
+# PC:bd [248, 5, 2, 2, 0, 0, 245, 189] StoreReg(C) [248, 5, 248, 2, 0, 0, 245, 189]
+# PC:be [248, 5, 248, 2, 0, 0, 245, 190] LoadReg(B) [5, 5, 248, 2, 0, 0, 245, 190]
+# PC:bf [5, 5, 248, 2, 0, 0, 245, 191] StoreMem(C) [5, 5, 248, 2, 0, 0, 245, 191]
+# PC:c0 [5, 5, 248, 2, 0, 0, 245, 192] LoadLo(Constant(3)) [3, 5, 248, 2, 0, 0, 245, 192]
+# PC:c1 [3, 5, 248, 2, 0, 0, 245, 193] LoadHi(Constant(12)) [195, 5, 248, 2, 0, 0, 245, 193]
+# PC:c2 [195, 5, 248, 2, 0, 0, 245, 194] StoreReg(PC) [195, 5, 248, 2, 0, 0, 245, 195]
+# PC:c3 [195, 5, 248, 2, 0, 0, 245, 195] LoadLo(Constant(1)) [1, 5, 248, 2, 0, 0, 245, 195]
+# PC:c4 [1, 5, 248, 2, 0, 0, 245, 196] Add(SP) [246, 5, 248, 2, 0, 0, 245, 196]
+# PC:c5 [246, 5, 248, 2, 0, 0, 245, 197] StoreReg(SP) [246, 5, 248, 2, 0, 0, 246, 197]
+# PC:c6 [246, 5, 248, 2, 0, 0, 246, 198] LoadMem(SP) [103, 5, 248, 2, 0, 0, 246, 198]
+# PC:c7 [103, 5, 248, 2, 0, 0, 246, 199] StoreReg(PC) [103, 5, 248, 2, 0, 0, 246, 103]
+# PC:67 [103, 5, 248, 2, 0, 0, 246, 103] LoadLo(Constant(1)) [1, 5, 248, 2, 0, 0, 246, 103]
+# PC:68 [1, 5, 248, 2, 0, 0, 246, 104] Add(SP) [247, 5, 248, 2, 0, 0, 246, 104]
+# PC:69 [247, 5, 248, 2, 0, 0, 246, 105] StoreReg(SP) [247, 5, 248, 2, 0, 0, 247, 105]
+# PC:6a [247, 5, 248, 2, 0, 0, 247, 106] LoadLo(Constant(1)) [1, 5, 248, 2, 0, 0, 247, 106]
+# PC:6b [1, 5, 248, 2, 0, 0, 247, 107] Add(SP) [248, 5, 248, 2, 0, 0, 247, 107]
+# PC:6c [248, 5, 248, 2, 0, 0, 247, 108] StoreReg(SP) [248, 5, 248, 2, 0, 0, 248, 108]
+# PC:6d [248, 5, 248, 2, 0, 0, 248, 109] LoadMem(SP) [5, 5, 248, 2, 0, 0, 248, 109]
+# PC:6e [5, 5, 248, 2, 0, 0, 248, 110] StoreReg(B) [5, 5, 248, 2, 0, 0, 248, 110]
+# PC:6f [5, 5, 248, 2, 0, 0, 248, 111] LoadLo(Constant(1)) [1, 5, 248, 2, 0, 0, 248, 111]
+# PC:70 [1, 5, 248, 2, 0, 0, 248, 112] Add(SP) [249, 5, 248, 2, 0, 0, 248, 112]
+# PC:71 [249, 5, 248, 2, 0, 0, 248, 113] StoreReg(SP) [249, 5, 248, 2, 0, 0, 249, 113]
+# PC:72 [249, 5, 248, 2, 0, 0, 249, 114] LoadReg(B) [5, 5, 248, 2, 0, 0, 249, 114]
+# PC:73 [5, 5, 248, 2, 0, 0, 249, 115] StoreReg(D) [5, 5, 248, 5, 0, 0, 249, 115]
+# PC:74 [5, 5, 248, 5, 0, 0, 249, 116] LoadLo(Constant(2)) [2, 5, 248, 5, 0, 0, 249, 116]
+# PC:75 [2, 5, 248, 5, 0, 0, 249, 117] Add(SP) [251, 5, 248, 5, 0, 0, 249, 117]
+# PC:76 [251, 5, 248, 5, 0, 0, 249, 118] LoadMem(ACC) [4, 5, 248, 5, 0, 0, 249, 118]
+# PC:77 [4, 5, 248, 5, 0, 0, 249, 119] StoreReg(C) [4, 5, 4, 5, 0, 0, 249, 119]
+# PC:78 [4, 5, 4, 5, 0, 0, 249, 120] LoadLo(Constant(1)) [1, 5, 4, 5, 0, 0, 249, 120]
+# PC:79 [1, 5, 4, 5, 0, 0, 249, 121] LoadHi(Constant(0)) [1, 5, 4, 5, 0, 0, 249, 121]
+# PC:7a [1, 5, 4, 5, 0, 0, 249, 122] Not(ACC) [254, 5, 4, 5, 0, 0, 249, 122]
+# PC:7b [254, 5, 4, 5, 0, 0, 249, 123] StoreReg(B) [254, 254, 4, 5, 0, 0, 249, 123]
+# PC:7c [254, 254, 4, 5, 0, 0, 249, 124] LoadLo(Constant(1)) [1, 254, 4, 5, 0, 0, 249, 124]
+# PC:7d [1, 254, 4, 5, 0, 0, 249, 125] Add(B) [255, 254, 4, 5, 0, 0, 249, 125]
+# PC:7e [255, 254, 4, 5, 0, 0, 249, 126] Add(C) [3, 254, 4, 5, 0, 1, 249, 126]
+# PC:7f [3, 254, 4, 5, 0, 1, 249, 127] StoreReg(B) [3, 3, 4, 5, 0, 1, 249, 127]
+# PC:80 [3, 3, 4, 5, 0, 1, 249, 128] LoadLo(Constant(2)) [2, 3, 4, 5, 0, 1, 249, 128]
+# PC:81 [2, 3, 4, 5, 0, 1, 249, 129] Add(SP) [251, 3, 4, 5, 0, 0, 249, 129]
+# PC:82 [251, 3, 4, 5, 0, 0, 249, 130] StoreReg(C) [251, 3, 251, 5, 0, 0, 249, 130]
+# PC:83 [251, 3, 251, 5, 0, 0, 249, 131] LoadReg(B) [3, 3, 251, 5, 0, 0, 249, 131]
+# PC:84 [3, 3, 251, 5, 0, 0, 249, 132] StoreMem(C) [3, 3, 251, 5, 0, 0, 249, 132]
+# PC:85 [3, 3, 251, 5, 0, 0, 249, 133] LoadLo(Constant(15)) [255, 3, 251, 5, 0, 0, 249, 133]
+# PC:86 [255, 3, 251, 5, 0, 0, 249, 134] Add(SP) [248, 3, 251, 5, 0, 1, 249, 134]
+# PC:87 [248, 3, 251, 5, 0, 1, 249, 135] StoreReg(SP) [248, 3, 251, 5, 0, 1, 248, 135]
+# PC:88 [248, 3, 251, 5, 0, 1, 248, 136] LoadLo(Constant(15)) [255, 3, 251, 5, 0, 1, 248, 136]
+# PC:89 [255, 3, 251, 5, 0, 1, 248, 137] Add(SP) [247, 3, 251, 5, 0, 1, 248, 137]
+# PC:8a [247, 3, 251, 5, 0, 1, 248, 138] StoreReg(SP) [247, 3, 251, 5, 0, 1, 247, 138]
+# PC:8b [247, 3, 251, 5, 0, 1, 247, 139] LoadReg(D) [5, 3, 251, 5, 0, 1, 247, 139]
+# PC:8c [5, 3, 251, 5, 0, 1, 247, 140] StoreMem(SP) [5, 3, 251, 5, 0, 1, 247, 140]
+# PC:8d [5, 3, 251, 5, 0, 1, 247, 141] LoadLo(Constant(4)) [4, 3, 251, 5, 0, 1, 247, 141]
+# PC:8e [4, 3, 251, 5, 0, 1, 247, 142] Add(SP) [251, 3, 251, 5, 0, 0, 247, 142]
+# PC:8f [251, 3, 251, 5, 0, 0, 247, 143] LoadMem(ACC) [3, 3, 251, 5, 0, 0, 247, 143]
+# PC:90 [3, 3, 251, 5, 0, 0, 247, 144] StoreReg(B) [3, 3, 251, 5, 0, 0, 247, 144]
+# PC:91 [3, 3, 251, 5, 0, 0, 247, 145] LoadLo(Constant(15)) [255, 3, 251, 5, 0, 0, 247, 145]
+# PC:92 [255, 3, 251, 5, 0, 0, 247, 146] Add(SP) [246, 3, 251, 5, 0, 1, 247, 146]
+# PC:93 [246, 3, 251, 5, 0, 1, 247, 147] StoreReg(SP) [246, 3, 251, 5, 0, 1, 246, 147]
+# PC:94 [246, 3, 251, 5, 0, 1, 246, 148] LoadReg(B) [3, 3, 251, 5, 0, 1, 246, 148]
+# PC:95 [3, 3, 251, 5, 0, 1, 246, 149] StoreMem(SP) [3, 3, 251, 5, 0, 1, 246, 149]
+# PC:96 [3, 3, 251, 5, 0, 1, 246, 150] LoadLo(Constant(15)) [255, 3, 251, 5, 0, 1, 246, 150]
+# PC:97 [255, 3, 251, 5, 0, 1, 246, 151] Add(SP) [245, 3, 251, 5, 0, 1, 246, 151]
+# PC:98 [245, 3, 251, 5, 0, 1, 246, 152] StoreReg(SP) [245, 3, 251, 5, 0, 1, 245, 152]
+# PC:99 [245, 3, 251, 5, 0, 1, 245, 153] LoadLo(Constant(5)) [5, 3, 251, 5, 0, 1, 245, 153]
+# PC:9a [5, 3, 251, 5, 0, 1, 245, 154] Add(PC) [159, 3, 251, 5, 0, 0, 245, 154]
+# PC:9b [159, 3, 251, 5, 0, 0, 245, 155] StoreMem(SP) [159, 3, 251, 5, 0, 0, 245, 155]
+# PC:9c [159, 3, 251, 5, 0, 0, 245, 156] LoadLo(Constant(8)) [248, 3, 251, 5, 0, 0, 245, 156]
+# PC:9d [248, 3, 251, 5, 0, 0, 245, 157] LoadHi(Constant(1)) [24, 3, 251, 5, 0, 0, 245, 157]
+# PC:9e [24, 3, 251, 5, 0, 0, 245, 158] StoreReg(PC) [24, 3, 251, 5, 0, 0, 245, 24]
+# PC:18 [24, 3, 251, 5, 0, 0, 245, 24] LoadLo(Constant(15)) [255, 3, 251, 5, 0, 0, 245, 24]
+# PC:19 [255, 3, 251, 5, 0, 0, 245, 25] Add(SP) [244, 3, 251, 5, 0, 1, 245, 25]
+# PC:1a [244, 3, 251, 5, 0, 1, 245, 26] StoreReg(SP) [244, 3, 251, 5, 0, 1, 244, 26]
+# PC:1b [244, 3, 251, 5, 0, 1, 244, 27] LoadLo(Constant(2)) [2, 3, 251, 5, 0, 1, 244, 27]
+# PC:1c [2, 3, 251, 5, 0, 1, 244, 28] Add(SP) [246, 3, 251, 5, 0, 0, 244, 28]
+# PC:1d [246, 3, 251, 5, 0, 0, 244, 29] LoadMem(ACC) [3, 3, 251, 5, 0, 0, 244, 29]
+# PC:1e [3, 3, 251, 5, 0, 0, 244, 30] StoreReg(C) [3, 3, 3, 5, 0, 0, 244, 30]
+# PC:1f [3, 3, 3, 5, 0, 0, 244, 31] LoadLo(Constant(0)) [0, 3, 3, 5, 0, 0, 244, 31]
+# PC:20 [0, 3, 3, 5, 0, 0, 244, 32] LoadHi(Constant(0)) [0, 3, 3, 5, 0, 0, 244, 32]
+# PC:21 [0, 3, 3, 5, 0, 0, 244, 33] Xor(C) [3, 3, 3, 5, 0, 0, 244, 33]
+# PC:22 [3, 3, 3, 5, 0, 0, 244, 34] Jnz(Constant(12)) [3, 3, 3, 5, 0, 0, 244, 46]
+# PC:2e [3, 3, 3, 5, 0, 0, 244, 46] LoadLo(Constant(2)) [2, 3, 3, 5, 0, 0, 244, 46]
+# PC:2f [2, 3, 3, 5, 0, 0, 244, 47] Add(SP) [246, 3, 3, 5, 0, 0, 244, 47]
+# PC:30 [246, 3, 3, 5, 0, 0, 244, 48] LoadMem(ACC) [3, 3, 3, 5, 0, 0, 244, 48]
+# PC:31 [3, 3, 3, 5, 0, 0, 244, 49] StoreReg(C) [3, 3, 3, 5, 0, 0, 244, 49]
+# PC:32 [3, 3, 3, 5, 0, 0, 244, 50] LoadLo(Constant(1)) [1, 3, 3, 5, 0, 0, 244, 50]
+# PC:33 [1, 3, 3, 5, 0, 0, 244, 51] LoadHi(Constant(0)) [1, 3, 3, 5, 0, 0, 244, 51]
+# PC:34 [1, 3, 3, 5, 0, 0, 244, 52] Not(ACC) [254, 3, 3, 5, 0, 0, 244, 52]
+# PC:35 [254, 3, 3, 5, 0, 0, 244, 53] StoreReg(B) [254, 254, 3, 5, 0, 0, 244, 53]
+# PC:36 [254, 254, 3, 5, 0, 0, 244, 54] LoadLo(Constant(1)) [1, 254, 3, 5, 0, 0, 244, 54]
+# PC:37 [1, 254, 3, 5, 0, 0, 244, 55] Add(B) [255, 254, 3, 5, 0, 0, 244, 55]
+# PC:38 [255, 254, 3, 5, 0, 0, 244, 56] Add(C) [2, 254, 3, 5, 0, 1, 244, 56]
+# PC:39 [2, 254, 3, 5, 0, 1, 244, 57] StoreReg(B) [2, 2, 3, 5, 0, 1, 244, 57]
+# PC:3a [2, 2, 3, 5, 0, 1, 244, 58] LoadLo(Constant(2)) [2, 2, 3, 5, 0, 1, 244, 58]
+# PC:3b [2, 2, 3, 5, 0, 1, 244, 59] Add(SP) [246, 2, 3, 5, 0, 0, 244, 59]
+# PC:3c [246, 2, 3, 5, 0, 0, 244, 60] StoreReg(C) [246, 2, 246, 5, 0, 0, 244, 60]
+# PC:3d [246, 2, 246, 5, 0, 0, 244, 61] LoadReg(B) [2, 2, 246, 5, 0, 0, 244, 61]
+# PC:3e [2, 2, 246, 5, 0, 0, 244, 62] StoreMem(C) [2, 2, 246, 5, 0, 0, 244, 62]
+# PC:3f [2, 2, 246, 5, 0, 0, 244, 63] LoadLo(Constant(2)) [2, 2, 246, 5, 0, 0, 244, 63]
+# PC:40 [2, 2, 246, 5, 0, 0, 244, 64] Add(SP) [246, 2, 246, 5, 0, 0, 244, 64]
+# PC:41 [246, 2, 246, 5, 0, 0, 244, 65] LoadMem(ACC) [2, 2, 246, 5, 0, 0, 244, 65]
+# PC:42 [2, 2, 246, 5, 0, 0, 244, 66] StoreReg(C) [2, 2, 2, 5, 0, 0, 244, 66]
+# PC:43 [2, 2, 2, 5, 0, 0, 244, 67] LoadLo(Constant(0)) [0, 2, 2, 5, 0, 0, 244, 67]
+# PC:44 [0, 2, 2, 5, 0, 0, 244, 68] LoadHi(Constant(0)) [0, 2, 2, 5, 0, 0, 244, 68]
+# PC:45 [0, 2, 2, 5, 0, 0, 244, 69] Xor(C) [2, 2, 2, 5, 0, 0, 244, 69]
+# PC:46 [2, 2, 2, 5, 0, 0, 244, 70] Jnz(Constant(12)) [2, 2, 2, 5, 0, 0, 244, 82]
+# PC:52 [2, 2, 2, 5, 0, 0, 244, 82] LoadLo(Constant(15)) [255, 2, 2, 5, 0, 0, 244, 82]
+# PC:53 [255, 2, 2, 5, 0, 0, 244, 83] Add(SP) [243, 2, 2, 5, 0, 1, 244, 83]
+# PC:54 [243, 2, 2, 5, 0, 1, 244, 84] StoreReg(SP) [243, 2, 2, 5, 0, 1, 243, 84]
+# PC:55 [243, 2, 2, 5, 0, 1, 243, 85] LoadLo(Constant(3)) [3, 2, 2, 5, 0, 1, 243, 85]
+# PC:56 [3, 2, 2, 5, 0, 1, 243, 86] Add(SP) [246, 2, 2, 5, 0, 0, 243, 86]
+# PC:57 [246, 2, 2, 5, 0, 0, 243, 87] LoadMem(ACC) [2, 2, 2, 5, 0, 0, 243, 87]
+# PC:58 [2, 2, 2, 5, 0, 0, 243, 88] StoreReg(B) [2, 2, 2, 5, 0, 0, 243, 88]
+# PC:59 [2, 2, 2, 5, 0, 0, 243, 89] LoadLo(Constant(15)) [255, 2, 2, 5, 0, 0, 243, 89]
+# PC:5a [255, 2, 2, 5, 0, 0, 243, 90] Add(SP) [242, 2, 2, 5, 0, 1, 243, 90]
+# PC:5b [242, 2, 2, 5, 0, 1, 243, 91] StoreReg(SP) [242, 2, 2, 5, 0, 1, 242, 91]
+# PC:5c [242, 2, 2, 5, 0, 1, 242, 92] LoadReg(B) [2, 2, 2, 5, 0, 1, 242, 92]
+# PC:5d [2, 2, 2, 5, 0, 1, 242, 93] StoreMem(SP) [2, 2, 2, 5, 0, 1, 242, 93]
+# PC:5e [2, 2, 2, 5, 0, 1, 242, 94] LoadLo(Constant(15)) [255, 2, 2, 5, 0, 1, 242, 94]
+# PC:5f [255, 2, 2, 5, 0, 1, 242, 95] Add(SP) [241, 2, 2, 5, 0, 1, 242, 95]
+# PC:60 [241, 2, 2, 5, 0, 1, 242, 96] StoreReg(SP) [241, 2, 2, 5, 0, 1, 241, 96]
+# PC:61 [241, 2, 2, 5, 0, 1, 241, 97] LoadLo(Constant(5)) [5, 2, 2, 5, 0, 1, 241, 97]
+# PC:62 [5, 2, 2, 5, 0, 1, 241, 98] Add(PC) [103, 2, 2, 5, 0, 0, 241, 98]
+# PC:63 [103, 2, 2, 5, 0, 0, 241, 99] StoreMem(SP) [103, 2, 2, 5, 0, 0, 241, 99]
+# PC:64 [103, 2, 2, 5, 0, 0, 241, 100] LoadLo(Constant(8)) [248, 2, 2, 5, 0, 0, 241, 100]
+# PC:65 [248, 2, 2, 5, 0, 0, 241, 101] LoadHi(Constant(1)) [24, 2, 2, 5, 0, 0, 241, 101]
+# PC:66 [24, 2, 2, 5, 0, 0, 241, 102] StoreReg(PC) [24, 2, 2, 5, 0, 0, 241, 24]
+# PC:18 [24, 2, 2, 5, 0, 0, 241, 24] LoadLo(Constant(15)) [255, 2, 2, 5, 0, 0, 241, 24]
+# PC:19 [255, 2, 2, 5, 0, 0, 241, 25] Add(SP) [240, 2, 2, 5, 0, 1, 241, 25]
+# PC:1a [240, 2, 2, 5, 0, 1, 241, 26] StoreReg(SP) [240, 2, 2, 5, 0, 1, 240, 26]
+# PC:1b [240, 2, 2, 5, 0, 1, 240, 27] LoadLo(Constant(2)) [2, 2, 2, 5, 0, 1, 240, 27]
+# PC:1c [2, 2, 2, 5, 0, 1, 240, 28] Add(SP) [242, 2, 2, 5, 0, 0, 240, 28]
+# PC:1d [242, 2, 2, 5, 0, 0, 240, 29] LoadMem(ACC) [2, 2, 2, 5, 0, 0, 240, 29]
+# PC:1e [2, 2, 2, 5, 0, 0, 240, 30] StoreReg(C) [2, 2, 2, 5, 0, 0, 240, 30]
+# PC:1f [2, 2, 2, 5, 0, 0, 240, 31] LoadLo(Constant(0)) [0, 2, 2, 5, 0, 0, 240, 31]
+# PC:20 [0, 2, 2, 5, 0, 0, 240, 32] LoadHi(Constant(0)) [0, 2, 2, 5, 0, 0, 240, 32]
+# PC:21 [0, 2, 2, 5, 0, 0, 240, 33] Xor(C) [2, 2, 2, 5, 0, 0, 240, 33]
+# PC:22 [2, 2, 2, 5, 0, 0, 240, 34] Jnz(Constant(12)) [2, 2, 2, 5, 0, 0, 240, 46]
+# PC:2e [2, 2, 2, 5, 0, 0, 240, 46] LoadLo(Constant(2)) [2, 2, 2, 5, 0, 0, 240, 46]
+# PC:2f [2, 2, 2, 5, 0, 0, 240, 47] Add(SP) [242, 2, 2, 5, 0, 0, 240, 47]
+# PC:30 [242, 2, 2, 5, 0, 0, 240, 48] LoadMem(ACC) [2, 2, 2, 5, 0, 0, 240, 48]
+# PC:31 [2, 2, 2, 5, 0, 0, 240, 49] StoreReg(C) [2, 2, 2, 5, 0, 0, 240, 49]
+# PC:32 [2, 2, 2, 5, 0, 0, 240, 50] LoadLo(Constant(1)) [1, 2, 2, 5, 0, 0, 240, 50]
+# PC:33 [1, 2, 2, 5, 0, 0, 240, 51] LoadHi(Constant(0)) [1, 2, 2, 5, 0, 0, 240, 51]
+# PC:34 [1, 2, 2, 5, 0, 0, 240, 52] Not(ACC) [254, 2, 2, 5, 0, 0, 240, 52]
+# PC:35 [254, 2, 2, 5, 0, 0, 240, 53] StoreReg(B) [254, 254, 2, 5, 0, 0, 240, 53]
+# PC:36 [254, 254, 2, 5, 0, 0, 240, 54] LoadLo(Constant(1)) [1, 254, 2, 5, 0, 0, 240, 54]
+# PC:37 [1, 254, 2, 5, 0, 0, 240, 55] Add(B) [255, 254, 2, 5, 0, 0, 240, 55]
+# PC:38 [255, 254, 2, 5, 0, 0, 240, 56] Add(C) [1, 254, 2, 5, 0, 1, 240, 56]
+# PC:39 [1, 254, 2, 5, 0, 1, 240, 57] StoreReg(B) [1, 1, 2, 5, 0, 1, 240, 57]
+# PC:3a [1, 1, 2, 5, 0, 1, 240, 58] LoadLo(Constant(2)) [2, 1, 2, 5, 0, 1, 240, 58]
+# PC:3b [2, 1, 2, 5, 0, 1, 240, 59] Add(SP) [242, 1, 2, 5, 0, 0, 240, 59]
+# PC:3c [242, 1, 2, 5, 0, 0, 240, 60] StoreReg(C) [242, 1, 242, 5, 0, 0, 240, 60]
+# PC:3d [242, 1, 242, 5, 0, 0, 240, 61] LoadReg(B) [1, 1, 242, 5, 0, 0, 240, 61]
+# PC:3e [1, 1, 242, 5, 0, 0, 240, 62] StoreMem(C) [1, 1, 242, 5, 0, 0, 240, 62]
+# PC:3f [1, 1, 242, 5, 0, 0, 240, 63] LoadLo(Constant(2)) [2, 1, 242, 5, 0, 0, 240, 63]
+# PC:40 [2, 1, 242, 5, 0, 0, 240, 64] Add(SP) [242, 1, 242, 5, 0, 0, 240, 64]
+# PC:41 [242, 1, 242, 5, 0, 0, 240, 65] LoadMem(ACC) [1, 1, 242, 5, 0, 0, 240, 65]
+# PC:42 [1, 1, 242, 5, 0, 0, 240, 66] StoreReg(C) [1, 1, 1, 5, 0, 0, 240, 66]
+# PC:43 [1, 1, 1, 5, 0, 0, 240, 67] LoadLo(Constant(0)) [0, 1, 1, 5, 0, 0, 240, 67]
+# PC:44 [0, 1, 1, 5, 0, 0, 240, 68] LoadHi(Constant(0)) [0, 1, 1, 5, 0, 0, 240, 68]
+# PC:45 [0, 1, 1, 5, 0, 0, 240, 69] Xor(C) [1, 1, 1, 5, 0, 0, 240, 69]
+# PC:46 [1, 1, 1, 5, 0, 0, 240, 70] Jnz(Constant(12)) [1, 1, 1, 5, 0, 0, 240, 82]
+# PC:52 [1, 1, 1, 5, 0, 0, 240, 82] LoadLo(Constant(15)) [255, 1, 1, 5, 0, 0, 240, 82]
+# PC:53 [255, 1, 1, 5, 0, 0, 240, 83] Add(SP) [239, 1, 1, 5, 0, 1, 240, 83]
+# PC:54 [239, 1, 1, 5, 0, 1, 240, 84] StoreReg(SP) [239, 1, 1, 5, 0, 1, 239, 84]
+# PC:55 [239, 1, 1, 5, 0, 1, 239, 85] LoadLo(Constant(3)) [3, 1, 1, 5, 0, 1, 239, 85]
+# PC:56 [3, 1, 1, 5, 0, 1, 239, 86] Add(SP) [242, 1, 1, 5, 0, 0, 239, 86]
+# PC:57 [242, 1, 1, 5, 0, 0, 239, 87] LoadMem(ACC) [1, 1, 1, 5, 0, 0, 239, 87]
+# PC:58 [1, 1, 1, 5, 0, 0, 239, 88] StoreReg(B) [1, 1, 1, 5, 0, 0, 239, 88]
+# PC:59 [1, 1, 1, 5, 0, 0, 239, 89] LoadLo(Constant(15)) [255, 1, 1, 5, 0, 0, 239, 89]
+# PC:5a [255, 1, 1, 5, 0, 0, 239, 90] Add(SP) [238, 1, 1, 5, 0, 1, 239, 90]
+# PC:5b [238, 1, 1, 5, 0, 1, 239, 91] StoreReg(SP) [238, 1, 1, 5, 0, 1, 238, 91]
+# PC:5c [238, 1, 1, 5, 0, 1, 238, 92] LoadReg(B) [1, 1, 1, 5, 0, 1, 238, 92]
+# PC:5d [1, 1, 1, 5, 0, 1, 238, 93] StoreMem(SP) [1, 1, 1, 5, 0, 1, 238, 93]
+# PC:5e [1, 1, 1, 5, 0, 1, 238, 94] LoadLo(Constant(15)) [255, 1, 1, 5, 0, 1, 238, 94]
+# PC:5f [255, 1, 1, 5, 0, 1, 238, 95] Add(SP) [237, 1, 1, 5, 0, 1, 238, 95]
+# PC:60 [237, 1, 1, 5, 0, 1, 238, 96] StoreReg(SP) [237, 1, 1, 5, 0, 1, 237, 96]
+# PC:61 [237, 1, 1, 5, 0, 1, 237, 97] LoadLo(Constant(5)) [5, 1, 1, 5, 0, 1, 237, 97]
+# PC:62 [5, 1, 1, 5, 0, 1, 237, 98] Add(PC) [103, 1, 1, 5, 0, 0, 237, 98]
+# PC:63 [103, 1, 1, 5, 0, 0, 237, 99] StoreMem(SP) [103, 1, 1, 5, 0, 0, 237, 99]
+# PC:64 [103, 1, 1, 5, 0, 0, 237, 100] LoadLo(Constant(8)) [248, 1, 1, 5, 0, 0, 237, 100]
+# PC:65 [248, 1, 1, 5, 0, 0, 237, 101] LoadHi(Constant(1)) [24, 1, 1, 5, 0, 0, 237, 101]
+# PC:66 [24, 1, 1, 5, 0, 0, 237, 102] StoreReg(PC) [24, 1, 1, 5, 0, 0, 237, 24]
+# PC:18 [24, 1, 1, 5, 0, 0, 237, 24] LoadLo(Constant(15)) [255, 1, 1, 5, 0, 0, 237, 24]
+# PC:19 [255, 1, 1, 5, 0, 0, 237, 25] Add(SP) [236, 1, 1, 5, 0, 1, 237, 25]
+# PC:1a [236, 1, 1, 5, 0, 1, 237, 26] StoreReg(SP) [236, 1, 1, 5, 0, 1, 236, 26]
+# PC:1b [236, 1, 1, 5, 0, 1, 236, 27] LoadLo(Constant(2)) [2, 1, 1, 5, 0, 1, 236, 27]
+# PC:1c [2, 1, 1, 5, 0, 1, 236, 28] Add(SP) [238, 1, 1, 5, 0, 0, 236, 28]
+# PC:1d [238, 1, 1, 5, 0, 0, 236, 29] LoadMem(ACC) [1, 1, 1, 5, 0, 0, 236, 29]
+# PC:1e [1, 1, 1, 5, 0, 0, 236, 30] StoreReg(C) [1, 1, 1, 5, 0, 0, 236, 30]
+# PC:1f [1, 1, 1, 5, 0, 0, 236, 31] LoadLo(Constant(0)) [0, 1, 1, 5, 0, 0, 236, 31]
+# PC:20 [0, 1, 1, 5, 0, 0, 236, 32] LoadHi(Constant(0)) [0, 1, 1, 5, 0, 0, 236, 32]
+# PC:21 [0, 1, 1, 5, 0, 0, 236, 33] Xor(C) [1, 1, 1, 5, 0, 0, 236, 33]
+# PC:22 [1, 1, 1, 5, 0, 0, 236, 34] Jnz(Constant(12)) [1, 1, 1, 5, 0, 0, 236, 46]
+# PC:2e [1, 1, 1, 5, 0, 0, 236, 46] LoadLo(Constant(2)) [2, 1, 1, 5, 0, 0, 236, 46]
+# PC:2f [2, 1, 1, 5, 0, 0, 236, 47] Add(SP) [238, 1, 1, 5, 0, 0, 236, 47]
+# PC:30 [238, 1, 1, 5, 0, 0, 236, 48] LoadMem(ACC) [1, 1, 1, 5, 0, 0, 236, 48]
+# PC:31 [1, 1, 1, 5, 0, 0, 236, 49] StoreReg(C) [1, 1, 1, 5, 0, 0, 236, 49]
+# PC:32 [1, 1, 1, 5, 0, 0, 236, 50] LoadLo(Constant(1)) [1, 1, 1, 5, 0, 0, 236, 50]
+# PC:33 [1, 1, 1, 5, 0, 0, 236, 51] LoadHi(Constant(0)) [1, 1, 1, 5, 0, 0, 236, 51]
+# PC:34 [1, 1, 1, 5, 0, 0, 236, 52] Not(ACC) [254, 1, 1, 5, 0, 0, 236, 52]
+# PC:35 [254, 1, 1, 5, 0, 0, 236, 53] StoreReg(B) [254, 254, 1, 5, 0, 0, 236, 53]
+# PC:36 [254, 254, 1, 5, 0, 0, 236, 54] LoadLo(Constant(1)) [1, 254, 1, 5, 0, 0, 236, 54]
+# PC:37 [1, 254, 1, 5, 0, 0, 236, 55] Add(B) [255, 254, 1, 5, 0, 0, 236, 55]
+# PC:38 [255, 254, 1, 5, 0, 0, 236, 56] Add(C) [0, 254, 1, 5, 0, 1, 236, 56]
+# PC:39 [0, 254, 1, 5, 0, 1, 236, 57] StoreReg(B) [0, 0, 1, 5, 0, 1, 236, 57]
+# PC:3a [0, 0, 1, 5, 0, 1, 236, 58] LoadLo(Constant(2)) [2, 0, 1, 5, 0, 1, 236, 58]
+# PC:3b [2, 0, 1, 5, 0, 1, 236, 59] Add(SP) [238, 0, 1, 5, 0, 0, 236, 59]
+# PC:3c [238, 0, 1, 5, 0, 0, 236, 60] StoreReg(C) [238, 0, 238, 5, 0, 0, 236, 60]
+# PC:3d [238, 0, 238, 5, 0, 0, 236, 61] LoadReg(B) [0, 0, 238, 5, 0, 0, 236, 61]
+# PC:3e [0, 0, 238, 5, 0, 0, 236, 62] StoreMem(C) [0, 0, 238, 5, 0, 0, 236, 62]
+# PC:3f [0, 0, 238, 5, 0, 0, 236, 63] LoadLo(Constant(2)) [2, 0, 238, 5, 0, 0, 236, 63]
+# PC:40 [2, 0, 238, 5, 0, 0, 236, 64] Add(SP) [238, 0, 238, 5, 0, 0, 236, 64]
+# PC:41 [238, 0, 238, 5, 0, 0, 236, 65] LoadMem(ACC) [0, 0, 238, 5, 0, 0, 236, 65]
+# PC:42 [0, 0, 238, 5, 0, 0, 236, 66] StoreReg(C) [0, 0, 0, 5, 0, 0, 236, 66]
+# PC:43 [0, 0, 0, 5, 0, 0, 236, 67] LoadLo(Constant(0)) [0, 0, 0, 5, 0, 0, 236, 67]
+# PC:44 [0, 0, 0, 5, 0, 0, 236, 68] LoadHi(Constant(0)) [0, 0, 0, 5, 0, 0, 236, 68]
+# PC:45 [0, 0, 0, 5, 0, 0, 236, 69] Xor(C) [0, 0, 0, 5, 0, 0, 236, 69]
+# PC:46 [0, 0, 0, 5, 0, 0, 236, 70] Jnz(Constant(12)) [0, 0, 0, 5, 0, 0, 236, 70]
+# PC:47 [0, 0, 0, 5, 0, 0, 236, 71] LoadLo(Constant(1)) [1, 0, 0, 5, 0, 0, 236, 71]
+# PC:48 [1, 0, 0, 5, 0, 0, 236, 72] LoadHi(Constant(0)) [1, 0, 0, 5, 0, 0, 236, 72]
+# PC:49 [1, 0, 0, 5, 0, 0, 236, 73] StoreReg(B) [1, 1, 0, 5, 0, 0, 236, 73]
+# PC:4a [1, 1, 0, 5, 0, 0, 236, 74] LoadLo(Constant(3)) [3, 1, 0, 5, 0, 0, 236, 74]
+# PC:4b [3, 1, 0, 5, 0, 0, 236, 75] Add(SP) [239, 1, 0, 5, 0, 0, 236, 75]
+# PC:4c [239, 1, 0, 5, 0, 0, 236, 76] StoreReg(C) [239, 1, 239, 5, 0, 0, 236, 76]
+# PC:4d [239, 1, 239, 5, 0, 0, 236, 77] LoadReg(B) [1, 1, 239, 5, 0, 0, 236, 77]
+# PC:4e [1, 1, 239, 5, 0, 0, 236, 78] StoreMem(C) [1, 1, 239, 5, 0, 0, 236, 78]
+# PC:4f [1, 1, 239, 5, 0, 0, 236, 79] LoadLo(Constant(3)) [3, 1, 239, 5, 0, 0, 236, 79]
+# PC:50 [3, 1, 239, 5, 0, 0, 236, 80] LoadHi(Constant(12)) [195, 1, 239, 5, 0, 0, 236, 80]
+# PC:51 [195, 1, 239, 5, 0, 0, 236, 81] StoreReg(PC) [195, 1, 239, 5, 0, 0, 236, 195]
+# PC:c3 [195, 1, 239, 5, 0, 0, 236, 195] LoadLo(Constant(1)) [1, 1, 239, 5, 0, 0, 236, 195]
+# PC:c4 [1, 1, 239, 5, 0, 0, 236, 196] Add(SP) [237, 1, 239, 5, 0, 0, 236, 196]
+# PC:c5 [237, 1, 239, 5, 0, 0, 236, 197] StoreReg(SP) [237, 1, 239, 5, 0, 0, 237, 197]
+# PC:c6 [237, 1, 239, 5, 0, 0, 237, 198] LoadMem(SP) [103, 1, 239, 5, 0, 0, 237, 198]
+# PC:c7 [103, 1, 239, 5, 0, 0, 237, 199] StoreReg(PC) [103, 1, 239, 5, 0, 0, 237, 103]
+# PC:67 [103, 1, 239, 5, 0, 0, 237, 103] LoadLo(Constant(1)) [1, 1, 239, 5, 0, 0, 237, 103]
+# PC:68 [1, 1, 239, 5, 0, 0, 237, 104] Add(SP) [238, 1, 239, 5, 0, 0, 237, 104]
+# PC:69 [238, 1, 239, 5, 0, 0, 237, 105] StoreReg(SP) [238, 1, 239, 5, 0, 0, 238, 105]
+# PC:6a [238, 1, 239, 5, 0, 0, 238, 106] LoadLo(Constant(1)) [1, 1, 239, 5, 0, 0, 238, 106]
+# PC:6b [1, 1, 239, 5, 0, 0, 238, 107] Add(SP) [239, 1, 239, 5, 0, 0, 238, 107]
+# PC:6c [239, 1, 239, 5, 0, 0, 238, 108] StoreReg(SP) [239, 1, 239, 5, 0, 0, 239, 108]
+# PC:6d [239, 1, 239, 5, 0, 0, 239, 109] LoadMem(SP) [1, 1, 239, 5, 0, 0, 239, 109]
+# PC:6e [1, 1, 239, 5, 0, 0, 239, 110] StoreReg(B) [1, 1, 239, 5, 0, 0, 239, 110]
+# PC:6f [1, 1, 239, 5, 0, 0, 239, 111] LoadLo(Constant(1)) [1, 1, 239, 5, 0, 0, 239, 111]
+# PC:70 [1, 1, 239, 5, 0, 0, 239, 112] Add(SP) [240, 1, 239, 5, 0, 0, 239, 112]
+# PC:71 [240, 1, 239, 5, 0, 0, 239, 113] StoreReg(SP) [240, 1, 239, 5, 0, 0, 240, 113]
+# PC:72 [240, 1, 239, 5, 0, 0, 240, 114] LoadReg(B) [1, 1, 239, 5, 0, 0, 240, 114]
+# PC:73 [1, 1, 239, 5, 0, 0, 240, 115] StoreReg(D) [1, 1, 239, 1, 0, 0, 240, 115]
+# PC:74 [1, 1, 239, 1, 0, 0, 240, 116] LoadLo(Constant(2)) [2, 1, 239, 1, 0, 0, 240, 116]
+# PC:75 [2, 1, 239, 1, 0, 0, 240, 117] Add(SP) [242, 1, 239, 1, 0, 0, 240, 117]
+# PC:76 [242, 1, 239, 1, 0, 0, 240, 118] LoadMem(ACC) [1, 1, 239, 1, 0, 0, 240, 118]
+# PC:77 [1, 1, 239, 1, 0, 0, 240, 119] StoreReg(C) [1, 1, 1, 1, 0, 0, 240, 119]
+# PC:78 [1, 1, 1, 1, 0, 0, 240, 120] LoadLo(Constant(1)) [1, 1, 1, 1, 0, 0, 240, 120]
+# PC:79 [1, 1, 1, 1, 0, 0, 240, 121] LoadHi(Constant(0)) [1, 1, 1, 1, 0, 0, 240, 121]
+# PC:7a [1, 1, 1, 1, 0, 0, 240, 122] Not(ACC) [254, 1, 1, 1, 0, 0, 240, 122]
+# PC:7b [254, 1, 1, 1, 0, 0, 240, 123] StoreReg(B) [254, 254, 1, 1, 0, 0, 240, 123]
+# PC:7c [254, 254, 1, 1, 0, 0, 240, 124] LoadLo(Constant(1)) [1, 254, 1, 1, 0, 0, 240, 124]
+# PC:7d [1, 254, 1, 1, 0, 0, 240, 125] Add(B) [255, 254, 1, 1, 0, 0, 240, 125]
+# PC:7e [255, 254, 1, 1, 0, 0, 240, 126] Add(C) [0, 254, 1, 1, 0, 1, 240, 126]
+# PC:7f [0, 254, 1, 1, 0, 1, 240, 127] StoreReg(B) [0, 0, 1, 1, 0, 1, 240, 127]
+# PC:80 [0, 0, 1, 1, 0, 1, 240, 128] LoadLo(Constant(2)) [2, 0, 1, 1, 0, 1, 240, 128]
+# PC:81 [2, 0, 1, 1, 0, 1, 240, 129] Add(SP) [242, 0, 1, 1, 0, 0, 240, 129]
+# PC:82 [242, 0, 1, 1, 0, 0, 240, 130] StoreReg(C) [242, 0, 242, 1, 0, 0, 240, 130]
+# PC:83 [242, 0, 242, 1, 0, 0, 240, 131] LoadReg(B) [0, 0, 242, 1, 0, 0, 240, 131]
+# PC:84 [0, 0, 242, 1, 0, 0, 240, 132] StoreMem(C) [0, 0, 242, 1, 0, 0, 240, 132]
+# PC:85 [0, 0, 242, 1, 0, 0, 240, 133] LoadLo(Constant(15)) [255, 0, 242, 1, 0, 0, 240, 133]
+# PC:86 [255, 0, 242, 1, 0, 0, 240, 134] Add(SP) [239, 0, 242, 1, 0, 1, 240, 134]
+# PC:87 [239, 0, 242, 1, 0, 1, 240, 135] StoreReg(SP) [239, 0, 242, 1, 0, 1, 239, 135]
+# PC:88 [239, 0, 242, 1, 0, 1, 239, 136] LoadLo(Constant(15)) [255, 0, 242, 1, 0, 1, 239, 136]
+# PC:89 [255, 0, 242, 1, 0, 1, 239, 137] Add(SP) [238, 0, 242, 1, 0, 1, 239, 137]
+# PC:8a [238, 0, 242, 1, 0, 1, 239, 138] StoreReg(SP) [238, 0, 242, 1, 0, 1, 238, 138]
+# PC:8b [238, 0, 242, 1, 0, 1, 238, 139] LoadReg(D) [1, 0, 242, 1, 0, 1, 238, 139]
+# PC:8c [1, 0, 242, 1, 0, 1, 238, 140] StoreMem(SP) [1, 0, 242, 1, 0, 1, 238, 140]
+# PC:8d [1, 0, 242, 1, 0, 1, 238, 141] LoadLo(Constant(4)) [4, 0, 242, 1, 0, 1, 238, 141]
+# PC:8e [4, 0, 242, 1, 0, 1, 238, 142] Add(SP) [242, 0, 242, 1, 0, 0, 238, 142]
+# PC:8f [242, 0, 242, 1, 0, 0, 238, 143] LoadMem(ACC) [0, 0, 242, 1, 0, 0, 238, 143]
+# PC:90 [0, 0, 242, 1, 0, 0, 238, 144] StoreReg(B) [0, 0, 242, 1, 0, 0, 238, 144]
+# PC:91 [0, 0, 242, 1, 0, 0, 238, 145] LoadLo(Constant(15)) [255, 0, 242, 1, 0, 0, 238, 145]
+# PC:92 [255, 0, 242, 1, 0, 0, 238, 146] Add(SP) [237, 0, 242, 1, 0, 1, 238, 146]
+# PC:93 [237, 0, 242, 1, 0, 1, 238, 147] StoreReg(SP) [237, 0, 242, 1, 0, 1, 237, 147]
+# PC:94 [237, 0, 242, 1, 0, 1, 237, 148] LoadReg(B) [0, 0, 242, 1, 0, 1, 237, 148]
+# PC:95 [0, 0, 242, 1, 0, 1, 237, 149] StoreMem(SP) [0, 0, 242, 1, 0, 1, 237, 149]
+# PC:96 [0, 0, 242, 1, 0, 1, 237, 150] LoadLo(Constant(15)) [255, 0, 242, 1, 0, 1, 237, 150]
+# PC:97 [255, 0, 242, 1, 0, 1, 237, 151] Add(SP) [236, 0, 242, 1, 0, 1, 237, 151]
+# PC:98 [236, 0, 242, 1, 0, 1, 237, 152] StoreReg(SP) [236, 0, 242, 1, 0, 1, 236, 152]
+# PC:99 [236, 0, 242, 1, 0, 1, 236, 153] LoadLo(Constant(5)) [5, 0, 242, 1, 0, 1, 236, 153]
+# PC:9a [5, 0, 242, 1, 0, 1, 236, 154] Add(PC) [159, 0, 242, 1, 0, 0, 236, 154]
+# PC:9b [159, 0, 242, 1, 0, 0, 236, 155] StoreMem(SP) [159, 0, 242, 1, 0, 0, 236, 155]
+# PC:9c [159, 0, 242, 1, 0, 0, 236, 156] LoadLo(Constant(8)) [248, 0, 242, 1, 0, 0, 236, 156]
+# PC:9d [248, 0, 242, 1, 0, 0, 236, 157] LoadHi(Constant(1)) [24, 0, 242, 1, 0, 0, 236, 157]
+# PC:9e [24, 0, 242, 1, 0, 0, 236, 158] StoreReg(PC) [24, 0, 242, 1, 0, 0, 236, 24]
+# PC:18 [24, 0, 242, 1, 0, 0, 236, 24] LoadLo(Constant(15)) [255, 0, 242, 1, 0, 0, 236, 24]
+# PC:19 [255, 0, 242, 1, 0, 0, 236, 25] Add(SP) [235, 0, 242, 1, 0, 1, 236, 25]
+# PC:1a [235, 0, 242, 1, 0, 1, 236, 26] StoreReg(SP) [235, 0, 242, 1, 0, 1, 235, 26]
+# PC:1b [235, 0, 242, 1, 0, 1, 235, 27] LoadLo(Constant(2)) [2, 0, 242, 1, 0, 1, 235, 27]
+# PC:1c [2, 0, 242, 1, 0, 1, 235, 28] Add(SP) [237, 0, 242, 1, 0, 0, 235, 28]
+# PC:1d [237, 0, 242, 1, 0, 0, 235, 29] LoadMem(ACC) [0, 0, 242, 1, 0, 0, 235, 29]
+# PC:1e [0, 0, 242, 1, 0, 0, 235, 30] StoreReg(C) [0, 0, 0, 1, 0, 0, 235, 30]
+# PC:1f [0, 0, 0, 1, 0, 0, 235, 31] LoadLo(Constant(0)) [0, 0, 0, 1, 0, 0, 235, 31]
+# PC:20 [0, 0, 0, 1, 0, 0, 235, 32] LoadHi(Constant(0)) [0, 0, 0, 1, 0, 0, 235, 32]
+# PC:21 [0, 0, 0, 1, 0, 0, 235, 33] Xor(C) [0, 0, 0, 1, 0, 0, 235, 33]
+# PC:22 [0, 0, 0, 1, 0, 0, 235, 34] Jnz(Constant(12)) [0, 0, 0, 1, 0, 0, 235, 34]
+# PC:23 [0, 0, 0, 1, 0, 0, 235, 35] LoadLo(Constant(1)) [1, 0, 0, 1, 0, 0, 235, 35]
+# PC:24 [1, 0, 0, 1, 0, 0, 235, 36] LoadHi(Constant(0)) [1, 0, 0, 1, 0, 0, 235, 36]
+# PC:25 [1, 0, 0, 1, 0, 0, 235, 37] StoreReg(B) [1, 1, 0, 1, 0, 0, 235, 37]
+# PC:26 [1, 1, 0, 1, 0, 0, 235, 38] LoadLo(Constant(3)) [3, 1, 0, 1, 0, 0, 235, 38]
+# PC:27 [3, 1, 0, 1, 0, 0, 235, 39] Add(SP) [238, 1, 0, 1, 0, 0, 235, 39]
+# PC:28 [238, 1, 0, 1, 0, 0, 235, 40] StoreReg(C) [238, 1, 238, 1, 0, 0, 235, 40]
+# PC:29 [238, 1, 238, 1, 0, 0, 235, 41] LoadReg(B) [1, 1, 238, 1, 0, 0, 235, 41]
+# PC:2a [1, 1, 238, 1, 0, 0, 235, 42] StoreMem(C) [1, 1, 238, 1, 0, 0, 235, 42]
+# PC:2b [1, 1, 238, 1, 0, 0, 235, 43] LoadLo(Constant(3)) [3, 1, 238, 1, 0, 0, 235, 43]
+# PC:2c [3, 1, 238, 1, 0, 0, 235, 44] LoadHi(Constant(12)) [195, 1, 238, 1, 0, 0, 235, 44]
+# PC:2d [195, 1, 238, 1, 0, 0, 235, 45] StoreReg(PC) [195, 1, 238, 1, 0, 0, 235, 195]
+# PC:c3 [195, 1, 238, 1, 0, 0, 235, 195] LoadLo(Constant(1)) [1, 1, 238, 1, 0, 0, 235, 195]
+# PC:c4 [1, 1, 238, 1, 0, 0, 235, 196] Add(SP) [236, 1, 238, 1, 0, 0, 235, 196]
+# PC:c5 [236, 1, 238, 1, 0, 0, 235, 197] StoreReg(SP) [236, 1, 238, 1, 0, 0, 236, 197]
+# PC:c6 [236, 1, 238, 1, 0, 0, 236, 198] LoadMem(SP) [159, 1, 238, 1, 0, 0, 236, 198]
+# PC:c7 [159, 1, 238, 1, 0, 0, 236, 199] StoreReg(PC) [159, 1, 238, 1, 0, 0, 236, 159]
+# PC:9f [159, 1, 238, 1, 0, 0, 236, 159] LoadLo(Constant(1)) [1, 1, 238, 1, 0, 0, 236, 159]
+# PC:a0 [1, 1, 238, 1, 0, 0, 236, 160] Add(SP) [237, 1, 238, 1, 0, 0, 236, 160]
+# PC:a1 [237, 1, 238, 1, 0, 0, 236, 161] StoreReg(SP) [237, 1, 238, 1, 0, 0, 237, 161]
+# PC:a2 [237, 1, 238, 1, 0, 0, 237, 162] LoadLo(Constant(1)) [1, 1, 238, 1, 0, 0, 237, 162]
+# PC:a3 [1, 1, 238, 1, 0, 0, 237, 163] Add(SP) [238, 1, 238, 1, 0, 0, 237, 163]
+# PC:a4 [238, 1, 238, 1, 0, 0, 237, 164] StoreReg(SP) [238, 1, 238, 1, 0, 0, 238, 164]
+# PC:a5 [238, 1, 238, 1, 0, 0, 238, 165] LoadMem(SP) [1, 1, 238, 1, 0, 0, 238, 165]
+# PC:a6 [1, 1, 238, 1, 0, 0, 238, 166] StoreReg(D) [1, 1, 238, 1, 0, 0, 238, 166]
+# PC:a7 [1, 1, 238, 1, 0, 0, 238, 167] LoadLo(Constant(1)) [1, 1, 238, 1, 0, 0, 238, 167]
+# PC:a8 [1, 1, 238, 1, 0, 0, 238, 168] Add(SP) [239, 1, 238, 1, 0, 0, 238, 168]
+# PC:a9 [239, 1, 238, 1, 0, 0, 238, 169] StoreReg(SP) [239, 1, 238, 1, 0, 0, 239, 169]
+# PC:aa [239, 1, 238, 1, 0, 0, 239, 170] LoadMem(SP) [1, 1, 238, 1, 0, 0, 239, 170]
+# PC:ab [1, 1, 238, 1, 0, 0, 239, 171] StoreReg(B) [1, 1, 238, 1, 0, 0, 239, 171]
+# PC:ac [1, 1, 238, 1, 0, 0, 239, 172] LoadLo(Constant(1)) [1, 1, 238, 1, 0, 0, 239, 172]
+# PC:ad [1, 1, 238, 1, 0, 0, 239, 173] Add(SP) [240, 1, 238, 1, 0, 0, 239, 173]
+# PC:ae [240, 1, 238, 1, 0, 0, 239, 174] StoreReg(SP) [240, 1, 238, 1, 0, 0, 240, 174]
+# PC:af [240, 1, 238, 1, 0, 0, 240, 175] LoadLo(Constant(0)) [0, 1, 238, 1, 0, 0, 240, 175]
+# PC:b0 [0, 1, 238, 1, 0, 0, 240, 176] Add(SP) [240, 1, 238, 1, 0, 0, 240, 176]
+# PC:b1 [240, 1, 238, 1, 0, 0, 240, 177] StoreReg(C) [240, 1, 240, 1, 0, 0, 240, 177]
+# PC:b2 [240, 1, 240, 1, 0, 0, 240, 178] LoadReg(B) [1, 1, 240, 1, 0, 0, 240, 178]
+# PC:b3 [1, 1, 240, 1, 0, 0, 240, 179] StoreMem(C) [1, 1, 240, 1, 0, 0, 240, 179]
+# PC:b4 [1, 1, 240, 1, 0, 0, 240, 180] LoadReg(D) [1, 1, 240, 1, 0, 0, 240, 180]
+# PC:b5 [1, 1, 240, 1, 0, 0, 240, 181] StoreReg(C) [1, 1, 1, 1, 0, 0, 240, 181]
+# PC:b6 [1, 1, 1, 1, 0, 0, 240, 182] LoadLo(Constant(0)) [0, 1, 1, 1, 0, 0, 240, 182]
+# PC:b7 [0, 1, 1, 1, 0, 0, 240, 183] Add(SP) [240, 1, 1, 1, 0, 0, 240, 183]
+# PC:b8 [240, 1, 1, 1, 0, 0, 240, 184] LoadMem(ACC) [1, 1, 1, 1, 0, 0, 240, 184]
+# PC:b9 [1, 1, 1, 1, 0, 0, 240, 185] Add(C) [2, 1, 1, 1, 0, 0, 240, 185]
+# PC:ba [2, 1, 1, 1, 0, 0, 240, 186] StoreReg(B) [2, 2, 1, 1, 0, 0, 240, 186]
+# PC:bb [2, 2, 1, 1, 0, 0, 240, 187] LoadLo(Constant(3)) [3, 2, 1, 1, 0, 0, 240, 187]
+# PC:bc [3, 2, 1, 1, 0, 0, 240, 188] Add(SP) [243, 2, 1, 1, 0, 0, 240, 188]
+# PC:bd [243, 2, 1, 1, 0, 0, 240, 189] StoreReg(C) [243, 2, 243, 1, 0, 0, 240, 189]
+# PC:be [243, 2, 243, 1, 0, 0, 240, 190] LoadReg(B) [2, 2, 243, 1, 0, 0, 240, 190]
+# PC:bf [2, 2, 243, 1, 0, 0, 240, 191] StoreMem(C) [2, 2, 243, 1, 0, 0, 240, 191]
+# PC:c0 [2, 2, 243, 1, 0, 0, 240, 192] LoadLo(Constant(3)) [3, 2, 243, 1, 0, 0, 240, 192]
+# PC:c1 [3, 2, 243, 1, 0, 0, 240, 193] LoadHi(Constant(12)) [195, 2, 243, 1, 0, 0, 240, 193]
+# PC:c2 [195, 2, 243, 1, 0, 0, 240, 194] StoreReg(PC) [195, 2, 243, 1, 0, 0, 240, 195]
+# PC:c3 [195, 2, 243, 1, 0, 0, 240, 195] LoadLo(Constant(1)) [1, 2, 243, 1, 0, 0, 240, 195]
+# PC:c4 [1, 2, 243, 1, 0, 0, 240, 196] Add(SP) [241, 2, 243, 1, 0, 0, 240, 196]
+# PC:c5 [241, 2, 243, 1, 0, 0, 240, 197] StoreReg(SP) [241, 2, 243, 1, 0, 0, 241, 197]
+# PC:c6 [241, 2, 243, 1, 0, 0, 241, 198] LoadMem(SP) [103, 2, 243, 1, 0, 0, 241, 198]
+# PC:c7 [103, 2, 243, 1, 0, 0, 241, 199] StoreReg(PC) [103, 2, 243, 1, 0, 0, 241, 103]
+# PC:67 [103, 2, 243, 1, 0, 0, 241, 103] LoadLo(Constant(1)) [1, 2, 243, 1, 0, 0, 241, 103]
+# PC:68 [1, 2, 243, 1, 0, 0, 241, 104] Add(SP) [242, 2, 243, 1, 0, 0, 241, 104]
+# PC:69 [242, 2, 243, 1, 0, 0, 241, 105] StoreReg(SP) [242, 2, 243, 1, 0, 0, 242, 105]
+# PC:6a [242, 2, 243, 1, 0, 0, 242, 106] LoadLo(Constant(1)) [1, 2, 243, 1, 0, 0, 242, 106]
+# PC:6b [1, 2, 243, 1, 0, 0, 242, 107] Add(SP) [243, 2, 243, 1, 0, 0, 242, 107]
+# PC:6c [243, 2, 243, 1, 0, 0, 242, 108] StoreReg(SP) [243, 2, 243, 1, 0, 0, 243, 108]
+# PC:6d [243, 2, 243, 1, 0, 0, 243, 109] LoadMem(SP) [2, 2, 243, 1, 0, 0, 243, 109]
+# PC:6e [2, 2, 243, 1, 0, 0, 243, 110] StoreReg(B) [2, 2, 243, 1, 0, 0, 243, 110]
+# PC:6f [2, 2, 243, 1, 0, 0, 243, 111] LoadLo(Constant(1)) [1, 2, 243, 1, 0, 0, 243, 111]
+# PC:70 [1, 2, 243, 1, 0, 0, 243, 112] Add(SP) [244, 2, 243, 1, 0, 0, 243, 112]
+# PC:71 [244, 2, 243, 1, 0, 0, 243, 113] StoreReg(SP) [244, 2, 243, 1, 0, 0, 244, 113]
+# PC:72 [244, 2, 243, 1, 0, 0, 244, 114] LoadReg(B) [2, 2, 243, 1, 0, 0, 244, 114]
+# PC:73 [2, 2, 243, 1, 0, 0, 244, 115] StoreReg(D) [2, 2, 243, 2, 0, 0, 244, 115]
+# PC:74 [2, 2, 243, 2, 0, 0, 244, 116] LoadLo(Constant(2)) [2, 2, 243, 2, 0, 0, 244, 116]
+# PC:75 [2, 2, 243, 2, 0, 0, 244, 117] Add(SP) [246, 2, 243, 2, 0, 0, 244, 117]
+# PC:76 [246, 2, 243, 2, 0, 0, 244, 118] LoadMem(ACC) [2, 2, 243, 2, 0, 0, 244, 118]
+# PC:77 [2, 2, 243, 2, 0, 0, 244, 119] StoreReg(C) [2, 2, 2, 2, 0, 0, 244, 119]
+# PC:78 [2, 2, 2, 2, 0, 0, 244, 120] LoadLo(Constant(1)) [1, 2, 2, 2, 0, 0, 244, 120]
+# PC:79 [1, 2, 2, 2, 0, 0, 244, 121] LoadHi(Constant(0)) [1, 2, 2, 2, 0, 0, 244, 121]
+# PC:7a [1, 2, 2, 2, 0, 0, 244, 122] Not(ACC) [254, 2, 2, 2, 0, 0, 244, 122]
+# PC:7b [254, 2, 2, 2, 0, 0, 244, 123] StoreReg(B) [254, 254, 2, 2, 0, 0, 244, 123]
+# PC:7c [254, 254, 2, 2, 0, 0, 244, 124] LoadLo(Constant(1)) [1, 254, 2, 2, 0, 0, 244, 124]
+# PC:7d [1, 254, 2, 2, 0, 0, 244, 125] Add(B) [255, 254, 2, 2, 0, 0, 244, 125]
+# PC:7e [255, 254, 2, 2, 0, 0, 244, 126] Add(C) [1, 254, 2, 2, 0, 1, 244, 126]
+# PC:7f [1, 254, 2, 2, 0, 1, 244, 127] StoreReg(B) [1, 1, 2, 2, 0, 1, 244, 127]
+# PC:80 [1, 1, 2, 2, 0, 1, 244, 128] LoadLo(Constant(2)) [2, 1, 2, 2, 0, 1, 244, 128]
+# PC:81 [2, 1, 2, 2, 0, 1, 244, 129] Add(SP) [246, 1, 2, 2, 0, 0, 244, 129]
+# PC:82 [246, 1, 2, 2, 0, 0, 244, 130] StoreReg(C) [246, 1, 246, 2, 0, 0, 244, 130]
+# PC:83 [246, 1, 246, 2, 0, 0, 244, 131] LoadReg(B) [1, 1, 246, 2, 0, 0, 244, 131]
+# PC:84 [1, 1, 246, 2, 0, 0, 244, 132] StoreMem(C) [1, 1, 246, 2, 0, 0, 244, 132]
+# PC:85 [1, 1, 246, 2, 0, 0, 244, 133] LoadLo(Constant(15)) [255, 1, 246, 2, 0, 0, 244, 133]
+# PC:86 [255, 1, 246, 2, 0, 0, 244, 134] Add(SP) [243, 1, 246, 2, 0, 1, 244, 134]
+# PC:87 [243, 1, 246, 2, 0, 1, 244, 135] StoreReg(SP) [243, 1, 246, 2, 0, 1, 243, 135]
+# PC:88 [243, 1, 246, 2, 0, 1, 243, 136] LoadLo(Constant(15)) [255, 1, 246, 2, 0, 1, 243, 136]
+# PC:89 [255, 1, 246, 2, 0, 1, 243, 137] Add(SP) [242, 1, 246, 2, 0, 1, 243, 137]
+# PC:8a [242, 1, 246, 2, 0, 1, 243, 138] StoreReg(SP) [242, 1, 246, 2, 0, 1, 242, 138]
+# PC:8b [242, 1, 246, 2, 0, 1, 242, 139] LoadReg(D) [2, 1, 246, 2, 0, 1, 242, 139]
+# PC:8c [2, 1, 246, 2, 0, 1, 242, 140] StoreMem(SP) [2, 1, 246, 2, 0, 1, 242, 140]
+# PC:8d [2, 1, 246, 2, 0, 1, 242, 141] LoadLo(Constant(4)) [4, 1, 246, 2, 0, 1, 242, 141]
+# PC:8e [4, 1, 246, 2, 0, 1, 242, 142] Add(SP) [246, 1, 246, 2, 0, 0, 242, 142]
+# PC:8f [246, 1, 246, 2, 0, 0, 242, 143] LoadMem(ACC) [1, 1, 246, 2, 0, 0, 242, 143]
+# PC:90 [1, 1, 246, 2, 0, 0, 242, 144] StoreReg(B) [1, 1, 246, 2, 0, 0, 242, 144]
+# PC:91 [1, 1, 246, 2, 0, 0, 242, 145] LoadLo(Constant(15)) [255, 1, 246, 2, 0, 0, 242, 145]
+# PC:92 [255, 1, 246, 2, 0, 0, 242, 146] Add(SP) [241, 1, 246, 2, 0, 1, 242, 146]
+# PC:93 [241, 1, 246, 2, 0, 1, 242, 147] StoreReg(SP) [241, 1, 246, 2, 0, 1, 241, 147]
+# PC:94 [241, 1, 246, 2, 0, 1, 241, 148] LoadReg(B) [1, 1, 246, 2, 0, 1, 241, 148]
+# PC:95 [1, 1, 246, 2, 0, 1, 241, 149] StoreMem(SP) [1, 1, 246, 2, 0, 1, 241, 149]
+# PC:96 [1, 1, 246, 2, 0, 1, 241, 150] LoadLo(Constant(15)) [255, 1, 246, 2, 0, 1, 241, 150]
+# PC:97 [255, 1, 246, 2, 0, 1, 241, 151] Add(SP) [240, 1, 246, 2, 0, 1, 241, 151]
+# PC:98 [240, 1, 246, 2, 0, 1, 241, 152] StoreReg(SP) [240, 1, 246, 2, 0, 1, 240, 152]
+# PC:99 [240, 1, 246, 2, 0, 1, 240, 153] LoadLo(Constant(5)) [5, 1, 246, 2, 0, 1, 240, 153]
+# PC:9a [5, 1, 246, 2, 0, 1, 240, 154] Add(PC) [159, 1, 246, 2, 0, 0, 240, 154]
+# PC:9b [159, 1, 246, 2, 0, 0, 240, 155] StoreMem(SP) [159, 1, 246, 2, 0, 0, 240, 155]
+# PC:9c [159, 1, 246, 2, 0, 0, 240, 156] LoadLo(Constant(8)) [248, 1, 246, 2, 0, 0, 240, 156]
+# PC:9d [248, 1, 246, 2, 0, 0, 240, 157] LoadHi(Constant(1)) [24, 1, 246, 2, 0, 0, 240, 157]
+# PC:9e [24, 1, 246, 2, 0, 0, 240, 158] StoreReg(PC) [24, 1, 246, 2, 0, 0, 240, 24]
+# PC:18 [24, 1, 246, 2, 0, 0, 240, 24] LoadLo(Constant(15)) [255, 1, 246, 2, 0, 0, 240, 24]
+# PC:19 [255, 1, 246, 2, 0, 0, 240, 25] Add(SP) [239, 1, 246, 2, 0, 1, 240, 25]
+# PC:1a [239, 1, 246, 2, 0, 1, 240, 26] StoreReg(SP) [239, 1, 246, 2, 0, 1, 239, 26]
+# PC:1b [239, 1, 246, 2, 0, 1, 239, 27] LoadLo(Constant(2)) [2, 1, 246, 2, 0, 1, 239, 27]
+# PC:1c [2, 1, 246, 2, 0, 1, 239, 28] Add(SP) [241, 1, 246, 2, 0, 0, 239, 28]
+# PC:1d [241, 1, 246, 2, 0, 0, 239, 29] LoadMem(ACC) [1, 1, 246, 2, 0, 0, 239, 29]
+# PC:1e [1, 1, 246, 2, 0, 0, 239, 30] StoreReg(C) [1, 1, 1, 2, 0, 0, 239, 30]
+# PC:1f [1, 1, 1, 2, 0, 0, 239, 31] LoadLo(Constant(0)) [0, 1, 1, 2, 0, 0, 239, 31]
+# PC:20 [0, 1, 1, 2, 0, 0, 239, 32] LoadHi(Constant(0)) [0, 1, 1, 2, 0, 0, 239, 32]
+# PC:21 [0, 1, 1, 2, 0, 0, 239, 33] Xor(C) [1, 1, 1, 2, 0, 0, 239, 33]
+# PC:22 [1, 1, 1, 2, 0, 0, 239, 34] Jnz(Constant(12)) [1, 1, 1, 2, 0, 0, 239, 46]
+# PC:2e [1, 1, 1, 2, 0, 0, 239, 46] LoadLo(Constant(2)) [2, 1, 1, 2, 0, 0, 239, 46]
+# PC:2f [2, 1, 1, 2, 0, 0, 239, 47] Add(SP) [241, 1, 1, 2, 0, 0, 239, 47]
+# PC:30 [241, 1, 1, 2, 0, 0, 239, 48] LoadMem(ACC) [1, 1, 1, 2, 0, 0, 239, 48]
+# PC:31 [1, 1, 1, 2, 0, 0, 239, 49] StoreReg(C) [1, 1, 1, 2, 0, 0, 239, 49]
+# PC:32 [1, 1, 1, 2, 0, 0, 239, 50] LoadLo(Constant(1)) [1, 1, 1, 2, 0, 0, 239, 50]
+# PC:33 [1, 1, 1, 2, 0, 0, 239, 51] LoadHi(Constant(0)) [1, 1, 1, 2, 0, 0, 239, 51]
+# PC:34 [1, 1, 1, 2, 0, 0, 239, 52] Not(ACC) [254, 1, 1, 2, 0, 0, 239, 52]
+# PC:35 [254, 1, 1, 2, 0, 0, 239, 53] StoreReg(B) [254, 254, 1, 2, 0, 0, 239, 53]
+# PC:36 [254, 254, 1, 2, 0, 0, 239, 54] LoadLo(Constant(1)) [1, 254, 1, 2, 0, 0, 239, 54]
+# PC:37 [1, 254, 1, 2, 0, 0, 239, 55] Add(B) [255, 254, 1, 2, 0, 0, 239, 55]
+# PC:38 [255, 254, 1, 2, 0, 0, 239, 56] Add(C) [0, 254, 1, 2, 0, 1, 239, 56]
+# PC:39 [0, 254, 1, 2, 0, 1, 239, 57] StoreReg(B) [0, 0, 1, 2, 0, 1, 239, 57]
+# PC:3a [0, 0, 1, 2, 0, 1, 239, 58] LoadLo(Constant(2)) [2, 0, 1, 2, 0, 1, 239, 58]
+# PC:3b [2, 0, 1, 2, 0, 1, 239, 59] Add(SP) [241, 0, 1, 2, 0, 0, 239, 59]
+# PC:3c [241, 0, 1, 2, 0, 0, 239, 60] StoreReg(C) [241, 0, 241, 2, 0, 0, 239, 60]
+# PC:3d [241, 0, 241, 2, 0, 0, 239, 61] LoadReg(B) [0, 0, 241, 2, 0, 0, 239, 61]
+# PC:3e [0, 0, 241, 2, 0, 0, 239, 62] StoreMem(C) [0, 0, 241, 2, 0, 0, 239, 62]
+# PC:3f [0, 0, 241, 2, 0, 0, 239, 63] LoadLo(Constant(2)) [2, 0, 241, 2, 0, 0, 239, 63]
+# PC:40 [2, 0, 241, 2, 0, 0, 239, 64] Add(SP) [241, 0, 241, 2, 0, 0, 239, 64]
+# PC:41 [241, 0, 241, 2, 0, 0, 239, 65] LoadMem(ACC) [0, 0, 241, 2, 0, 0, 239, 65]
+# PC:42 [0, 0, 241, 2, 0, 0, 239, 66] StoreReg(C) [0, 0, 0, 2, 0, 0, 239, 66]
+# PC:43 [0, 0, 0, 2, 0, 0, 239, 67] LoadLo(Constant(0)) [0, 0, 0, 2, 0, 0, 239, 67]
+# PC:44 [0, 0, 0, 2, 0, 0, 239, 68] LoadHi(Constant(0)) [0, 0, 0, 2, 0, 0, 239, 68]
+# PC:45 [0, 0, 0, 2, 0, 0, 239, 69] Xor(C) [0, 0, 0, 2, 0, 0, 239, 69]
+# PC:46 [0, 0, 0, 2, 0, 0, 239, 70] Jnz(Constant(12)) [0, 0, 0, 2, 0, 0, 239, 70]
+# PC:47 [0, 0, 0, 2, 0, 0, 239, 71] LoadLo(Constant(1)) [1, 0, 0, 2, 0, 0, 239, 71]
+# PC:48 [1, 0, 0, 2, 0, 0, 239, 72] LoadHi(Constant(0)) [1, 0, 0, 2, 0, 0, 239, 72]
+# PC:49 [1, 0, 0, 2, 0, 0, 239, 73] StoreReg(B) [1, 1, 0, 2, 0, 0, 239, 73]
+# PC:4a [1, 1, 0, 2, 0, 0, 239, 74] LoadLo(Constant(3)) [3, 1, 0, 2, 0, 0, 239, 74]
+# PC:4b [3, 1, 0, 2, 0, 0, 239, 75] Add(SP) [242, 1, 0, 2, 0, 0, 239, 75]
+# PC:4c [242, 1, 0, 2, 0, 0, 239, 76] StoreReg(C) [242, 1, 242, 2, 0, 0, 239, 76]
+# PC:4d [242, 1, 242, 2, 0, 0, 239, 77] LoadReg(B) [1, 1, 242, 2, 0, 0, 239, 77]
+# PC:4e [1, 1, 242, 2, 0, 0, 239, 78] StoreMem(C) [1, 1, 242, 2, 0, 0, 239, 78]
+# PC:4f [1, 1, 242, 2, 0, 0, 239, 79] LoadLo(Constant(3)) [3, 1, 242, 2, 0, 0, 239, 79]
+# PC:50 [3, 1, 242, 2, 0, 0, 239, 80] LoadHi(Constant(12)) [195, 1, 242, 2, 0, 0, 239, 80]
+# PC:51 [195, 1, 242, 2, 0, 0, 239, 81] StoreReg(PC) [195, 1, 242, 2, 0, 0, 239, 195]
+# PC:c3 [195, 1, 242, 2, 0, 0, 239, 195] LoadLo(Constant(1)) [1, 1, 242, 2, 0, 0, 239, 195]
+# PC:c4 [1, 1, 242, 2, 0, 0, 239, 196] Add(SP) [240, 1, 242, 2, 0, 0, 239, 196]
+# PC:c5 [240, 1, 242, 2, 0, 0, 239, 197] StoreReg(SP) [240, 1, 242, 2, 0, 0, 240, 197]
+# PC:c6 [240, 1, 242, 2, 0, 0, 240, 198] LoadMem(SP) [159, 1, 242, 2, 0, 0, 240, 198]
+# PC:c7 [159, 1, 242, 2, 0, 0, 240, 199] StoreReg(PC) [159, 1, 242, 2, 0, 0, 240, 159]
+# PC:9f [159, 1, 242, 2, 0, 0, 240, 159] LoadLo(Constant(1)) [1, 1, 242, 2, 0, 0, 240, 159]
+# PC:a0 [1, 1, 242, 2, 0, 0, 240, 160] Add(SP) [241, 1, 242, 2, 0, 0, 240, 160]
+# PC:a1 [241, 1, 242, 2, 0, 0, 240, 161] StoreReg(SP) [241, 1, 242, 2, 0, 0, 241, 161]
+# PC:a2 [241, 1, 242, 2, 0, 0, 241, 162] LoadLo(Constant(1)) [1, 1, 242, 2, 0, 0, 241, 162]
+# PC:a3 [1, 1, 242, 2, 0, 0, 241, 163] Add(SP) [242, 1, 242, 2, 0, 0, 241, 163]
+# PC:a4 [242, 1, 242, 2, 0, 0, 241, 164] StoreReg(SP) [242, 1, 242, 2, 0, 0, 242, 164]
+# PC:a5 [242, 1, 242, 2, 0, 0, 242, 165] LoadMem(SP) [1, 1, 242, 2, 0, 0, 242, 165]
+# PC:a6 [1, 1, 242, 2, 0, 0, 242, 166] StoreReg(D) [1, 1, 242, 1, 0, 0, 242, 166]
+# PC:a7 [1, 1, 242, 1, 0, 0, 242, 167] LoadLo(Constant(1)) [1, 1, 242, 1, 0, 0, 242, 167]
+# PC:a8 [1, 1, 242, 1, 0, 0, 242, 168] Add(SP) [243, 1, 242, 1, 0, 0, 242, 168]
+# PC:a9 [243, 1, 242, 1, 0, 0, 242, 169] StoreReg(SP) [243, 1, 242, 1, 0, 0, 243, 169]
+# PC:aa [243, 1, 242, 1, 0, 0, 243, 170] LoadMem(SP) [2, 1, 242, 1, 0, 0, 243, 170]
+# PC:ab [2, 1, 242, 1, 0, 0, 243, 171] StoreReg(B) [2, 2, 242, 1, 0, 0, 243, 171]
+# PC:ac [2, 2, 242, 1, 0, 0, 243, 172] LoadLo(Constant(1)) [1, 2, 242, 1, 0, 0, 243, 172]
+# PC:ad [1, 2, 242, 1, 0, 0, 243, 173] Add(SP) [244, 2, 242, 1, 0, 0, 243, 173]
+# PC:ae [244, 2, 242, 1, 0, 0, 243, 174] StoreReg(SP) [244, 2, 242, 1, 0, 0, 244, 174]
+# PC:af [244, 2, 242, 1, 0, 0, 244, 175] LoadLo(Constant(0)) [0, 2, 242, 1, 0, 0, 244, 175]
+# PC:b0 [0, 2, 242, 1, 0, 0, 244, 176] Add(SP) [244, 2, 242, 1, 0, 0, 244, 176]
+# PC:b1 [244, 2, 242, 1, 0, 0, 244, 177] StoreReg(C) [244, 2, 244, 1, 0, 0, 244, 177]
+# PC:b2 [244, 2, 244, 1, 0, 0, 244, 178] LoadReg(B) [2, 2, 244, 1, 0, 0, 244, 178]
+# PC:b3 [2, 2, 244, 1, 0, 0, 244, 179] StoreMem(C) [2, 2, 244, 1, 0, 0, 244, 179]
+# PC:b4 [2, 2, 244, 1, 0, 0, 244, 180] LoadReg(D) [1, 2, 244, 1, 0, 0, 244, 180]
+# PC:b5 [1, 2, 244, 1, 0, 0, 244, 181] StoreReg(C) [1, 2, 1, 1, 0, 0, 244, 181]
+# PC:b6 [1, 2, 1, 1, 0, 0, 244, 182] LoadLo(Constant(0)) [0, 2, 1, 1, 0, 0, 244, 182]
+# PC:b7 [0, 2, 1, 1, 0, 0, 244, 183] Add(SP) [244, 2, 1, 1, 0, 0, 244, 183]
+# PC:b8 [244, 2, 1, 1, 0, 0, 244, 184] LoadMem(ACC) [2, 2, 1, 1, 0, 0, 244, 184]
+# PC:b9 [2, 2, 1, 1, 0, 0, 244, 185] Add(C) [3, 2, 1, 1, 0, 0, 244, 185]
+# PC:ba [3, 2, 1, 1, 0, 0, 244, 186] StoreReg(B) [3, 3, 1, 1, 0, 0, 244, 186]
+# PC:bb [3, 3, 1, 1, 0, 0, 244, 187] LoadLo(Constant(3)) [3, 3, 1, 1, 0, 0, 244, 187]
+# PC:bc [3, 3, 1, 1, 0, 0, 244, 188] Add(SP) [247, 3, 1, 1, 0, 0, 244, 188]
+# PC:bd [247, 3, 1, 1, 0, 0, 244, 189] StoreReg(C) [247, 3, 247, 1, 0, 0, 244, 189]
+# PC:be [247, 3, 247, 1, 0, 0, 244, 190] LoadReg(B) [3, 3, 247, 1, 0, 0, 244, 190]
+# PC:bf [3, 3, 247, 1, 0, 0, 244, 191] StoreMem(C) [3, 3, 247, 1, 0, 0, 244, 191]
+# PC:c0 [3, 3, 247, 1, 0, 0, 244, 192] LoadLo(Constant(3)) [3, 3, 247, 1, 0, 0, 244, 192]
+# PC:c1 [3, 3, 247, 1, 0, 0, 244, 193] LoadHi(Constant(12)) [195, 3, 247, 1, 0, 0, 244, 193]
+# PC:c2 [195, 3, 247, 1, 0, 0, 244, 194] StoreReg(PC) [195, 3, 247, 1, 0, 0, 244, 195]
+# PC:c3 [195, 3, 247, 1, 0, 0, 244, 195] LoadLo(Constant(1)) [1, 3, 247, 1, 0, 0, 244, 195]
+# PC:c4 [1, 3, 247, 1, 0, 0, 244, 196] Add(SP) [245, 3, 247, 1, 0, 0, 244, 196]
+# PC:c5 [245, 3, 247, 1, 0, 0, 244, 197] StoreReg(SP) [245, 3, 247, 1, 0, 0, 245, 197]
+# PC:c6 [245, 3, 247, 1, 0, 0, 245, 198] LoadMem(SP) [159, 3, 247, 1, 0, 0, 245, 198]
+# PC:c7 [159, 3, 247, 1, 0, 0, 245, 199] StoreReg(PC) [159, 3, 247, 1, 0, 0, 245, 159]
+# PC:9f [159, 3, 247, 1, 0, 0, 245, 159] LoadLo(Constant(1)) [1, 3, 247, 1, 0, 0, 245, 159]
+# PC:a0 [1, 3, 247, 1, 0, 0, 245, 160] Add(SP) [246, 3, 247, 1, 0, 0, 245, 160]
+# PC:a1 [246, 3, 247, 1, 0, 0, 245, 161] StoreReg(SP) [246, 3, 247, 1, 0, 0, 246, 161]
+# PC:a2 [246, 3, 247, 1, 0, 0, 246, 162] LoadLo(Constant(1)) [1, 3, 247, 1, 0, 0, 246, 162]
+# PC:a3 [1, 3, 247, 1, 0, 0, 246, 163] Add(SP) [247, 3, 247, 1, 0, 0, 246, 163]
+# PC:a4 [247, 3, 247, 1, 0, 0, 246, 164] StoreReg(SP) [247, 3, 247, 1, 0, 0, 247, 164]
+# PC:a5 [247, 3, 247, 1, 0, 0, 247, 165] LoadMem(SP) [3, 3, 247, 1, 0, 0, 247, 165]
+# PC:a6 [3, 3, 247, 1, 0, 0, 247, 166] StoreReg(D) [3, 3, 247, 3, 0, 0, 247, 166]
+# PC:a7 [3, 3, 247, 3, 0, 0, 247, 167] LoadLo(Constant(1)) [1, 3, 247, 3, 0, 0, 247, 167]
+# PC:a8 [1, 3, 247, 3, 0, 0, 247, 168] Add(SP) [248, 3, 247, 3, 0, 0, 247, 168]
+# PC:a9 [248, 3, 247, 3, 0, 0, 247, 169] StoreReg(SP) [248, 3, 247, 3, 0, 0, 248, 169]
+# PC:aa [248, 3, 247, 3, 0, 0, 248, 170] LoadMem(SP) [5, 3, 247, 3, 0, 0, 248, 170]
+# PC:ab [5, 3, 247, 3, 0, 0, 248, 171] StoreReg(B) [5, 5, 247, 3, 0, 0, 248, 171]
+# PC:ac [5, 5, 247, 3, 0, 0, 248, 172] LoadLo(Constant(1)) [1, 5, 247, 3, 0, 0, 248, 172]
+# PC:ad [1, 5, 247, 3, 0, 0, 248, 173] Add(SP) [249, 5, 247, 3, 0, 0, 248, 173]
+# PC:ae [249, 5, 247, 3, 0, 0, 248, 174] StoreReg(SP) [249, 5, 247, 3, 0, 0, 249, 174]
+# PC:af [249, 5, 247, 3, 0, 0, 249, 175] LoadLo(Constant(0)) [0, 5, 247, 3, 0, 0, 249, 175]
+# PC:b0 [0, 5, 247, 3, 0, 0, 249, 176] Add(SP) [249, 5, 247, 3, 0, 0, 249, 176]
+# PC:b1 [249, 5, 247, 3, 0, 0, 249, 177] StoreReg(C) [249, 5, 249, 3, 0, 0, 249, 177]
+# PC:b2 [249, 5, 249, 3, 0, 0, 249, 178] LoadReg(B) [5, 5, 249, 3, 0, 0, 249, 178]
+# PC:b3 [5, 5, 249, 3, 0, 0, 249, 179] StoreMem(C) [5, 5, 249, 3, 0, 0, 249, 179]
+# PC:b4 [5, 5, 249, 3, 0, 0, 249, 180] LoadReg(D) [3, 5, 249, 3, 0, 0, 249, 180]
+# PC:b5 [3, 5, 249, 3, 0, 0, 249, 181] StoreReg(C) [3, 5, 3, 3, 0, 0, 249, 181]
+# PC:b6 [3, 5, 3, 3, 0, 0, 249, 182] LoadLo(Constant(0)) [0, 5, 3, 3, 0, 0, 249, 182]
+# PC:b7 [0, 5, 3, 3, 0, 0, 249, 183] Add(SP) [249, 5, 3, 3, 0, 0, 249, 183]
+# PC:b8 [249, 5, 3, 3, 0, 0, 249, 184] LoadMem(ACC) [5, 5, 3, 3, 0, 0, 249, 184]
+# PC:b9 [5, 5, 3, 3, 0, 0, 249, 185] Add(C) [8, 5, 3, 3, 0, 0, 249, 185]
+# PC:ba [8, 5, 3, 3, 0, 0, 249, 186] StoreReg(B) [8, 8, 3, 3, 0, 0, 249, 186]
+# PC:bb [8, 8, 3, 3, 0, 0, 249, 187] LoadLo(Constant(3)) [3, 8, 3, 3, 0, 0, 249, 187]
+# PC:bc [3, 8, 3, 3, 0, 0, 249, 188] Add(SP) [252, 8, 3, 3, 0, 0, 249, 188]
+# PC:bd [252, 8, 3, 3, 0, 0, 249, 189] StoreReg(C) [252, 8, 252, 3, 0, 0, 249, 189]
+# PC:be [252, 8, 252, 3, 0, 0, 249, 190] LoadReg(B) [8, 8, 252, 3, 0, 0, 249, 190]
+# PC:bf [8, 8, 252, 3, 0, 0, 249, 191] StoreMem(C) [8, 8, 252, 3, 0, 0, 249, 191]
+# PC:c0 [8, 8, 252, 3, 0, 0, 249, 192] LoadLo(Constant(3)) [3, 8, 252, 3, 0, 0, 249, 192]
+# PC:c1 [3, 8, 252, 3, 0, 0, 249, 193] LoadHi(Constant(12)) [195, 8, 252, 3, 0, 0, 249, 193]
+# PC:c2 [195, 8, 252, 3, 0, 0, 249, 194] StoreReg(PC) [195, 8, 252, 3, 0, 0, 249, 195]
+# PC:c3 [195, 8, 252, 3, 0, 0, 249, 195] LoadLo(Constant(1)) [1, 8, 252, 3, 0, 0, 249, 195]
+# PC:c4 [1, 8, 252, 3, 0, 0, 249, 196] Add(SP) [250, 8, 252, 3, 0, 0, 249, 196]
+# PC:c5 [250, 8, 252, 3, 0, 0, 249, 197] StoreReg(SP) [250, 8, 252, 3, 0, 0, 250, 197]
+# PC:c6 [250, 8, 252, 3, 0, 0, 250, 198] LoadMem(SP) [220, 8, 252, 3, 0, 0, 250, 198]
+# PC:c7 [220, 8, 252, 3, 0, 0, 250, 199] StoreReg(PC) [220, 8, 252, 3, 0, 0, 250, 220]
+# PC:dc [220, 8, 252, 3, 0, 0, 250, 220] LoadLo(Constant(1)) [1, 8, 252, 3, 0, 0, 250, 220]
+# PC:dd [1, 8, 252, 3, 0, 0, 250, 221] Add(SP) [251, 8, 252, 3, 0, 0, 250, 221]
+# PC:de [251, 8, 252, 3, 0, 0, 250, 222] StoreReg(SP) [251, 8, 252, 3, 0, 0, 251, 222]
+# PC:df [251, 8, 252, 3, 0, 0, 251, 223] LoadLo(Constant(1)) [1, 8, 252, 3, 0, 0, 251, 223]
+# PC:e0 [1, 8, 252, 3, 0, 0, 251, 224] Add(SP) [252, 8, 252, 3, 0, 0, 251, 224]
+# PC:e1 [252, 8, 252, 3, 0, 0, 251, 225] StoreReg(SP) [252, 8, 252, 3, 0, 0, 252, 225]
+# PC:e2 [252, 8, 252, 3, 0, 0, 252, 226] LoadMem(SP) [8, 8, 252, 3, 0, 0, 252, 226]
+# PC:e3 [8, 8, 252, 3, 0, 0, 252, 227] StoreReg(B) [8, 8, 252, 3, 0, 0, 252, 227]
+# PC:e4 [8, 8, 252, 3, 0, 0, 252, 228] LoadLo(Constant(1)) [1, 8, 252, 3, 0, 0, 252, 228]
+# PC:e5 [1, 8, 252, 3, 0, 0, 252, 229] Add(SP) [253, 8, 252, 3, 0, 0, 252, 229]
+# PC:e6 [253, 8, 252, 3, 0, 0, 252, 230] StoreReg(SP) [253, 8, 252, 3, 0, 0, 253, 230]
+# PC:e7 [253, 8, 252, 3, 0, 0, 253, 231] LoadReg(B) [8, 8, 252, 3, 0, 0, 253, 231]
+# PC:e8 [8, 8, 252, 3, 0, 0, 253, 232] StoreReg(D) [8, 8, 252, 8, 0, 0, 253, 232]
+# PC:e9 [8, 8, 252, 8, 0, 0, 253, 233] LoadReg(D) [8, 8, 252, 8, 0, 0, 253, 233]
+# PC:ea [8, 8, 252, 8, 0, 0, 253, 234] StoreReg(B) [8, 8, 252, 8, 0, 0, 253, 234]
+# PC:eb [8, 8, 252, 8, 0, 0, 253, 235] LoadLo(Constant(1)) [1, 8, 252, 8, 0, 0, 253, 235]
+# PC:ec [1, 8, 252, 8, 0, 0, 253, 236] Add(SP) [254, 8, 252, 8, 0, 0, 253, 236]
+# PC:ed [254, 8, 252, 8, 0, 0, 253, 237] StoreReg(C) [254, 8, 254, 8, 0, 0, 253, 237]
+# PC:ee [254, 8, 254, 8, 0, 0, 253, 238] LoadReg(B) [8, 8, 254, 8, 0, 0, 253, 238]
+# PC:ef [8, 8, 254, 8, 0, 0, 253, 239] StoreMem(C) [8, 8, 254, 8, 0, 0, 253, 239]
+# PC:f0 [8, 8, 254, 8, 0, 0, 253, 240] LoadLo(Constant(3)) [3, 8, 254, 8, 0, 0, 253, 240]
+# PC:f1 [3, 8, 254, 8, 0, 0, 253, 241] LoadHi(Constant(15)) [243, 8, 254, 8, 0, 0, 253, 241]
+# PC:f2 [243, 8, 254, 8, 0, 0, 253, 242] StoreReg(PC) [243, 8, 254, 8, 0, 0, 253, 243]
+# PC:f3 [243, 8, 254, 8, 0, 0, 253, 243] LoadMem(SP) [14, 8, 254, 8, 0, 0, 253, 243]
+# PC:f4 [14, 8, 254, 8, 0, 0, 253, 244] StoreReg(PC) [14, 8, 254, 8, 0, 0, 253, 14]
+# PC:0e [14, 8, 254, 8, 0, 0, 253, 14] LoadLo(Constant(1)) [1, 8, 254, 8, 0, 0, 253, 14]
+# PC:0f [1, 8, 254, 8, 0, 0, 253, 15] Add(SP) [254, 8, 254, 8, 0, 0, 253, 15]
+# PC:10 [254, 8, 254, 8, 0, 0, 253, 16] StoreReg(SP) [254, 8, 254, 8, 0, 0, 254, 16]
+# PC:11 [254, 8, 254, 8, 0, 0, 254, 17] LoadMem(SP) [8, 8, 254, 8, 0, 0, 254, 17]
+# PC:12 [8, 8, 254, 8, 0, 0, 254, 18] StoreReg(B) [8, 8, 254, 8, 0, 0, 254, 18]
+# PC:13 [8, 8, 254, 8, 0, 0, 254, 19] LoadLo(Constant(1)) [1, 8, 254, 8, 0, 0, 254, 19]
+# PC:14 [1, 8, 254, 8, 0, 0, 254, 20] Add(SP) [255, 8, 254, 8, 0, 0, 254, 20]
+# PC:15 [255, 8, 254, 8, 0, 0, 254, 21] StoreReg(SP) [255, 8, 254, 8, 0, 0, 255, 21]
+# PC:16 [255, 8, 254, 8, 0, 0, 255, 22] LoadLo(Constant(15)) [255, 8, 254, 8, 0, 0, 255, 22]
+# PC:17 [255, 8, 254, 8, 0, 0, 255, 23] StoreReg(PC) [255, 8, 254, 8, 0, 0, 255, 255]
+# simulation completed
