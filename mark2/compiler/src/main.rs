@@ -458,7 +458,7 @@ impl Function {
         ctxt.lines.push(Line::Comment(format!("# Function: {}", &self.name)));
         ctxt.lines.push(Line::Label(format!(":{}", &self.name)));
 
-        let register_local_count = std::cmp::min(1, self.locals.len());
+        let register_local_count = std::cmp::min(2, self.locals.len());
         let stack_local_count = self.locals.len() - register_local_count;
 
         let stack_size = 0
