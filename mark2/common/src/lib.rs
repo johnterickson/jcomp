@@ -6,7 +6,7 @@ use std::str::FromStr;
 
 use std::collections::BTreeMap;
 
-#[derive(Clone, Copy, Debug, EnumString, Eq, PartialEq, PartialOrd, Ord)]
+#[derive(Clone, Copy, Debug, Display, EnumString, Eq, PartialEq, PartialOrd, Ord)]
 #[strum(serialize_all = "lowercase")]
 pub enum Reg {
     ACC,
@@ -266,6 +266,13 @@ impl Resolver for Instruction {
 }
 
 pub fn assemble(lines: Vec<Line>) -> Vec<Instruction> {
+
+    println!("v2.0 raw");
+
+    for (i,line) in lines.iter().enumerate() {
+        println!("# Line {}: {:?}", i, line);
+    }
+
     let labels = {
         let mut labels = BTreeMap::new();
         let mut address : u8 = 0;
@@ -280,7 +287,6 @@ pub fn assemble(lines: Vec<Line>) -> Vec<Instruction> {
         labels
     };
 
-    println!("v2.0 raw");
 
     for l in &labels {
         println!("# {:?}", l);

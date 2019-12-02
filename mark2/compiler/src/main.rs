@@ -41,7 +41,7 @@ impl Operator {
 }
 
 struct FunctionContext {
-    pub regs_used: BTreeSet<Reg>,
+    pub regs_used: Vec<Reg>,
     pub stack: BTreeMap<String, LocalStorage>,
     pub lines: Vec<Line>,
     pub additional_offset: isize,
@@ -111,12 +111,22 @@ impl Expression {
         }
     }
 
-    // output is in B; must preserve other regs
-    fn emit(&self, ctxt: &mut FunctionContext) -> () {
+    fn is_tail(&self) -> bool {
+        match self {
+            Expression::Ident(_) => true,
+            Expression::Number(_) => true,
+            Expression::Operation(_,_,_) => false,
+        }
+    }
+
+    // output is in target_reg; must preserve other regs
+    fn emit(&self, ctxt: &mut FunctionContext, target_reg: Reg) -> () {
         ctxt.lines.push(Line::Comment(format!("Evaluating expression: {:?}", &self)));
         match self {
             Expression::Number(n) => {
                 ctxt.add_inst(Instruction::LoadLo(Target::Constant((n & 0xF) as u8)));
+
+                // todo: skip this when we can
                 ctxt.add_inst(Instruction::LoadHi(Target::Constant(((n>>4) & 0xF) as u8)));
             },
             Expression::Ident(n) => {
@@ -133,13 +143,20 @@ impl Expression {
                 }
             },
             Expression::Operation(op, left, right) => {
-                left.emit(ctxt); // left in B
-                ctxt.add_macro(format!("push b")); //store left on the stack
-                ctxt.additional_offset += 1;
+                if left.is_tail() && right.is_tail() {
+                    left.emit(ctxt, Reg::C);
+                    right.emit(ctxt, Reg::B)
+                }
+                else 
+                {
+                    left.emit(ctxt, Reg::B); // left in B
+                    ctxt.add_macro(format!("push b")); //store left on the stack
+                    ctxt.additional_offset += 1;
 
-                right.emit(ctxt); // left on top of stack; right in b
-                ctxt.add_macro(format!("pop c")); //left in c; right in b
-                ctxt.additional_offset -= 1;
+                    right.emit(ctxt, Reg::B); // left on top of stack; right in b
+                    ctxt.add_macro(format!("pop c")); //left in c; right in b
+                    ctxt.additional_offset -= 1;
+                }
 
                 match op {
                     Operator::Add => {
@@ -165,7 +182,7 @@ impl Expression {
                 }
             }
         }
-        ctxt.add_inst(Instruction::StoreReg(Reg::B));
+        ctxt.add_inst(Instruction::StoreReg(target_reg));
         ctxt.lines.push(Line::Comment(format!("Evaluated expression: {:?}", &self)));
     }
 }
@@ -226,14 +243,14 @@ impl Statement {
         ctxt.lines.push(Line::Comment(format!("Begin statement {:?}", self)));
         match self {
             Statement::Assign{local, value} => {
-                value.emit(ctxt); // in B
+                
                 let local = ctxt.find_local(local);
                 match local {
                     LocalStorage::Register(r) => {
-                        ctxt.add_inst(Instruction::LoadReg(Reg::B));
-                        ctxt.add_inst(Instruction::StoreReg(r));
+                        value.emit(ctxt, r);
                     }
                     LocalStorage::Stack(offset) => {
+                        value.emit(ctxt, Reg::B);
                         ctxt.add_inst(Instruction::LoadLo(Target::Constant((offset & 0xf) as u8)));
                         ctxt.add_inst(Instruction::Add(Reg::SP));
                         ctxt.add_inst(Instruction::StoreReg(Reg::C));
@@ -243,7 +260,7 @@ impl Statement {
                 }
             },
             Statement::Return{ value } => {
-                value.emit(ctxt);
+                value.emit(ctxt, Reg::B);
 
                 let result_offset = match ctxt.find_local(RESULT) {
                     LocalStorage::Register(_) => unimplemented!(),
@@ -279,7 +296,7 @@ impl Statement {
                 ctxt.additional_offset += 1;
 
                 for p in parameters {
-                    p.emit(ctxt);
+                    p.emit(ctxt, Reg::B);
                     ctxt.add_macro(format!("push b"));
                     ctxt.additional_offset += 1;
                 }
@@ -322,7 +339,7 @@ impl Statement {
             },
             Statement::If{ predicate, when_true} => {
                 let if_skip = "IF_SKIP";
-                predicate.emit(ctxt); // result in b
+                predicate.emit(ctxt, Reg::B); // result in b
                 ctxt.add_inst(Instruction::LoadReg(Reg::B));
 
                 let jump_label = format!("{}_{}", function_name, if_skip);
@@ -397,6 +414,7 @@ impl Function {
     SP ->   local 3
             local 2
             local 1
+            [saved regs]
             return address
             arg 2
             arg 1
@@ -408,19 +426,20 @@ impl Function {
             stack: BTreeMap::new(),
             lines: Vec::new(),
             additional_offset: 0,
-            regs_used: BTreeSet::new(),
+            regs_used: Vec::new(),
         };
         ctxt.lines.push(Line::Comment(format!("# Function: {}", &self.name)));
         ctxt.lines.push(Line::Label(format!(":{}", &self.name)));
 
-        let register_locals = std::cmp::min(0, self.locals.len());
-        let stack_locals = self.locals.len() - register_locals;
+        let register_local_count = std::cmp::min(1, self.locals.len());
+        let stack_local_count = self.locals.len() - register_local_count;
 
         let stack_size = 0
             + 1 // result
             + self.args.len() 
             + 1 // return address
-            + stack_locals;
+            + register_local_count
+            + stack_local_count;
         let mut offset = (stack_size - 1) as isize;
 
         ctxt.lines.push(Line::Comment(format!("# sp+{} -> {}", offset, RESULT)));
@@ -437,11 +456,13 @@ impl Function {
         ctxt.stack.insert("RETURN_ADDRESS".to_owned(), LocalStorage::Stack(offset));
         offset -= 1;
 
+        offset -= register_local_count as isize;
+
         for (count,l) in self.locals.iter().enumerate() {
             let storage = match count {
-                count if count < register_locals => {
+                count if count < register_local_count => {
                     let reg = if count == 0 { Reg::D } else { Reg::E };
-                    ctxt.regs_used.insert(reg);
+                    ctxt.regs_used.push(reg);
                     LocalStorage::Register(reg)
                 },
                 _ => {
@@ -457,12 +478,23 @@ impl Function {
 
         assert_eq!(-1, offset);
 
-        ctxt.lines.push(Line::Comment("# create stack space".to_owned()));
-        ctxt.add_inst(Instruction::LoadLo(
-            Target::Constant((((stack_locals as i32) * -1) & 0xF) as u8)
-        ));
-        ctxt.add_inst(Instruction::Add(Reg::SP));
-        ctxt.add_inst(Instruction::StoreReg(Reg::SP));
+        assert_eq!(ctxt.regs_used.len(), register_local_count);
+        if register_local_count > 0 {
+            ctxt.lines.push(Line::Comment(format!("save regs: {:?}", ctxt.regs_used)));
+            let regs : Vec<Reg> = ctxt.regs_used.iter().cloned().collect();
+            for r in regs {
+                ctxt.add_macro(format!("push {}", r));
+            }
+        }
+
+        if stack_local_count > 0 {
+            ctxt.lines.push(Line::Comment("create stack space".to_owned()));
+            ctxt.add_inst(Instruction::LoadLo(
+                Target::Constant((((stack_local_count as i32) * -1) & 0xF) as u8)
+            ));
+            ctxt.add_inst(Instruction::Add(Reg::SP));
+            ctxt.add_inst(Instruction::StoreReg(Reg::SP));
+        }
 
         // let mut count = 0;
         for stmt in self.body.iter() {
@@ -472,11 +504,22 @@ impl Function {
         }
          
         ctxt.lines.push(Line::Label(format!(":{}__{}", &self.name, EPILOGUE)));
-        ctxt.add_inst(Instruction::LoadLo(Target::Constant(
-            (self.locals.len() & 0xf) as u8
-        )));
-        ctxt.add_inst(Instruction::Add(Reg::SP));
-        ctxt.add_inst(Instruction::StoreReg(Reg::SP));
+        if stack_local_count > 0 {
+            ctxt.add_inst(Instruction::LoadLo(Target::Constant(
+                (stack_local_count & 0xf) as u8
+            )));
+            ctxt.add_inst(Instruction::Add(Reg::SP));
+            ctxt.add_inst(Instruction::StoreReg(Reg::SP));
+        }
+
+        if register_local_count > 0 {
+            ctxt.lines.push(Line::Comment(format!("save regs: {:?}", ctxt.regs_used)));
+            let regs : Vec<Reg> = ctxt.regs_used.iter().cloned().rev().collect();
+            for r in regs {
+                ctxt.add_macro(format!("pop {}", r));
+            }
+        }
+
         ctxt.add_macro(format!("ret"));
 
         ctxt
