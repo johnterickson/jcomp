@@ -1,0 +1,181 @@
+v2.0 raw
+# Line 0: Comment("set stack to 0xff")
+# Line 1: Instruction(LoadLo(Constant(15)))
+# Line 2: Instruction(StoreReg(SP))
+# Line 3: Comment("call main")
+# Line 4: Instruction(LoadLo(Constant(15)))
+# Line 5: Instruction(Add(SP))
+# Line 6: Instruction(StoreReg(SP))
+# Line 7: Macro("call :main", [LoadLo(Constant(15)), Add(SP), StoreReg(SP), LoadLo(Constant(5)), Add(PC), StoreMem(SP), LoadLo(Label(":main")), LoadHi(Label(":main")), StoreReg(PC), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
+# Line 8: Macro("pop b", [LoadMem(SP), StoreReg(B), LoadLo(Constant(1)), Add(SP), StoreReg(SP)])
+# Line 9: Macro("halt", [LoadLo(Constant(15)), StoreReg(PC)])
+# Line 10: Comment("Function { name: \"main\", args: [], locals: {\"x\"}, body: [Assign { local: \"x\", value: Number(255) }, Store { local: \"x\", address: Number(0) }, Load { local: \"x\", address: Number(0) }, Return { value: Ident(\"x\") }] }")
+# Line 11: Comment("# Function: main")
+# Line 12: Label(":main")
+# Line 13: Comment("# sp+1 -> RESULT")
+# Line 14: Comment("# sp+0 -> RETURN_ADDRESS")
+# Line 15: Comment("# Register(D) -> x")
+# Line 16: Comment("Begin statement Assign { local: \"x\", value: Number(255) }")
+# Line 17: Comment("Evaluating expression: Number(255)")
+# Line 18: Instruction(LoadLo(Constant(15)))
+# Line 19: Instruction(StoreReg(D))
+# Line 20: Comment("Evaluated expression: Number(255)")
+# Line 21: Comment("Done  statement Assign { local: \"x\", value: Number(255) }")
+# Line 22: Comment("Begin statement Store { local: \"x\", address: Number(0) }")
+# Line 23: Comment("Evaluating expression: Number(0)")
+# Line 24: Instruction(LoadLo(Constant(0)))
+# Line 25: Instruction(StoreReg(C))
+# Line 26: Comment("Evaluated expression: Number(0)")
+# Line 27: Instruction(LoadReg(D))
+# Line 28: Instruction(StoreMem(C))
+# Line 29: Comment("Done  statement Store { local: \"x\", address: Number(0) }")
+# Line 30: Comment("Begin statement Load { local: \"x\", address: Number(0) }")
+# Line 31: Comment("Evaluating expression: Number(0)")
+# Line 32: Instruction(LoadLo(Constant(0)))
+# Line 33: Comment("Evaluated expression: Number(0)")
+# Line 34: Instruction(LoadMem(ACC))
+# Line 35: Instruction(StoreReg(D))
+# Line 36: Comment("Done  statement Load { local: \"x\", address: Number(0) }")
+# Line 37: Comment("Begin statement Return { value: Ident(\"x\") }")
+# Line 38: Comment("Evaluating expression: Ident(\"x\")")
+# Line 39: Instruction(LoadReg(D))
+# Line 40: Instruction(StoreReg(B))
+# Line 41: Comment("Evaluated expression: Ident(\"x\")")
+# Line 42: Instruction(LoadLo(Constant(1)))
+# Line 43: Instruction(Add(SP))
+# Line 44: Instruction(StoreReg(C))
+# Line 45: Instruction(LoadReg(B))
+# Line 46: Instruction(StoreMem(C))
+# Line 47: Instruction(LoadLo(Label(":main__EPILOGUE")))
+# Line 48: Instruction(LoadHi(Label(":main__EPILOGUE")))
+# Line 49: Instruction(StoreReg(PC))
+# Line 50: Comment("Done  statement Return { value: Ident(\"x\") }")
+# Line 51: Label(":main__EPILOGUE")
+# Line 52: Macro("ret", [LoadMem(SP), StoreReg(PC)])
+# (":main", 24)
+# (":main__EPILOGUE", 43)
+# set stack to 0xff
+8f # @00 LoadLo(Constant(15))
+06 # @01 StoreReg(SP)
+# call main
+8f # @02 LoadLo(Constant(15))
+5e # @03 Add(SP)
+06 # @04 StoreReg(SP)
+# begin resolving macro: 'call :main'
+8f # @05 LoadLo(Constant(15))
+5e # @06 Add(SP)
+06 # @07 StoreReg(SP)
+85 # @08 LoadLo(Constant(5))
+5f # @09 Add(PC)
+0e # @0a StoreMem(SP)
+88 # @0b LoadLo(Label(":main")) LoadLo(Constant(8))
+91 # @0c LoadHi(Label(":main")) LoadHi(Constant(1))
+07 # @0d StoreReg(PC)
+81 # @0e LoadLo(Constant(1))
+5e # @0f Add(SP)
+06 # @10 StoreReg(SP)
+# end resolving macro: 'call :main'
+# begin resolving macro: 'pop b'
+7e # @11 LoadMem(SP)
+01 # @12 StoreReg(B)
+81 # @13 LoadLo(Constant(1))
+5e # @14 Add(SP)
+06 # @15 StoreReg(SP)
+# end resolving macro: 'pop b'
+# begin resolving macro: 'halt'
+8f # @16 LoadLo(Constant(15))
+07 # @17 StoreReg(PC)
+# end resolving macro: 'halt'
+# Function { name: "main", args: [], locals: {"x"}, body: [Assign { local: "x", value: Number(255) }, Store { local: "x", address: Number(0) }, Load { local: "x", address: Number(0) }, Return { value: Ident("x") }] }
+# # Function: main
+# ":main"
+# # sp+1 -> RESULT
+# # sp+0 -> RETURN_ADDRESS
+# # Register(D) -> x
+# Begin statement Assign { local: "x", value: Number(255) }
+# Evaluating expression: Number(255)
+8f # @18 LoadLo(Constant(15))
+03 # @19 StoreReg(D)
+# Evaluated expression: Number(255)
+# Done  statement Assign { local: "x", value: Number(255) }
+# Begin statement Store { local: "x", address: Number(0) }
+# Evaluating expression: Number(0)
+80 # @1a LoadLo(Constant(0))
+02 # @1b StoreReg(C)
+# Evaluated expression: Number(0)
+73 # @1c LoadReg(D)
+0a # @1d StoreMem(C)
+# Done  statement Store { local: "x", address: Number(0) }
+# Begin statement Load { local: "x", address: Number(0) }
+# Evaluating expression: Number(0)
+80 # @1e LoadLo(Constant(0))
+# Evaluated expression: Number(0)
+78 # @1f LoadMem(ACC)
+03 # @20 StoreReg(D)
+# Done  statement Load { local: "x", address: Number(0) }
+# Begin statement Return { value: Ident("x") }
+# Evaluating expression: Ident("x")
+73 # @21 LoadReg(D)
+01 # @22 StoreReg(B)
+# Evaluated expression: Ident("x")
+81 # @23 LoadLo(Constant(1))
+5e # @24 Add(SP)
+02 # @25 StoreReg(C)
+71 # @26 LoadReg(B)
+0a # @27 StoreMem(C)
+8b # @28 LoadLo(Label(":main__EPILOGUE")) LoadLo(Constant(11))
+92 # @29 LoadHi(Label(":main__EPILOGUE")) LoadHi(Constant(2))
+07 # @2a StoreReg(PC)
+# Done  statement Return { value: Ident("x") }
+# ":main__EPILOGUE"
+# begin resolving macro: 'ret'
+7e # @2b LoadMem(SP)
+07 # @2c StoreReg(PC)
+# end resolving macro: 'ret'
+# begin simulation
+# PC:00 [0, 0, 0, 0, 0, 0, 0, 0] LoadLo(Constant(15)) [255, 0, 0, 0, 0, 0, 0, 0]
+# PC:01 [255, 0, 0, 0, 0, 0, 0, 1] StoreReg(SP) [255, 0, 0, 0, 0, 0, 255, 1]
+# PC:02 [255, 0, 0, 0, 0, 0, 255, 2] LoadLo(Constant(15)) [255, 0, 0, 0, 0, 0, 255, 2]
+# PC:03 [255, 0, 0, 0, 0, 0, 255, 3] Add(SP) [254, 0, 0, 0, 0, 1, 255, 3]
+# PC:04 [254, 0, 0, 0, 0, 1, 255, 4] StoreReg(SP) [254, 0, 0, 0, 0, 1, 254, 4]
+# PC:05 [254, 0, 0, 0, 0, 1, 254, 5] LoadLo(Constant(15)) [255, 0, 0, 0, 0, 1, 254, 5]
+# PC:06 [255, 0, 0, 0, 0, 1, 254, 6] Add(SP) [253, 0, 0, 0, 0, 1, 254, 6]
+# PC:07 [253, 0, 0, 0, 0, 1, 254, 7] StoreReg(SP) [253, 0, 0, 0, 0, 1, 253, 7]
+# PC:08 [253, 0, 0, 0, 0, 1, 253, 8] LoadLo(Constant(5)) [5, 0, 0, 0, 0, 1, 253, 8]
+# PC:09 [5, 0, 0, 0, 0, 1, 253, 9] Add(PC) [14, 0, 0, 0, 0, 0, 253, 9]
+# PC:0a [14, 0, 0, 0, 0, 0, 253, 10] StoreMem(SP) [14, 0, 0, 0, 0, 0, 253, 10]
+# PC:0b [14, 0, 0, 0, 0, 0, 253, 11] LoadLo(Constant(8)) [248, 0, 0, 0, 0, 0, 253, 11]
+# PC:0c [248, 0, 0, 0, 0, 0, 253, 12] LoadHi(Constant(1)) [24, 0, 0, 0, 0, 0, 253, 12]
+# PC:0d [24, 0, 0, 0, 0, 0, 253, 13] StoreReg(PC) [24, 0, 0, 0, 0, 0, 253, 24]
+# PC:18 [24, 0, 0, 0, 0, 0, 253, 24] LoadLo(Constant(15)) [255, 0, 0, 0, 0, 0, 253, 24]
+# PC:19 [255, 0, 0, 0, 0, 0, 253, 25] StoreReg(D) [255, 0, 0, 255, 0, 0, 253, 25]
+# PC:1a [255, 0, 0, 255, 0, 0, 253, 26] LoadLo(Constant(0)) [0, 0, 0, 255, 0, 0, 253, 26]
+# PC:1b [0, 0, 0, 255, 0, 0, 253, 27] StoreReg(C) [0, 0, 0, 255, 0, 0, 253, 27]
+# PC:1c [0, 0, 0, 255, 0, 0, 253, 28] LoadReg(D) [255, 0, 0, 255, 0, 0, 253, 28]
+# PC:1d [255, 0, 0, 255, 0, 0, 253, 29] StoreMem(C) [255, 0, 0, 255, 0, 0, 253, 29]
+# PC:1e [255, 0, 0, 255, 0, 0, 253, 30] LoadLo(Constant(0)) [0, 0, 0, 255, 0, 0, 253, 30]
+# PC:1f [0, 0, 0, 255, 0, 0, 253, 31] LoadMem(ACC) [255, 0, 0, 255, 0, 0, 253, 31]
+# PC:20 [255, 0, 0, 255, 0, 0, 253, 32] StoreReg(D) [255, 0, 0, 255, 0, 0, 253, 32]
+# PC:21 [255, 0, 0, 255, 0, 0, 253, 33] LoadReg(D) [255, 0, 0, 255, 0, 0, 253, 33]
+# PC:22 [255, 0, 0, 255, 0, 0, 253, 34] StoreReg(B) [255, 255, 0, 255, 0, 0, 253, 34]
+# PC:23 [255, 255, 0, 255, 0, 0, 253, 35] LoadLo(Constant(1)) [1, 255, 0, 255, 0, 0, 253, 35]
+# PC:24 [1, 255, 0, 255, 0, 0, 253, 36] Add(SP) [254, 255, 0, 255, 0, 0, 253, 36]
+# PC:25 [254, 255, 0, 255, 0, 0, 253, 37] StoreReg(C) [254, 255, 254, 255, 0, 0, 253, 37]
+# PC:26 [254, 255, 254, 255, 0, 0, 253, 38] LoadReg(B) [255, 255, 254, 255, 0, 0, 253, 38]
+# PC:27 [255, 255, 254, 255, 0, 0, 253, 39] StoreMem(C) [255, 255, 254, 255, 0, 0, 253, 39]
+# PC:28 [255, 255, 254, 255, 0, 0, 253, 40] LoadLo(Constant(11)) [251, 255, 254, 255, 0, 0, 253, 40]
+# PC:29 [251, 255, 254, 255, 0, 0, 253, 41] LoadHi(Constant(2)) [43, 255, 254, 255, 0, 0, 253, 41]
+# PC:2a [43, 255, 254, 255, 0, 0, 253, 42] StoreReg(PC) [43, 255, 254, 255, 0, 0, 253, 43]
+# PC:2b [43, 255, 254, 255, 0, 0, 253, 43] LoadMem(SP) [14, 255, 254, 255, 0, 0, 253, 43]
+# PC:2c [14, 255, 254, 255, 0, 0, 253, 44] StoreReg(PC) [14, 255, 254, 255, 0, 0, 253, 14]
+# PC:0e [14, 255, 254, 255, 0, 0, 253, 14] LoadLo(Constant(1)) [1, 255, 254, 255, 0, 0, 253, 14]
+# PC:0f [1, 255, 254, 255, 0, 0, 253, 15] Add(SP) [254, 255, 254, 255, 0, 0, 253, 15]
+# PC:10 [254, 255, 254, 255, 0, 0, 253, 16] StoreReg(SP) [254, 255, 254, 255, 0, 0, 254, 16]
+# PC:11 [254, 255, 254, 255, 0, 0, 254, 17] LoadMem(SP) [255, 255, 254, 255, 0, 0, 254, 17]
+# PC:12 [255, 255, 254, 255, 0, 0, 254, 18] StoreReg(B) [255, 255, 254, 255, 0, 0, 254, 18]
+# PC:13 [255, 255, 254, 255, 0, 0, 254, 19] LoadLo(Constant(1)) [1, 255, 254, 255, 0, 0, 254, 19]
+# PC:14 [1, 255, 254, 255, 0, 0, 254, 20] Add(SP) [255, 255, 254, 255, 0, 0, 254, 20]
+# PC:15 [255, 255, 254, 255, 0, 0, 254, 21] StoreReg(SP) [255, 255, 254, 255, 0, 0, 255, 21]
+# PC:16 [255, 255, 254, 255, 0, 0, 255, 22] LoadLo(Constant(15)) [255, 255, 254, 255, 0, 0, 255, 22]
+# PC:17 [255, 255, 254, 255, 0, 0, 255, 23] StoreReg(PC) [255, 255, 254, 255, 0, 0, 255, 255]
+# simulation completed

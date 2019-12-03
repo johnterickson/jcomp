@@ -129,10 +129,14 @@ impl Expression {
         ctxt.lines.push(Line::Comment(format!("Evaluating expression: {:?}", &self)));
         match self {
             Expression::Number(n) => {
-                ctxt.add_inst(Instruction::LoadLo(Target::Constant((n & 0xF) as u8)));
+                let n = *n as u8;
+                ctxt.add_inst(Instruction::LoadLo(Target::Constant(n & 0xF)));
 
                 // todo: skip this when we can
-                ctxt.add_inst(Instruction::LoadHi(Target::Constant(((n>>4) & 0xF) as u8)));
+                let sign_extended = ((n as i8) << 4) >> 4;
+                if sign_extended != (n as i8) {
+                    ctxt.add_inst(Instruction::LoadHi(Target::Constant((n>>4) & 0xF)));
+                }
             },
             Expression::Ident(n) => {
                 let local = ctxt.find_local(n);
@@ -181,8 +185,14 @@ impl Expression {
                         ctxt.add_inst(Instruction::Add(Reg::C)); // add left to right
                     },
                     Operator::Equals => {
+                        //  left == right --> ACC == 0
+                        //  left != right --> ACC != 0
                         ctxt.add_inst(Instruction::Xor(Reg::C)); //  left ^ right == 0 --> left == right
                     },
+                    Operator::NotEquals => {
+                        //  left == right --> ACC != 0
+                        //  left != right --> ACC == 0
+                    }
                     _ => unimplemented!()
                 }
             }
@@ -203,6 +213,8 @@ enum Statement {
     Call { local: String, function: String, parameters: Vec<Expression> },
     If {predicate: Expression, when_true: Vec<Statement> },
     Return { value: Expression},
+    Load {local: String, address: Expression },
+    Store {local: String, address: Expression },
 }
 
 impl Statement {
@@ -242,6 +254,18 @@ impl Statement {
                 let expr = pair.into_inner().next().unwrap();
                 Statement::Return { value: Expression::parse(expr) }
             },
+            Rule::load => {
+                let mut pairs = pair.into_inner();
+                let local = pairs.next().unwrap().as_str().trim().to_owned();
+                let address = Expression::parse(pairs.next().unwrap());
+                Statement::Load { local, address }
+            },
+            Rule::store => {
+                let mut pairs = pair.into_inner();
+                let local = pairs.next().unwrap().as_str().trim().to_owned();
+                let address = Expression::parse(pairs.next().unwrap());
+                Statement::Store { local, address }
+            }
             _ => panic!("Unexpected {:?}", pair)
         }
     }
@@ -249,8 +273,41 @@ impl Statement {
     fn emit(&self, ctxt: &mut FunctionContext, function_name: &str) -> () {
         ctxt.lines.push(Line::Comment(format!("Begin statement {:?}", self)));
         match self {
+            Statement::Load{local, address} => {
+                address.emit(ctxt, Reg::ACC);
+                ctxt.add_inst(Instruction::LoadMem(Reg::ACC));
+
+                let local = ctxt.find_local(local);
+                match local {
+                    LocalStorage::Register(r) => {
+                        ctxt.add_inst(Instruction::StoreReg(r));
+                    }
+                    LocalStorage::Stack(offset) => {
+                        ctxt.add_inst(Instruction::StoreReg(Reg::B));
+                        ctxt.add_inst(Instruction::LoadLo(Target::Constant((offset & 0xf) as u8)));
+                        ctxt.add_inst(Instruction::Add(Reg::SP));
+                        ctxt.add_inst(Instruction::StoreReg(Reg::C));
+                        ctxt.add_inst(Instruction::LoadReg(Reg::B));
+                        ctxt.add_inst(Instruction::StoreMem(Reg::C));
+                    }
+                }
+            },
+            Statement::Store{local, address} => {
+                address.emit(ctxt, Reg::C);
+                let local = ctxt.find_local(local);
+                match local {
+                    LocalStorage::Register(r) => {
+                        ctxt.add_inst(Instruction::LoadReg(r));
+                    }
+                    LocalStorage::Stack(offset) => {
+                        ctxt.add_inst(Instruction::LoadLo(Target::Constant((offset & 0xf) as u8)));
+                        ctxt.add_inst(Instruction::Add(Reg::SP));
+                        ctxt.add_inst(Instruction::LoadMem(Reg::ACC));
+                    }
+                }
+                ctxt.add_inst(Instruction::StoreMem(Reg::C));
+            },
             Statement::Assign{local, value} => {
-                
                 let local = ctxt.find_local(local);
                 match local {
                     LocalStorage::Register(r) => {
@@ -416,17 +473,15 @@ impl Function {
         let mut locals = BTreeSet::new();
         for s in body.iter() {
             match s {
-                Statement::Assign{local, value:_} => { 
+                Statement::Assign{local, value:_} 
+                | Statement::Load{local, address:_}
+                | Statement::Store{local, address:_ }
+                | Statement::Call{ local, function:_, parameters:_ } => { 
                     if !args.contains(local) {
                         locals.insert(local.clone()); 
                     }
                 },
                 Statement::Return{ value:_ } => {},
-                Statement::Call{ local, function:_, parameters:_ } => { 
-                    if !args.contains(local) {
-                        locals.insert(local.clone()); 
-                    }
-                },
                 Statement::If{ predicate:_, when_true:_ } => {},
             }
         }
@@ -458,7 +513,9 @@ impl Function {
         ctxt.lines.push(Line::Comment(format!("# Function: {}", &self.name)));
         ctxt.lines.push(Line::Label(format!(":{}", &self.name)));
 
-        let register_local_count = std::cmp::min(2, self.locals.len());
+        let max_register_locals = 1;
+
+        let register_local_count = std::cmp::min(max_register_locals, self.locals.len());
         let stack_local_count = self.locals.len() - register_local_count;
 
         let stack_size = 0
@@ -608,7 +665,7 @@ fn main() -> Result<(), std::io::Error> {
 
     let rom = assemble(program);
 
-    simulate(&rom, 10000);
+    simulate(&rom, 10000000);
 
     Ok(())
 }
