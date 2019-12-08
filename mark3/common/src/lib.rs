@@ -22,14 +22,15 @@ pub enum Reg {
 #[derive(Clone, Debug, PartialEq)]
 pub enum Target {
     Label(String),
-    Constant(u8),
+    Absolute(u8),
+    Offset(u8),
 }
 
 impl Target {
     pub fn parse(s: &str) -> Target {
         match s.chars().next() {
             Some(':') => Target::Label(s.to_owned()),
-            Some(_) => Target::Constant(u8::from_str_radix(s, 16).expect("invalid hex")),
+            Some(_) => Target::Absolute(u8::from_str_radix(s, 16).expect("invalid hex")),
             None => panic!("argument needed.")
         }
     }
@@ -39,10 +40,18 @@ impl Target {
 pub struct StackOffset(u8);
 
 impl StackOffset {
+    pub fn top() -> StackOffset {
+        StackOffset::new(0)
+    }
+
+    pub fn new(val: u8) -> StackOffset {
+        assert!(val < 8);
+        StackOffset(val as u8)
+    }
+
     pub fn parse(s: &str) -> StackOffset {
         let val = u8::from_str_radix(s, 16).expect("invalid hex");
-        assert!(val < 8);
-        StackOffset(val)
+        StackOffset::new(val)
     }
 }
 
@@ -65,12 +74,14 @@ impl PushableInstruction {
     fn resolve_pushable(&self, pc: u8, labels: &BTreeMap<&String,u8>) -> PushableInstruction {
         match self {
             PushableInstruction::LoadLo(t) => match t {
-                Target::Constant(_) => self.clone(),
-                Target::Label(l) => PushableInstruction::LoadLo(Target::Constant(labels[l] & 0xf)),
+                Target::Absolute(_) => self.clone(),
+                Target::Offset(o) => PushableInstruction::LoadLo(Target::Absolute(pc + o)),
+                Target::Label(l) => PushableInstruction::LoadLo(Target::Absolute(labels[l] & 0xf)),
             },
             PushableInstruction::LoadHi(t) => match t {
-                Target::Constant(_) => self.clone(),
-                Target::Label(l) => PushableInstruction::LoadHi(Target::Constant((labels[l] >> 4) & 0xf)),
+                Target::Absolute(_) => self.clone(),
+                Target::Offset(o) => PushableInstruction::LoadHi(Target::Absolute(((pc + o) >> 4) & 0xf)),
+                Target::Label(l) => PushableInstruction::LoadHi(Target::Absolute((labels[l] >> 4) & 0xf)),
             },
             _ => self.clone()
         }
@@ -88,12 +99,21 @@ pub enum Instruction {
     StoreToStack(StackOffset),
     Discard(StackOffset),
     // DiscardPop(StackOffset),
+    Alloc(StackOffset),
     PopDiscard(StackOffset),
     WithPush(PushableInstruction),
     WithoutPush(PushableInstruction),
 }
 
 impl Instruction {
+
+    pub fn with_push(push: bool, p: PushableInstruction) -> Instruction {
+        if push {
+            Instruction::WithPush(p)
+        } else {
+            Instruction::WithoutPush(p)
+        }
+    }
 
     pub fn get_size(&self) -> u8 {
         match self {
@@ -107,15 +127,15 @@ impl Instruction {
     pub fn encode(&self) -> (u8,Option<u8>) {
         match self {
             Instruction::Jmp(t) => (0x3c, match t { 
-                Target::Constant(c) => Some(*c),
+                Target::Absolute(c) => Some(*c),
                 _ => unreachable!(),
             }),
             Instruction::Jnz(t) => (0x3d, match t { 
-                Target::Constant(c) => Some(*c),
+                Target::Absolute(c) => Some(*c),
                 _ => unreachable!(),
             }),
             Instruction::Jz(t) => (0x3e, match t { 
-                Target::Constant(c) => Some(*c),
+                Target::Absolute(c) => Some(*c),
                 _ => unreachable!(),
             }),
             _ => (0, None)
@@ -157,6 +177,7 @@ impl Instruction {
             "storetostack" => Instruction::StoreToStack(StackOffset::parse(tokens[1])),
             "discard" => Instruction::Discard(StackOffset::parse(tokens[1])),
             "popdiscard" => Instruction::PopDiscard(StackOffset::parse(tokens[1])),
+            "alloc" => Instruction::Alloc(StackOffset::parse(tokens[1])),
             _ => panic!("unknown opcode {}", tokens[0])
         }
     }
@@ -194,9 +215,8 @@ impl Line {
                 let tokens : Vec<&str> = line.split_whitespace().collect();
                 match tokens[0].to_lowercase().as_ref() {
                     "call" => {
-                        instructions.push(Instruction::WithPush(PushableInstruction::LoadPc));
-                        instructions.push(Instruction::WithoutPush(PushableInstruction::LoadLo(Target::Constant(5))));
-                        instructions.push(Instruction::WithPush(PushableInstruction::Add(StackOffset(0))));
+                        instructions.push(Instruction::WithoutPush(PushableInstruction::LoadLo(Target::Offset(4))));
+                        instructions.push(Instruction::WithPush(PushableInstruction::LoadHi(Target::Offset(3))));
                         instructions.push(Instruction::Jmp(Target::Label(tokens[1].to_owned())));
                         //retuns here
                     },
@@ -205,7 +225,7 @@ impl Line {
                         instructions.push(Instruction::JmpAcc);
                     },
                     "halt" => {
-                        instructions.push(Instruction::Jmp(Target::Constant(0xFF)));
+                        instructions.push(Instruction::Jmp(Target::Absolute(0xFF)));
                     },
                     _ => {
                         return Line::Instruction(Instruction::parse(&line));
@@ -229,16 +249,19 @@ impl Resolver for Instruction {
             Instruction::WithoutPush(i) => Instruction::WithoutPush(i.resolve_pushable(pc, labels)),
             Instruction::WithPush(i) => Instruction::WithPush(i.resolve_pushable(pc, labels)),
             Instruction::Jmp(t) => match t {
-                Target::Constant(_) => self.clone(),
-                Target::Label(l) => Instruction::Jmp(Target::Constant(labels[l]))
+                Target::Absolute(_) => self.clone(),
+                Target::Offset(o) => Instruction::Jmp(Target::Absolute(pc + o)),
+                Target::Label(l) => Instruction::Jmp(Target::Absolute(labels[l])),
             },
             Instruction::Jz(t) => match t {
-                Target::Constant(_) => self.clone(),
-                Target::Label(l) => Instruction::Jz(Target::Constant(labels[l]))
+                Target::Absolute(_) => self.clone(),
+                Target::Offset(o) => Instruction::Jnz(Target::Absolute(pc + o)),
+                Target::Label(l) => Instruction::Jz(Target::Absolute(labels[l]))
             },
             Instruction::Jnz(t) => match t {
-                Target::Constant(_) => self.clone(),
-                Target::Label(l) => Instruction::Jnz(Target::Constant(labels[l]))
+                Target::Absolute(_) => self.clone(),
+                Target::Offset(o) => Instruction::Jz(Target::Absolute(pc + o)),
+                Target::Label(l) => Instruction::Jnz(Target::Absolute(labels[l]))
             },
             _ => self.clone()
         }
@@ -344,19 +367,20 @@ pub fn simulate(insts: &[Instruction], mut cycle_limit: usize) {
     let mut regs = [Wrapping(0u8); 5];
 
     println!("# begin simulation");
-
-    while cycle_limit > 0 && regs[Reg::PC as usize].0 != 0xFF {
-        assert_ne!(cycle_limit, 0);
-        cycle_limit -= 1;
+    let mut cycles = 0;
+    while cycle_limit != cycles && regs[Reg::PC as usize].0 != 0xFF {
+        cycles += 1;
 
         let instruction = rom.get(&regs[Reg::PC as usize].0).expect("bad instruction address.");
-        print!("# PC:{:02x} {:?} {:?}", regs[Reg::PC as usize], regs, instruction);
+        print!("# PC:{:02x} {:?}", regs[Reg::PC as usize], instruction);
+        print!(" regs:{:?} stack:{:?}", regs, &mem[(regs[Reg::SP as usize].0 as usize)..]);
+
         let mut bump_pc = 1;
         match instruction {
             Instruction::WithPush(i) | Instruction::WithoutPush(i) => {
                 match i {
                     PushableInstruction::LoadLo(t) => match t {
-                        Target::Constant(c) => {
+                        Target::Absolute(c) => {
                             let mut c = *c as i16;
                             c <<= 12;
                             c >>= 12;
@@ -365,7 +389,7 @@ pub fn simulate(insts: &[Instruction], mut cycle_limit: usize) {
                         _ => unreachable!()
                     },
                     PushableInstruction::LoadHi(t) => match t {
-                        Target::Constant(c) => {
+                        Target::Absolute(c) => {
                             regs[Reg::ACC as usize].0 &= 0x0F;
                             regs[Reg::ACC as usize].0 |= c << 4;
                         },
@@ -406,14 +430,14 @@ pub fn simulate(insts: &[Instruction], mut cycle_limit: usize) {
                 regs[Reg::PC as usize] = regs[Reg::ACC as usize];
             },
             Instruction::Jmp(t) => match t {
-                Target::Constant(c) => {
+                Target::Absolute(c) => {
                     bump_pc = 0;
                     regs[Reg::PC as usize] = Wrapping(*c);
                 },
                 _ => unreachable!()
             },
             Instruction::Jz(t) => match t {
-                Target::Constant(c) => {
+                Target::Absolute(c) => {
                     if regs[Reg::ACC as usize].0 == 0 {
                         bump_pc = 0;
                         regs[Reg::PC as usize] = Wrapping(*c);
@@ -424,7 +448,7 @@ pub fn simulate(insts: &[Instruction], mut cycle_limit: usize) {
                 _ => unreachable!()
             },
             Instruction::Jnz(t) => match t {
-                Target::Constant(c) => {
+                Target::Absolute(c) => {
                     if regs[Reg::ACC as usize].0 != 0 {
                         bump_pc = 0;
                         regs[Reg::PC as usize] = Wrapping(*c);
@@ -435,10 +459,13 @@ pub fn simulate(insts: &[Instruction], mut cycle_limit: usize) {
                 _ => unreachable!()
             },
             Instruction::StoreToStack(offset) => {
-                mem[regs[Reg::SP as usize].0 as usize + offset.0 as usize] = regs[Reg::ACC as usize];
+                mem[(regs[Reg::SP as usize] + Wrapping(offset.0)).0 as usize] = regs[Reg::ACC as usize];
             },
             Instruction::Discard(offset) => {
                 regs[Reg::SP as usize] += Wrapping(offset.0);
+            },
+            Instruction::Alloc(offset) => {
+                regs[Reg::SP as usize] -= Wrapping(offset.0);
             },
             Instruction::PopDiscard(offset) => {
                 regs[Reg::ACC as usize] = mem[regs[Reg::SP as usize].0 as usize];
@@ -447,16 +474,16 @@ pub fn simulate(insts: &[Instruction], mut cycle_limit: usize) {
             
         }
 
-        println!(" {:?}", regs);
+        println!(" regs:{:?} stack:{:?}", regs, &mem[(regs[Reg::SP as usize].0 as usize)..]);
         regs[Reg::PC as usize] += Wrapping(bump_pc);
 
     }
 
     
-    if cycle_limit == 0 {
-        println!("# simulation timed out");
+    if cycle_limit == cycles {
+        println!("# simulation timed out after {} cycles", cycles);
     } else {
-        println!("# simulation completed");
+        println!("# simulation completed after {} cycles", cycles);
     }
 }
 

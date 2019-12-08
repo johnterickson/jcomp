@@ -29,7 +29,7 @@ IF HI bit is set, push ACC on stack after:
 0 0 1 0 0 0 1 0  JMP: PC <- ACC
 0 0 1 0 0 0 1 1  ??
 0 0 1 0 0 1 * *  ??
-0 0 1 0 1 * * *  ??
+0 0 1 0 1 I M D  ALLOC x: SP <- SP - x
 0 0 1 1 0 * * *  ??
 0 0 1 1 1 1 0 0  [target:8] JMP x:
 0 0 1 1 1 1 0 1  [target:8] JNZ x:
