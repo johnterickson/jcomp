@@ -484,7 +484,8 @@ impl Function {
 
         // find locals
         let mut locals = BTreeSet::new();
-        for s in body.iter() {
+
+        fn add_locals(s: &Statement, args: &Vec<String>, locals: &mut BTreeSet<String>) {
             match s {
                 Statement::Assign{local, value:_} 
                 | Statement::Load{local, address:_}
@@ -495,8 +496,16 @@ impl Function {
                     }
                 },
                 Statement::Return{ value:_ } => {},
-                Statement::If{ predicate:_, when_true:_ } => {},
+                Statement::If{ predicate:_, when_true:ss } => {
+                    for s in ss {
+                        add_locals(s, args, locals);
+                    }
+                },
             }
+        };
+
+        for s in body.iter() {
+            add_locals(s, &args, &mut locals);
         }
 
         Function { name, args, locals, body }
