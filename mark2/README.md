@@ -26,14 +26,14 @@ B
 C
 D
 E
-F
+FLAGS
 SP
 PC
 ```
 
 push r:
 ```
-LOADLO -1
+LOADLO f
 ADD SP
 STOREREG SP
 LOADREG r
@@ -99,8 +99,8 @@ int fib(int n) {
 
 # B is first input and output
 :fib
-push C # C := int n 
-push D # D := int sum
+push C # Reg C := int n 
+push D # Reg D := int sum
 # initialize n
 loadreg b
 storereg c

@@ -38,7 +38,7 @@ IF HI bit is set, push ACC on stack after:
 
 1 0 1 0 0|I M D  STORETOSTACK x: MEM[SP+x] <- ACC
 1 0 1 0 1|I M D  DISCARD x: SP <- SP+x
-1 0 1 1 0|I M D  DISCARDPOP x: SP += x; ACC <- MEM[SP]; SP += 1;
+1 0 1 1 0|I M D  ?? (DISCARDPOP x: SP += x; ACC <- MEM[SP]; SP += 1;)
 1 0 1 1 1|I M D  POPDISCARD x: ACC <- MEM[SP]; SP += x + 1;
 
 IF HI bit is set, push ACC on stack after:
@@ -51,7 +51,7 @@ IF HI bit is set, push ACC on stack after:
 * 1 1 1 0|I M D  LOADFROMSTACK x: ACC <- MEM[SP+x]
 * 1 1 1 1 0 0 0  LOADMEM: ACC <- MEM[ADDR]
 * 1 1 1 1 0 0 1  LOADPC: ACC <- PC
-* 1 1 1 1 0 1 0  NOT: ACC <- ~ACC
+* 1 1 1 1 0 1 0  ?? (NOT: ACC <- ~ACC)
 * 1 1 1 1 0 1 1  ??
 * 1 1 1 1 1 * *  ??
 
